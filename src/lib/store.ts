@@ -24,6 +24,7 @@ interface AppState {
   updateTask: (categoryId: string, taskId: string, patch: Partial<Task>, subId?: string) => void;
   removeTask: (categoryId: string, taskId: string, subId?: string) => void;
   toggleTask: (categoryId: string, taskId: string, subId?: string) => void;
+  reorderTasks: (categoryId: string, ids: string[], subId?: string) => void;
 
   addSubcategory: (categoryId: string, name: string) => void;
   removeSubcategory: (categoryId: string, subId: string) => void;
