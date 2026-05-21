@@ -204,13 +204,14 @@ export const useStore = create<AppState>()(
     }),
     {
       name: "organiz-life-v1",
-      version: 2,
+      version: 3,
       migrate: (persisted: any) => {
         if (persisted?.categories) {
           persisted.categories = persisted.categories.map((c: any) => ({
             ...c,
             vision: c.vision ?? [],
             subcategories: (c.subcategories ?? []).map((sc: any) => ({ ...sc, vision: sc.vision ?? [] })),
+            enableDateTime: c.enableDateTime ?? DATETIME_DEFAULT_IDS.has(c.id),
           }));
         }
         return persisted;
