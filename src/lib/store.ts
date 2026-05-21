@@ -35,14 +35,29 @@ interface AppState {
 }
 
 
-const seedCategories = (): Category[] =>
-  DEFAULT_CATEGORIES.map((c) => ({
+export const MAIN_VISION_ID = "__main__";
+
+const seedCategories = (): Category[] => [
+  ...DEFAULT_CATEGORIES.map((c) => ({
     ...c,
     tasks: [],
     subcategories: [],
     vision: [],
     enableDateTime: DATETIME_DEFAULT_IDS.has(c.id),
-  }));
+  })),
+  {
+    id: MAIN_VISION_ID,
+    name: "Vision principale",
+    icon: "Sparkles",
+    color: "#9B51E0",
+    priority: 999,
+    tasks: [],
+    subcategories: [],
+    vision: [],
+    enableDateTime: false,
+  },
+];
+
 
 export const useStore = create<AppState>()(
   persist(
