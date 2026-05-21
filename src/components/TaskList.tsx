@@ -262,12 +262,12 @@ function SortableTaskRow({
       </button>
       <div className="min-w-0 flex-1">
         <div className="flex items-center gap-2">
-          {showPriority && t.priority && (
+          {showPriority && (
             <span
-              className="shrink-0 inline-flex h-5 min-w-5 px-1.5 items-center justify-center rounded text-[10px] font-mono font-bold"
+              className="shrink-0 inline-flex h-5 min-w-5 px-1.5 items-center justify-center rounded text-[10px] font-mono font-bold tabular-nums"
               style={{ background: `${accent}33`, color: accent }}
             >
-              {t.priority}
+              {index + 1}
             </span>
           )}
           <span className={`text-sm truncate ${t.done ? "line-through text-muted-foreground" : ""}`}>
