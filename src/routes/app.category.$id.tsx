@@ -5,6 +5,8 @@ import { TaskList } from "@/components/TaskList";
 import { VisionBoard } from "@/components/VisionBoard";
 import { IconRender } from "@/components/IconRender";
 import { ArrowLeft, Trash2, CalendarClock } from "lucide-react";
+import { FINANCE_CATEGORY_IDS, NEGATIVE_FINANCE_IDS } from "@/lib/categories";
+
 
 export const Route = createFileRoute("/app/category/$id")({
   component: CategoryPage,
