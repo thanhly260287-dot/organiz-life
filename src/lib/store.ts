@@ -1,6 +1,6 @@
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
-import { type Category, type Task, type Subcategory, type VisionItem, DEFAULT_CATEGORIES } from "./categories";
+import { type Category, type Task, type Subcategory, type VisionItem, DEFAULT_CATEGORIES, DATETIME_DEFAULT_IDS } from "./categories";
 
 const uid = () => Math.random().toString(36).slice(2, 11);
 
@@ -33,8 +33,15 @@ interface AppState {
   removeVisionItem: (categoryId: string, itemId: string, subId?: string) => void;
 }
 
+
 const seedCategories = (): Category[] =>
-  DEFAULT_CATEGORIES.map((c) => ({ ...c, tasks: [], subcategories: [], vision: [] }));
+  DEFAULT_CATEGORIES.map((c) => ({
+    ...c,
+    tasks: [],
+    subcategories: [],
+    vision: [],
+    enableDateTime: DATETIME_DEFAULT_IDS.has(c.id),
+  }));
 
 export const useStore = create<AppState>()(
   persist(
@@ -197,13 +204,14 @@ export const useStore = create<AppState>()(
     }),
     {
       name: "organiz-life-v1",
-      version: 2,
+      version: 3,
       migrate: (persisted: any) => {
         if (persisted?.categories) {
           persisted.categories = persisted.categories.map((c: any) => ({
             ...c,
             vision: c.vision ?? [],
             subcategories: (c.subcategories ?? []).map((sc: any) => ({ ...sc, vision: sc.vision ?? [] })),
+            enableDateTime: c.enableDateTime ?? DATETIME_DEFAULT_IDS.has(c.id),
           }));
         }
         return persisted;

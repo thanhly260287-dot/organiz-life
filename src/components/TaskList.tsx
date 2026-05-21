@@ -9,11 +9,13 @@ export function TaskList({
   subId,
   tasks,
   accent,
+  enableDateTime = true,
 }: {
   categoryId: string;
   subId?: string;
   tasks: Task[];
   accent: string;
+  enableDateTime?: boolean;
 }) {
   const [adding, setAdding] = useState(false);
   const [title, setTitle] = useState("");
@@ -76,14 +78,14 @@ export function TaskList({
                   {t.title}
                 </span>
               </div>
-              {(t.date || t.time || t.notes) && (
+              {((enableDateTime && (t.date || t.time)) || t.notes) && (
                 <div className="mt-1 flex flex-wrap items-center gap-3 text-[11px] text-muted-foreground">
-                  {t.date && (
+                  {enableDateTime && t.date && (
                     <span className="inline-flex items-center gap-1">
                       <Calendar className="h-3 w-3" /> {t.date}
                     </span>
                   )}
-                  {t.time && (
+                  {enableDateTime && t.time && (
                     <span className="inline-flex items-center gap-1">
                       <Clock className="h-3 w-3" /> {t.time}
                     </span>
@@ -118,18 +120,22 @@ export function TaskList({
             className="w-full bg-transparent outline-none text-sm placeholder:text-muted-foreground"
           />
           <div className="flex flex-wrap gap-2">
-            <input
-              type="date"
-              value={date}
-              onChange={(e) => setDate(e.target.value)}
-              className="text-xs bg-muted rounded-md px-2 py-1 outline-none"
-            />
-            <input
-              type="time"
-              value={time}
-              onChange={(e) => setTime(e.target.value)}
-              className="text-xs bg-muted rounded-md px-2 py-1 outline-none"
-            />
+            {enableDateTime && (
+              <>
+                <input
+                  type="date"
+                  value={date}
+                  onChange={(e) => setDate(e.target.value)}
+                  className="text-xs bg-muted rounded-md px-2 py-1 outline-none"
+                />
+                <input
+                  type="time"
+                  value={time}
+                  onChange={(e) => setTime(e.target.value)}
+                  className="text-xs bg-muted rounded-md px-2 py-1 outline-none"
+                />
+              </>
+            )}
             <input
               type="number"
               min={1}

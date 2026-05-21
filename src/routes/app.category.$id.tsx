@@ -4,7 +4,7 @@ import { useStore, getCategoryProgress } from "@/lib/store";
 import { TaskList } from "@/components/TaskList";
 import { VisionBoard } from "@/components/VisionBoard";
 import { IconRender } from "@/components/IconRender";
-import { ArrowLeft, Trash2 } from "lucide-react";
+import { ArrowLeft, Trash2, CalendarClock } from "lucide-react";
 
 export const Route = createFileRoute("/app/category/$id")({
   component: CategoryPage,
@@ -14,6 +14,7 @@ function CategoryPage() {
   const { id } = Route.useParams();
   const category = useStore((s) => s.categories.find((c) => c.id === id));
   const removeCategory = useStore((s) => s.removeCategory);
+  const updateCategory = useStore((s) => s.updateCategory);
 
   if (!category) {
     return (
@@ -77,8 +78,25 @@ function CategoryPage() {
       </motion.section>
 
       <section className="space-y-4">
-        <h2 className="font-display font-semibold text-xl">Tâches</h2>
-        <TaskList categoryId={category.id} tasks={category.tasks} accent={category.color} />
+        <div className="flex items-center justify-between gap-3 flex-wrap">
+          <h2 className="font-display font-semibold text-xl">Tâches</h2>
+          <label className="inline-flex items-center gap-2 text-xs text-muted-foreground cursor-pointer select-none glass rounded-full px-3 py-1.5 shadow-glass">
+            <CalendarClock className="h-3.5 w-3.5" />
+            Date &amp; heure
+            <input
+              type="checkbox"
+              checked={!!category.enableDateTime}
+              onChange={(e) => updateCategory(category.id, { enableDateTime: e.target.checked })}
+              className="ml-1 accent-primary"
+            />
+          </label>
+        </div>
+        <TaskList
+          categoryId={category.id}
+          tasks={category.tasks}
+          accent={category.color}
+          enableDateTime={!!category.enableDateTime}
+        />
       </section>
 
       <section className="space-y-4">

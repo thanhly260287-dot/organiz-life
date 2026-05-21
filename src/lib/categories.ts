@@ -38,7 +38,10 @@ export interface Category {
   tasks: Task[];
   subcategories: Subcategory[];
   vision: VisionItem[];
+  enableDateTime?: boolean;
 }
+
+export const DATETIME_DEFAULT_IDS = new Set(["rdv", "events", "today", "week", "month"]);
 
 export const DEFAULT_CATEGORIES: Omit<Category, "tasks" | "subcategories" | "vision">[] = [
   { id: "rdv", name: "Rendez-vous", icon: "CalendarClock", color: "#56CCF2", priority: 1 },
