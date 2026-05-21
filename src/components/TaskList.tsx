@@ -222,6 +222,8 @@ function SortableTaskRow({
   accent,
   showPriority,
   enableDateTime,
+  enableAmount,
+  amountSign,
   onToggle,
   onRemove,
 }: {
@@ -229,6 +231,8 @@ function SortableTaskRow({
   accent: string;
   showPriority: boolean;
   enableDateTime: boolean;
+  enableAmount: boolean;
+  amountSign: 1 | -1;
   onToggle: () => void;
   onRemove: () => void;
 }) {
