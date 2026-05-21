@@ -9,11 +9,13 @@ export function TaskList({
   subId,
   tasks,
   accent,
+  enableDateTime = true,
 }: {
   categoryId: string;
   subId?: string;
   tasks: Task[];
   accent: string;
+  enableDateTime?: boolean;
 }) {
   const [adding, setAdding] = useState(false);
   const [title, setTitle] = useState("");
