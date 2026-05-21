@@ -1,7 +1,7 @@
 import { Link, useRouter } from "@tanstack/react-router";
 import { Logo } from "./Logo";
 import { useStore } from "@/lib/store";
-import { Moon, Sun, Settings, ArrowLeft } from "lucide-react";
+import { Moon, Sun, Settings, ArrowLeft, BarChart3 } from "lucide-react";
 
 export function AppHeader({ showBack = false }: { showBack?: boolean }) {
   const theme = useStore((s) => s.theme);
