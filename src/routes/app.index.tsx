@@ -63,22 +63,7 @@ function Dashboard() {
   };
 
   return (
-    <main className="mx-auto max-w-7xl px-4 sm:px-6 py-8 space-y-8">
-      <motion.section
-        initial={{ opacity: 0, y: 10 }}
-        animate={{ opacity: 1, y: 0 }}
-        className="glass rounded-3xl shadow-elevated p-6 sm:p-8"
-      >
-        <div className="flex items-center gap-2 text-xs text-muted-foreground mb-2">
-          <Sparkles className="h-3.5 w-3.5" />
-          <span>{quote}</span>
-        </div>
-        <h1 className="font-display font-bold text-3xl sm:text-4xl">
-          Bienvenue dans <span className="text-gradient">Organiz-Life</span>
-        </h1>
-        <p className="mt-1 text-muted-foreground text-sm">Tes catégories de vie, organisées au même endroit.</p>
-      </motion.section>
-
+    <main className="mx-auto max-w-3xl px-4 sm:px-6 py-6 space-y-4">
       <section className="flex flex-wrap items-center gap-3">
         <div className="relative flex-1 min-w-[200px]">
           <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
@@ -93,7 +78,7 @@ function Dashboard() {
           onClick={() => setCreating(true)}
           className="inline-flex items-center gap-2 rounded-xl bg-gradient-brand px-5 py-3 text-sm font-medium text-white shadow-glow hover:scale-105 transition-transform"
         >
-          <Plus className="h-4 w-4" /> Nouvelle catégorie
+          <Plus className="h-4 w-4" /> Ajouter
         </button>
       </section>
 
@@ -147,7 +132,7 @@ function Dashboard() {
 
       <DndContext sensors={sensors} collisionDetection={closestCenter} onDragEnd={onDragEnd}>
         <SortableContext items={filtered.map((c) => c.id)} strategy={rectSortingStrategy}>
-          <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
+          <div className="flex flex-col gap-2">
             {filtered.map((c, i) => (
               <CategoryCard key={c.id} category={c} index={i} />
             ))}
@@ -157,3 +142,4 @@ function Dashboard() {
     </main>
   );
 }
+
