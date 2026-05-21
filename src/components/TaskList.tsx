@@ -23,6 +23,8 @@ export function TaskList({
   enableDateTime = true,
   requireDate = false,
   requireTime = false,
+  enableAmount = false,
+  amountSign = 1,
 }: {
   categoryId: string;
   subId?: string;
@@ -31,12 +33,15 @@ export function TaskList({
   enableDateTime?: boolean;
   requireDate?: boolean;
   requireTime?: boolean;
+  enableAmount?: boolean;
+  amountSign?: 1 | -1;
 }) {
   const [adding, setAdding] = useState(false);
   const [title, setTitle] = useState("");
   const [date, setDate] = useState("");
   const [time, setTime] = useState("");
   const [priority, setPriority] = useState<number | "">("");
+  const [amount, setAmount] = useState<string>("");
   const showPriority = useStore((s) => s.showPriorityNumbers);
   const addTask = useStore((s) => s.addTask);
   const toggleTask = useStore((s) => s.toggleTask);
@@ -62,20 +67,44 @@ export function TaskList({
 
   const submit = () => {
     if (!canSubmit) return;
+    const amt = amount ? Math.abs(parseFloat(amount)) : undefined;
     addTask(
       categoryId,
-      { title: title.trim(), date: date || undefined, time: time || undefined, priority: priority || undefined },
+      {
+        title: title.trim(),
+        date: date || undefined,
+        time: time || undefined,
+        priority: priority || undefined,
+        amount: amt,
+      },
       subId
     );
     setTitle("");
     setDate("");
     setTime("");
     setPriority("");
+    setAmount("");
     setAdding(false);
   };
 
+
+  const total = enableAmount
+    ? tasks.reduce((sum, t) => sum + (t.amount ?? 0), 0) * amountSign
+    : 0;
+
   return (
     <div className="space-y-2">
+      {enableAmount && tasks.some((t) => t.amount != null) && (
+        <div className="glass rounded-xl shadow-glass px-4 py-2 flex items-center justify-between">
+          <span className="text-xs text-muted-foreground uppercase tracking-wide">Total</span>
+          <span
+            className={`text-base font-display font-bold ${total < 0 ? "text-destructive" : ""}`}
+            style={{ color: total >= 0 ? accent : undefined }}
+          >
+            {total.toLocaleString("fr-FR", { style: "currency", currency: "EUR" })}
+          </span>
+        </div>
+      )}
       <DndContext sensors={sensors} collisionDetection={closestCenter} onDragEnd={onDragEnd}>
         <SortableContext items={tasks.map((t) => t.id)} strategy={verticalListSortingStrategy}>
           <AnimatePresence initial={false}>
@@ -86,6 +115,8 @@ export function TaskList({
                 accent={accent}
                 showPriority={showPriority}
                 enableDateTime={enableDateTime}
+                enableAmount={enableAmount}
+                amountSign={amountSign}
                 onToggle={() => toggleTask(categoryId, t.id, subId)}
                 onRemove={() => removeTask(categoryId, t.id, subId)}
               />
@@ -93,6 +124,7 @@ export function TaskList({
           </AnimatePresence>
         </SortableContext>
       </DndContext>
+
 
 
       {adding ? (
@@ -145,6 +177,17 @@ export function TaskList({
               onChange={(e) => setPriority(e.target.value ? Number(e.target.value) : "")}
               className="text-xs bg-muted rounded-md px-2 py-1 outline-none w-20"
             />
+            {enableAmount && (
+              <input
+                type="number"
+                step="0.01"
+                min={0}
+                placeholder={amountSign < 0 ? "Montant (−€)" : "Montant (€)"}
+                value={amount}
+                onChange={(e) => setAmount(e.target.value)}
+                className="text-xs bg-muted rounded-md px-2 py-1 outline-none w-28"
+              />
+            )}
             <div className="ml-auto flex gap-1">
               <button
                 onClick={() => setAdding(false)}
@@ -179,6 +222,8 @@ function SortableTaskRow({
   accent,
   showPriority,
   enableDateTime,
+  enableAmount,
+  amountSign,
   onToggle,
   onRemove,
 }: {
@@ -186,6 +231,8 @@ function SortableTaskRow({
   accent: string;
   showPriority: boolean;
   enableDateTime: boolean;
+  enableAmount: boolean;
+  amountSign: 1 | -1;
   onToggle: () => void;
   onRemove: () => void;
 }) {
@@ -250,6 +297,14 @@ function SortableTaskRow({
           </div>
         )}
       </div>
+      {enableAmount && t.amount != null && (
+        <span
+          className={`shrink-0 text-sm font-display font-semibold tabular-nums ${amountSign < 0 ? "text-destructive" : ""}`}
+          style={{ color: amountSign > 0 ? accent : undefined }}
+        >
+          {(t.amount * amountSign).toLocaleString("fr-FR", { style: "currency", currency: "EUR" })}
+        </span>
+      )}
       <button
         onPointerDown={(e) => e.stopPropagation()}
         onClick={onRemove}

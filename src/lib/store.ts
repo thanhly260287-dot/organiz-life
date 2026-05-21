@@ -85,6 +85,7 @@ export const useStore = create<AppState>()(
               time: task.time,
               notes: task.notes,
               priority: task.priority,
+              amount: task.amount,
               createdAt: Date.now(),
             };
             if (subId) {
