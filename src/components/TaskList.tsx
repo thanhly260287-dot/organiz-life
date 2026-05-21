@@ -93,6 +93,17 @@ export function TaskList({
 
   return (
     <div className="space-y-2">
+      {tasks.length > 0 && (
+        <label className="inline-flex items-center gap-2 text-xs text-muted-foreground cursor-pointer select-none">
+          <input
+            type="checkbox"
+            checked={showPriority}
+            onChange={() => toggleTaskPriorityFor(categoryId)}
+            className="accent-primary"
+          />
+          Afficher les numéros de priorité
+        </label>
+      )}
       {enableAmount && tasks.some((t) => t.amount != null) && (
         <div className="glass rounded-xl shadow-glass px-4 py-2 flex items-center justify-between">
           <span className="text-xs text-muted-foreground uppercase tracking-wide">Total</span>
