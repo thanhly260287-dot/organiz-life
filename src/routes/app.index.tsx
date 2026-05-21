@@ -4,9 +4,11 @@ import { motion } from "framer-motion";
 import { DndContext, closestCenter, type DragEndEvent, PointerSensor, TouchSensor, useSensor, useSensors } from "@dnd-kit/core";
 import { SortableContext, arrayMove, rectSortingStrategy } from "@dnd-kit/sortable";
 import { Plus, Search } from "lucide-react";
-import { useStore } from "@/lib/store";
+import { useStore, MAIN_VISION_ID } from "@/lib/store";
 import { CategoryCard } from "@/components/CategoryCard";
 import { IconRender } from "@/components/IconRender";
+import { VisionBoard } from "@/components/VisionBoard";
+
 
 
 
@@ -32,10 +34,19 @@ function Dashboard() {
     useSensor(TouchSensor, { activationConstraint: { delay: 350, tolerance: 8 } })
   );
 
-  const filtered = useMemo(
-    () => categories.filter((c) => c.name.toLowerCase().includes(query.toLowerCase())),
-    [categories, query]
+  const visibleCategories = useMemo(
+    () => categories.filter((c) => c.id !== MAIN_VISION_ID),
+    [categories]
   );
+  const mainVision = useMemo(
+    () => categories.find((c) => c.id === MAIN_VISION_ID),
+    [categories]
+  );
+  const filtered = useMemo(
+    () => visibleCategories.filter((c) => c.name.toLowerCase().includes(query.toLowerCase())),
+    [visibleCategories, query]
+  );
+
 
   
 
@@ -43,11 +54,12 @@ function Dashboard() {
   const onDragEnd = (e: DragEndEvent) => {
     const { active, over } = e;
     if (!over || active.id === over.id) return;
-    const ids = categories.map((c) => c.id);
+    const ids = visibleCategories.map((c) => c.id);
     const oldIdx = ids.indexOf(active.id as string);
     const newIdx = ids.indexOf(over.id as string);
-    reorder(arrayMove(ids, oldIdx, newIdx));
+    reorder([...arrayMove(ids, oldIdx, newIdx), MAIN_VISION_ID]);
   };
+
 
   const submitNew = () => {
     if (!newName.trim()) return;
@@ -133,7 +145,14 @@ function Dashboard() {
           </div>
         </SortableContext>
       </DndContext>
+
+      {mainVision && (
+        <section className="pt-6 space-y-3">
+          <VisionBoard categoryId={MAIN_VISION_ID} items={mainVision.vision} />
+        </section>
+      )}
     </main>
   );
 }
+
 
