@@ -248,7 +248,7 @@ export const useStore = create<AppState>()(
     }),
     {
       name: "organiz-life-v1",
-      version: 6,
+      version: 7,
       migrate: (persisted: any) => {
         if (persisted?.categories) {
           // Rename "Sport et physique" → "Sport"
@@ -288,7 +288,22 @@ export const useStore = create<AppState>()(
               enableDateTime: false,
             });
           }
+          // Move "needs" and "goals" right after "events"
+          const eventsIdx = persisted.categories.findIndex((c: any) => c.id === "events");
+          if (eventsIdx >= 0) {
+            const needs = persisted.categories.find((c: any) => c.id === "needs");
+            const goals = persisted.categories.find((c: any) => c.id === "goals");
+            persisted.categories = persisted.categories.filter(
+              (c: any) => c.id !== "needs" && c.id !== "goals"
+            );
+            const newEventsIdx = persisted.categories.findIndex((c: any) => c.id === "events");
+            const insert: any[] = [];
+            if (needs) insert.push(needs);
+            if (goals) insert.push(goals);
+            persisted.categories.splice(newEventsIdx + 1, 0, ...insert);
+          }
           // Snap colors to brand palette (skip the hidden main vision)
+
           const BRAND = ["#56CCF2", "#9B51E0"];
           let idx = 0;
           persisted.categories = persisted.categories.map((c: any) => {
