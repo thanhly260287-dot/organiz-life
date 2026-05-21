@@ -3,18 +3,12 @@ import { useMemo, useState } from "react";
 import { motion } from "framer-motion";
 import { DndContext, closestCenter, type DragEndEvent, PointerSensor, TouchSensor, useSensor, useSensors } from "@dnd-kit/core";
 import { SortableContext, arrayMove, rectSortingStrategy } from "@dnd-kit/sortable";
-import { Plus, Search, Sparkles } from "lucide-react";
+import { Plus, Search } from "lucide-react";
 import { useStore } from "@/lib/store";
 import { CategoryCard } from "@/components/CategoryCard";
 import { IconRender } from "@/components/IconRender";
 
-const QUOTES = [
-  "Chaque petit pas te rapproche d'une grande vie.",
-  "Discipline aujourd'hui, liberté demain.",
-  "Ta vie idéale se construit une habitude à la fois.",
-  "Sois le héros de ta propre histoire.",
-  "Progrès > perfection.",
-];
+
 
 const ICON_CHOICES = ["Star", "Heart", "Zap", "Rocket", "Target", "Flame", "Trophy", "Compass", "BookOpen", "Brain"];
 const COLOR_CHOICES = ["#56CCF2", "#9B51E0"];
