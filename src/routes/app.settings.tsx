@@ -12,8 +12,8 @@ function Settings() {
   const setTheme = useStore((s) => s.setTheme);
   const textSize = useStore((s) => s.textSize);
   const setTextSize = useStore((s) => s.setTextSize);
-  const showPriority = useStore((s) => s.showPriorityNumbers);
-  const togglePriority = useStore((s) => s.togglePriorityNumbers);
+  const showPriority = useStore((s) => s.showCategoryPriority);
+  const togglePriority = useStore((s) => s.toggleCategoryPriority);
 
   return (
     <main className="mx-auto max-w-2xl px-4 sm:px-6 py-8 space-y-6">
