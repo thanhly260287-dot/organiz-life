@@ -120,18 +120,22 @@ export function TaskList({
             className="w-full bg-transparent outline-none text-sm placeholder:text-muted-foreground"
           />
           <div className="flex flex-wrap gap-2">
-            <input
-              type="date"
-              value={date}
-              onChange={(e) => setDate(e.target.value)}
-              className="text-xs bg-muted rounded-md px-2 py-1 outline-none"
-            />
-            <input
-              type="time"
-              value={time}
-              onChange={(e) => setTime(e.target.value)}
-              className="text-xs bg-muted rounded-md px-2 py-1 outline-none"
-            />
+            {enableDateTime && (
+              <>
+                <input
+                  type="date"
+                  value={date}
+                  onChange={(e) => setDate(e.target.value)}
+                  className="text-xs bg-muted rounded-md px-2 py-1 outline-none"
+                />
+                <input
+                  type="time"
+                  value={time}
+                  onChange={(e) => setTime(e.target.value)}
+                  className="text-xs bg-muted rounded-md px-2 py-1 outline-none"
+                />
+              </>
+            )}
             <input
               type="number"
               min={1}
