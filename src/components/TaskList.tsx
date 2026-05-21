@@ -3,6 +3,17 @@ import { motion, AnimatePresence } from "framer-motion";
 import { Plus, Check, Trash2, Calendar, Clock } from "lucide-react";
 import { useStore } from "@/lib/store";
 import type { Task } from "@/lib/categories";
+import {
+  DndContext,
+  closestCenter,
+  PointerSensor,
+  TouchSensor,
+  useSensor,
+  useSensors,
+  type DragEndEvent,
+} from "@dnd-kit/core";
+import { SortableContext, arrayMove, useSortable, verticalListSortingStrategy } from "@dnd-kit/sortable";
+import { CSS } from "@dnd-kit/utilities";
 
 export function TaskList({
   categoryId,
