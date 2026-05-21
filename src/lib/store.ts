@@ -302,6 +302,14 @@ export const useStore = create<AppState>()(
             if (goals) insert.push(goals);
             persisted.categories.splice(newEventsIdx + 1, 0, ...insert);
           }
+          // Move "health" right after "physique"
+          const health = persisted.categories.find((c: any) => c.id === "health");
+          if (health) {
+            persisted.categories = persisted.categories.filter((c: any) => c.id !== "health");
+            const physIdx = persisted.categories.findIndex((c: any) => c.id === "physique");
+            const at = physIdx >= 0 ? physIdx + 1 : persisted.categories.length;
+            persisted.categories.splice(at, 0, health);
+          }
           // Snap colors to brand palette (skip the hidden main vision)
 
           const BRAND = ["#56CCF2", "#9B51E0"];
