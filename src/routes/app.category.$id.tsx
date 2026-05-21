@@ -1,11 +1,10 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { useState } from "react";
 import { motion } from "framer-motion";
 import { useStore, getCategoryProgress } from "@/lib/store";
 import { TaskList } from "@/components/TaskList";
 import { VisionBoard } from "@/components/VisionBoard";
 import { IconRender } from "@/components/IconRender";
-import { ArrowLeft, Plus, Trash2 } from "lucide-react";
+import { ArrowLeft, Trash2 } from "lucide-react";
 
 export const Route = createFileRoute("/app/category/$id")({
   component: CategoryPage,
@@ -14,10 +13,7 @@ export const Route = createFileRoute("/app/category/$id")({
 function CategoryPage() {
   const { id } = Route.useParams();
   const category = useStore((s) => s.categories.find((c) => c.id === id));
-  const addSub = useStore((s) => s.addSubcategory);
-  const removeSub = useStore((s) => s.removeSubcategory);
   const removeCategory = useStore((s) => s.removeCategory);
-  const [newSub, setNewSub] = useState("");
 
   if (!category) {
     return (
