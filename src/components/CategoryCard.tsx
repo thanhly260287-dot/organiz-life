@@ -5,7 +5,7 @@ import { CSS } from "@dnd-kit/utilities";
 import { getCategoryProgress, useStore } from "@/lib/store";
 import type { Category } from "@/lib/categories";
 import { IconRender } from "./IconRender";
-import { GripVertical } from "lucide-react";
+
 
 export function CategoryCard({ category, index }: { category: Category; index: number }) {
   const { attributes, listeners, setNodeRef, transform, transition, isDragging } = useSortable({
@@ -18,6 +18,7 @@ export function CategoryCard({ category, index }: { category: Category; index: n
     transform: CSS.Transform.toString(transform),
     transition,
     opacity: isDragging ? 0.5 : 1,
+    touchAction: "manipulation" as const,
   };
 
   return (
@@ -28,11 +29,13 @@ export function CategoryCard({ category, index }: { category: Category; index: n
       animate={{ opacity: 1, y: 0 }}
       transition={{ delay: index * 0.03 }}
       {...attributes}
+      {...listeners}
     >
       <Link
         to="/app/category/$id"
         params={{ id: category.id }}
-        className="group relative block overflow-hidden rounded-2xl glass shadow-glass p-5 transition-all hover:shadow-elevated hover:-translate-y-1"
+        className="group relative block overflow-hidden rounded-2xl glass shadow-glass p-5 transition-all hover:shadow-elevated hover:-translate-y-1 select-none"
+        draggable={false}
       >
         <div
           aria-hidden
@@ -72,15 +75,6 @@ export function CategoryCard({ category, index }: { category: Category; index: n
               />
             </div>
           </div>
-          <button
-            type="button"
-            {...listeners}
-            onClick={(e) => e.preventDefault()}
-            className="opacity-0 group-hover:opacity-60 hover:opacity-100 transition-opacity cursor-grab active:cursor-grabbing p-1"
-            aria-label="Réorganiser"
-          >
-            <GripVertical className="h-4 w-4" />
-          </button>
         </div>
       </Link>
     </motion.div>

@@ -1,7 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useMemo, useState } from "react";
 import { motion } from "framer-motion";
-import { DndContext, closestCenter, type DragEndEvent, PointerSensor, useSensor, useSensors } from "@dnd-kit/core";
+import { DndContext, closestCenter, type DragEndEvent, PointerSensor, TouchSensor, useSensor, useSensors } from "@dnd-kit/core";
 import { SortableContext, arrayMove, rectSortingStrategy } from "@dnd-kit/sortable";
 import { Plus, Search, Sparkles } from "lucide-react";
 import { useStore, getCategoryProgress } from "@/lib/store";
@@ -33,7 +33,10 @@ function Dashboard() {
   const [newIcon, setNewIcon] = useState(ICON_CHOICES[0]);
   const [newColor, setNewColor] = useState(COLOR_CHOICES[1]);
 
-  const sensors = useSensors(useSensor(PointerSensor, { activationConstraint: { distance: 6 } }));
+  const sensors = useSensors(
+    useSensor(PointerSensor, { activationConstraint: { delay: 350, tolerance: 8 } }),
+    useSensor(TouchSensor, { activationConstraint: { delay: 350, tolerance: 8 } })
+  );
 
   const filtered = useMemo(
     () => categories.filter((c) => c.name.toLowerCase().includes(query.toLowerCase())),
