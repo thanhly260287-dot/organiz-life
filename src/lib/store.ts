@@ -141,6 +141,24 @@ export const useStore = create<AppState>()(
             return { ...c, tasks: map(c.tasks) };
           }),
         })),
+      reorderTasks: (categoryId, ids, subId) =>
+        set((s) => ({
+          categories: s.categories.map((c) => {
+            if (c.id !== categoryId) return c;
+            const sort = (tasks: Task[]) => {
+              const map = new Map(tasks.map((t) => [t.id, t]));
+              return ids.map((id) => map.get(id)!).filter(Boolean);
+            };
+            if (subId) {
+              return {
+                ...c,
+                subcategories: c.subcategories.map((sc) => (sc.id === subId ? { ...sc, tasks: sort(sc.tasks) } : sc)),
+              };
+            }
+            return { ...c, tasks: sort(c.tasks) };
+          }),
+        })),
+
 
       addSubcategory: (categoryId, name) =>
         set((s) => ({
