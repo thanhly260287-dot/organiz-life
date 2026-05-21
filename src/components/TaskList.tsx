@@ -21,12 +21,16 @@ export function TaskList({
   tasks,
   accent,
   enableDateTime = true,
+  requireDate = false,
+  requireTime = false,
 }: {
   categoryId: string;
   subId?: string;
   tasks: Task[];
   accent: string;
   enableDateTime?: boolean;
+  requireDate?: boolean;
+  requireTime?: boolean;
 }) {
   const [adding, setAdding] = useState(false);
   const [title, setTitle] = useState("");
@@ -53,8 +57,11 @@ export function TaskList({
     reorderTasks(categoryId, arrayMove(ids, oldIdx, newIdx), subId);
   };
 
+  const canSubmit =
+    !!title.trim() && (!enableDateTime || ((!requireDate || !!date) && (!requireTime || !!time)));
+
   const submit = () => {
-    if (!title.trim()) return;
+    if (!canSubmit) return;
     addTask(
       categoryId,
       { title: title.trim(), date: date || undefined, time: time || undefined, priority: priority || undefined },
@@ -105,18 +112,28 @@ export function TaskList({
           <div className="flex flex-wrap gap-2">
             {enableDateTime && (
               <>
-                <input
-                  type="date"
-                  value={date}
-                  onChange={(e) => setDate(e.target.value)}
-                  className="text-xs bg-muted rounded-md px-2 py-1 outline-none"
-                />
-                <input
-                  type="time"
-                  value={time}
-                  onChange={(e) => setTime(e.target.value)}
-                  className="text-xs bg-muted rounded-md px-2 py-1 outline-none"
-                />
+                <div className="flex flex-col">
+                  <input
+                    type="date"
+                    value={date}
+                    onChange={(e) => setDate(e.target.value)}
+                    className={`text-xs bg-muted rounded-md px-2 py-1 outline-none ${requireDate && !date ? "ring-1 ring-destructive" : ""}`}
+                  />
+                  {requireDate && <span className="text-[10px] text-muted-foreground mt-0.5">Date requise</span>}
+                </div>
+                <div className="flex flex-col">
+                  <input
+                    type="time"
+                    value={time}
+                    onChange={(e) => setTime(e.target.value)}
+                    className={`text-xs bg-muted rounded-md px-2 py-1 outline-none ${requireTime && !time ? "ring-1 ring-destructive" : ""}`}
+                  />
+                  {requireTime ? (
+                    <span className="text-[10px] text-muted-foreground mt-0.5">Heure requise</span>
+                  ) : (
+                    <span className="text-[10px] text-muted-foreground mt-0.5">Heure optionnelle</span>
+                  )}
+                </div>
               </>
             )}
             <input
@@ -137,7 +154,8 @@ export function TaskList({
               </button>
               <button
                 onClick={submit}
-                className="text-xs px-3 py-1 rounded-md bg-gradient-brand text-white font-medium"
+                disabled={!canSubmit}
+                className="text-xs px-3 py-1 rounded-md bg-gradient-brand text-white font-medium disabled:opacity-40 disabled:cursor-not-allowed"
               >
                 Ajouter
               </button>

@@ -96,6 +96,8 @@ function CategoryPage() {
           tasks={category.tasks}
           accent={category.color}
           enableDateTime={!!category.enableDateTime}
+          requireDate={category.id === "rdv" || category.id === "events"}
+          requireTime={category.id === "rdv"}
         />
       </section>
 
