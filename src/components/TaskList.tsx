@@ -177,6 +177,17 @@ export function TaskList({
               onChange={(e) => setPriority(e.target.value ? Number(e.target.value) : "")}
               className="text-xs bg-muted rounded-md px-2 py-1 outline-none w-20"
             />
+            {enableAmount && (
+              <input
+                type="number"
+                step="0.01"
+                min={0}
+                placeholder={amountSign < 0 ? "Montant (−€)" : "Montant (€)"}
+                value={amount}
+                onChange={(e) => setAmount(e.target.value)}
+                className="text-xs bg-muted rounded-md px-2 py-1 outline-none w-28"
+              />
+            )}
             <div className="ml-auto flex gap-1">
               <button
                 onClick={() => setAdding(false)}
