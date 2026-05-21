@@ -128,6 +128,9 @@ function CategoryPage() {
                 </button>
               </div>
               <TaskList categoryId={category.id} subId={sc.id} tasks={sc.tasks} accent={category.color} />
+              <div className="mt-4">
+                <VisionBoard categoryId={category.id} subId={sc.id} items={sc.vision ?? []} compact />
+              </div>
             </div>
           ))}
         </div>
