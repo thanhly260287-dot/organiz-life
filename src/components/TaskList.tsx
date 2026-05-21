@@ -166,7 +166,7 @@ export function TaskList({
           onClick={() => setAdding(true)}
           className="w-full flex items-center justify-center gap-2 text-sm text-muted-foreground hover:text-foreground rounded-xl border-2 border-dashed py-3 transition-colors hover:border-foreground/30"
         >
-          <Plus className="h-4 w-4" /> Ajouter une tâche
+          <Plus className="h-4 w-4" /> Ajouter
         </button>
       )}
     </div>
