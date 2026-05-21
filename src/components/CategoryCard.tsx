@@ -15,6 +15,8 @@ export function CategoryCard({ category, index }: { category: Category; index: n
   });
   const showPriority = useStore((s) => s.showCategoryPriority);
   const progress = getCategoryProgress(category);
+  const nameFor = useCategoryName();
+
 
   const style = {
     transform: CSS.Transform.toString(transform),
