@@ -1,11 +1,10 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { useState } from "react";
 import { motion } from "framer-motion";
 import { useStore, getCategoryProgress } from "@/lib/store";
 import { TaskList } from "@/components/TaskList";
 import { VisionBoard } from "@/components/VisionBoard";
 import { IconRender } from "@/components/IconRender";
-import { ArrowLeft, Plus, Trash2 } from "lucide-react";
+import { ArrowLeft, Trash2 } from "lucide-react";
 
 export const Route = createFileRoute("/app/category/$id")({
   component: CategoryPage,
@@ -14,10 +13,7 @@ export const Route = createFileRoute("/app/category/$id")({
 function CategoryPage() {
   const { id } = Route.useParams();
   const category = useStore((s) => s.categories.find((c) => c.id === id));
-  const addSub = useStore((s) => s.addSubcategory);
-  const removeSub = useStore((s) => s.removeSubcategory);
   const removeCategory = useStore((s) => s.removeCategory);
-  const [newSub, setNewSub] = useState("");
 
   if (!category) {
     return (
@@ -83,57 +79,6 @@ function CategoryPage() {
       <section className="space-y-4">
         <h2 className="font-display font-semibold text-xl">Tâches</h2>
         <TaskList categoryId={category.id} tasks={category.tasks} accent={category.color} />
-      </section>
-
-      <section className="space-y-4">
-        <div className="flex items-center justify-between">
-          <h2 className="font-display font-semibold text-xl">Sous-catégories</h2>
-        </div>
-        <div className="flex gap-2">
-          <input
-            value={newSub}
-            onChange={(e) => setNewSub(e.target.value)}
-            onKeyDown={(e) => {
-              if (e.key === "Enter" && newSub.trim()) {
-                addSub(category.id, newSub.trim());
-                setNewSub("");
-              }
-            }}
-            placeholder="Ajouter une sous-catégorie…"
-            className="flex-1 glass rounded-xl shadow-glass px-4 py-2.5 text-sm outline-none"
-          />
-          <button
-            onClick={() => {
-              if (newSub.trim()) {
-                addSub(category.id, newSub.trim());
-                setNewSub("");
-              }
-            }}
-            className="inline-flex items-center gap-1 rounded-xl bg-gradient-brand px-4 text-sm font-medium text-white"
-          >
-            <Plus className="h-4 w-4" />
-          </button>
-        </div>
-        <div className="space-y-6">
-          {category.subcategories.map((sc) => (
-            <div key={sc.id} className="glass rounded-2xl shadow-glass p-4">
-              <div className="flex items-center justify-between mb-3">
-                <h3 className="font-display font-semibold">{sc.name}</h3>
-                <button
-                  onClick={() => removeSub(category.id, sc.id)}
-                  className="p-1.5 rounded-lg hover:bg-destructive/20 text-destructive"
-                  aria-label="Supprimer"
-                >
-                  <Trash2 className="h-4 w-4" />
-                </button>
-              </div>
-              <TaskList categoryId={category.id} subId={sc.id} tasks={sc.tasks} accent={category.color} />
-              <div className="mt-4">
-                <VisionBoard categoryId={category.id} subId={sc.id} items={sc.vision ?? []} compact />
-              </div>
-            </div>
-          ))}
-        </div>
       </section>
 
       <section className="space-y-4">
