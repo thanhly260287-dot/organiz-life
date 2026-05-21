@@ -111,7 +111,7 @@ export function VisionBoard({
       <div
         ref={boardRef}
         onClick={() => setSelected(null)}
-        className="relative w-full h-[520px] rounded-3xl overflow-hidden bg-aurora glass shadow-elevated"
+        className={`relative w-full ${compact ? "h-[320px]" : "h-[520px]"} rounded-3xl overflow-hidden bg-aurora glass shadow-elevated`}
       >
         {items.length === 0 && (
           <div className="absolute inset-0 flex items-center justify-center text-muted-foreground text-sm pointer-events-none">
