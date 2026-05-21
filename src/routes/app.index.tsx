@@ -43,18 +43,8 @@ function Dashboard() {
     [categories, query]
   );
 
-  const stats = useMemo(() => {
-    let done = 0;
-    let total = 0;
-    categories.forEach((c) => {
-      const p = getCategoryProgress(c);
-      done += p.done;
-      total += p.total;
-    });
-    return { done, total, pct: total === 0 ? 0 : Math.round((done / total) * 100) };
-  }, [categories]);
-
   const quote = useMemo(() => QUOTES[new Date().getDate() % QUOTES.length], []);
+
 
   const onDragEnd = (e: DragEndEvent) => {
     const { active, over } = e;
