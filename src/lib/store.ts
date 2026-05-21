@@ -28,9 +28,9 @@ interface AppState {
   addSubcategory: (categoryId: string, name: string) => void;
   removeSubcategory: (categoryId: string, subId: string) => void;
 
-  addVisionItem: (categoryId: string, item: Omit<VisionItem, "id">) => void;
-  updateVisionItem: (categoryId: string, itemId: string, patch: Partial<VisionItem>) => void;
-  removeVisionItem: (categoryId: string, itemId: string) => void;
+  addVisionItem: (categoryId: string, item: Omit<VisionItem, "id">, subId?: string) => void;
+  updateVisionItem: (categoryId: string, itemId: string, patch: Partial<VisionItem>, subId?: string) => void;
+  removeVisionItem: (categoryId: string, itemId: string, subId?: string) => void;
 }
 
 const seedCategories = (): Category[] =>
