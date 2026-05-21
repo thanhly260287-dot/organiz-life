@@ -5,7 +5,17 @@ import { useStore } from "@/lib/store";
 import type { VisionItem } from "@/lib/categories";
 import { toPng } from "html-to-image";
 
-export function VisionBoard({ categoryId, items }: { categoryId: string; items: VisionItem[] }) {
+export function VisionBoard({
+  categoryId,
+  items,
+  subId,
+  compact = false,
+}: {
+  categoryId: string;
+  items: VisionItem[];
+  subId?: string;
+  compact?: boolean;
+}) {
   const boardRef = useRef<HTMLDivElement>(null);
   const fileRef = useRef<HTMLInputElement>(null);
   const [selected, setSelected] = useState<string | null>(null);
@@ -18,32 +28,40 @@ export function VisionBoard({ categoryId, items }: { categoryId: string; items: 
     if (!file) return;
     const reader = new FileReader();
     reader.onload = () => {
-      addItem(categoryId, {
-        type: "image",
-        content: reader.result as string,
-        x: 60,
-        y: 60,
-        width: 220,
-        height: 220,
-        rotation: 0,
-      });
+      addItem(
+        categoryId,
+        {
+          type: "image",
+          content: reader.result as string,
+          x: 40,
+          y: 40,
+          width: compact ? 160 : 220,
+          height: compact ? 160 : 220,
+          rotation: 0,
+        },
+        subId
+      );
     };
     reader.readAsDataURL(file);
     e.target.value = "";
   };
 
   const addText = () => {
-    addItem(categoryId, {
-      type: "text",
-      content: "Inspiration",
-      x: 80,
-      y: 80,
-      width: 240,
-      height: 80,
-      rotation: 0,
-      fontSize: 28,
-      color: "#9B51E0",
-    });
+    addItem(
+      categoryId,
+      {
+        type: "text",
+        content: "Inspiration",
+        x: 60,
+        y: 60,
+        width: 240,
+        height: 80,
+        rotation: 0,
+        fontSize: compact ? 22 : 28,
+        color: "#9B51E0",
+      },
+      subId
+    );
   };
 
   const exportPng = async () => {
@@ -51,14 +69,14 @@ export function VisionBoard({ categoryId, items }: { categoryId: string; items: 
     const dataUrl = await toPng(boardRef.current, { pixelRatio: 2, backgroundColor: "#0b0b14" });
     const a = document.createElement("a");
     a.href = dataUrl;
-    a.download = `vision-board-${categoryId}.png`;
+    a.download = `vision-board-${categoryId}${subId ? "-" + subId : ""}.png`;
     a.click();
   };
 
   const onDrag = (id: string, dx: number, dy: number) => {
     const it = items.find((i) => i.id === id);
     if (!it) return;
-    updateItem(categoryId, id, { x: it.x + dx, y: it.y + dy });
+    updateItem(categoryId, id, { x: it.x + dx, y: it.y + dy }, subId);
   };
 
   return (
