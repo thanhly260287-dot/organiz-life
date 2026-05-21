@@ -21,12 +21,16 @@ export function TaskList({
   tasks,
   accent,
   enableDateTime = true,
+  requireDate = false,
+  requireTime = false,
 }: {
   categoryId: string;
   subId?: string;
   tasks: Task[];
   accent: string;
   enableDateTime?: boolean;
+  requireDate?: boolean;
+  requireTime?: boolean;
 }) {
   const [adding, setAdding] = useState(false);
   const [title, setTitle] = useState("");
