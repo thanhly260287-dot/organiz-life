@@ -23,6 +23,8 @@ export function TaskList({
   enableDateTime = true,
   requireDate = false,
   requireTime = false,
+  enableAmount = false,
+  amountSign = 1,
 }: {
   categoryId: string;
   subId?: string;
@@ -31,12 +33,15 @@ export function TaskList({
   enableDateTime?: boolean;
   requireDate?: boolean;
   requireTime?: boolean;
+  enableAmount?: boolean;
+  amountSign?: 1 | -1;
 }) {
   const [adding, setAdding] = useState(false);
   const [title, setTitle] = useState("");
   const [date, setDate] = useState("");
   const [time, setTime] = useState("");
   const [priority, setPriority] = useState<number | "">("");
+  const [amount, setAmount] = useState<string>("");
   const showPriority = useStore((s) => s.showPriorityNumbers);
   const addTask = useStore((s) => s.addTask);
   const toggleTask = useStore((s) => s.toggleTask);
@@ -62,17 +67,26 @@ export function TaskList({
 
   const submit = () => {
     if (!canSubmit) return;
+    const amt = amount ? Math.abs(parseFloat(amount)) : undefined;
     addTask(
       categoryId,
-      { title: title.trim(), date: date || undefined, time: time || undefined, priority: priority || undefined },
+      {
+        title: title.trim(),
+        date: date || undefined,
+        time: time || undefined,
+        priority: priority || undefined,
+        amount: amt,
+      },
       subId
     );
     setTitle("");
     setDate("");
     setTime("");
     setPriority("");
+    setAmount("");
     setAdding(false);
   };
+
 
   return (
     <div className="space-y-2">
