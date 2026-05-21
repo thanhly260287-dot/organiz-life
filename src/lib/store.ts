@@ -223,9 +223,34 @@ export const useStore = create<AppState>()(
     }),
     {
       name: "organiz-life-v1",
-      version: 3,
+      version: 4,
       migrate: (persisted: any) => {
         if (persisted?.categories) {
+          // Rename "Sport et physique" → "Sport"
+          persisted.categories = persisted.categories.map((c: any) => {
+            if (c.id === "sport" && c.name === "Sport et physique") {
+              return { ...c, name: "Sport" };
+            }
+            return c;
+          });
+          // Add "Physique" if missing
+          if (!persisted.categories.find((c: any) => c.id === "physique")) {
+            const sportIdx = persisted.categories.findIndex((c: any) => c.id === "sport");
+            const insertAt = sportIdx >= 0 ? sportIdx + 1 : persisted.categories.length;
+            persisted.categories.splice(insertAt, 0, {
+              id: "physique",
+              name: "Physique",
+              icon: "PersonStanding",
+              color: "#F2994A",
+              priority: 0,
+              tasks: [],
+              subcategories: [],
+              vision: [],
+              enableDateTime: false,
+            });
+            // Re-number priorities
+            persisted.categories = persisted.categories.map((c: any, i: number) => ({ ...c, priority: i + 1 }));
+          }
           persisted.categories = persisted.categories.map((c: any) => ({
             ...c,
             vision: c.vision ?? [],
