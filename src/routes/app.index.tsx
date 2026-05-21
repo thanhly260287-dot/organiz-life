@@ -37,7 +37,7 @@ function Dashboard() {
     [categories, query]
   );
 
-  const quote = useMemo(() => QUOTES[new Date().getDate() % QUOTES.length], []);
+  
 
 
   const onDragEnd = (e: DragEndEvent) => {
