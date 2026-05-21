@@ -2,7 +2,7 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 import { useMemo } from "react";
 import { motion } from "framer-motion";
 import { ArrowLeft, TrendingUp, CheckCircle2, Layers } from "lucide-react";
-import { useStore, getCategoryProgress } from "@/lib/store";
+import { useStore, getCategoryProgress, MAIN_VISION_ID } from "@/lib/store";
 import { IconRender } from "@/components/IconRender";
 
 export const Route = createFileRoute("/app/stats")({
@@ -10,7 +10,8 @@ export const Route = createFileRoute("/app/stats")({
 });
 
 function StatsPage() {
-  const categories = useStore((s) => s.categories);
+  const categories = useStore((s) => s.categories.filter((c) => c.id !== MAIN_VISION_ID));
+
 
   const stats = useMemo(() => {
     let done = 0;
