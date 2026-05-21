@@ -37,6 +37,21 @@ export function TaskList({
   const addTask = useStore((s) => s.addTask);
   const toggleTask = useStore((s) => s.toggleTask);
   const removeTask = useStore((s) => s.removeTask);
+  const reorderTasks = useStore((s) => s.reorderTasks);
+
+  const sensors = useSensors(
+    useSensor(PointerSensor, { activationConstraint: { delay: 350, tolerance: 8 } }),
+    useSensor(TouchSensor, { activationConstraint: { delay: 350, tolerance: 8 } })
+  );
+
+  const onDragEnd = (e: DragEndEvent) => {
+    const { active, over } = e;
+    if (!over || active.id === over.id) return;
+    const ids = tasks.map((t) => t.id);
+    const oldIdx = ids.indexOf(active.id as string);
+    const newIdx = ids.indexOf(over.id as string);
+    reorderTasks(categoryId, arrayMove(ids, oldIdx, newIdx), subId);
+  };
 
   const submit = () => {
     if (!title.trim()) return;
