@@ -40,9 +40,9 @@ export function TaskList({
   const [title, setTitle] = useState("");
   const [date, setDate] = useState("");
   const [time, setTime] = useState("");
-  const [priority, setPriority] = useState<number | "">("");
   const [amount, setAmount] = useState<string>("");
-  const showPriority = useStore((s) => s.showPriorityNumbers);
+  const showPriority = useStore((s) => s.taskPriorityCategories.includes(categoryId));
+  const toggleTaskPriorityFor = useStore((s) => s.toggleTaskPriorityFor);
   const addTask = useStore((s) => s.addTask);
   const toggleTask = useStore((s) => s.toggleTask);
   const removeTask = useStore((s) => s.removeTask);
@@ -74,7 +74,6 @@ export function TaskList({
         title: title.trim(),
         date: date || undefined,
         time: time || undefined,
-        priority: priority || undefined,
         amount: amt,
       },
       subId
@@ -82,10 +81,10 @@ export function TaskList({
     setTitle("");
     setDate("");
     setTime("");
-    setPriority("");
     setAmount("");
     setAdding(false);
   };
+
 
 
   const total = enableAmount
