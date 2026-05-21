@@ -69,67 +69,24 @@ export function TaskList({
 
   return (
     <div className="space-y-2">
-      <AnimatePresence initial={false}>
-        {tasks.map((t) => (
-          <motion.div
-            key={t.id}
-            layout
-            initial={{ opacity: 0, x: -10 }}
-            animate={{ opacity: 1, x: 0 }}
-            exit={{ opacity: 0, x: 10 }}
-            className="group flex items-center gap-3 rounded-xl glass shadow-glass p-3"
-          >
-            <button
-              onClick={() => toggleTask(categoryId, t.id, subId)}
-              className="shrink-0 h-6 w-6 rounded-md border-2 flex items-center justify-center transition-all"
-              style={{
-                borderColor: t.done ? accent : "var(--border)",
-                background: t.done ? accent : "transparent",
-              }}
-              aria-label="Terminer"
-            >
-              {t.done && <Check className="h-3.5 w-3.5 text-white" />}
-            </button>
-            <div className="min-w-0 flex-1">
-              <div className="flex items-center gap-2">
-                {showPriority && t.priority && (
-                  <span
-                    className="shrink-0 inline-flex h-5 min-w-5 px-1.5 items-center justify-center rounded text-[10px] font-mono font-bold"
-                    style={{ background: `${accent}33`, color: accent }}
-                  >
-                    {t.priority}
-                  </span>
-                )}
-                <span className={`text-sm truncate ${t.done ? "line-through text-muted-foreground" : ""}`}>
-                  {t.title}
-                </span>
-              </div>
-              {((enableDateTime && (t.date || t.time)) || t.notes) && (
-                <div className="mt-1 flex flex-wrap items-center gap-3 text-[11px] text-muted-foreground">
-                  {enableDateTime && t.date && (
-                    <span className="inline-flex items-center gap-1">
-                      <Calendar className="h-3 w-3" /> {t.date}
-                    </span>
-                  )}
-                  {enableDateTime && t.time && (
-                    <span className="inline-flex items-center gap-1">
-                      <Clock className="h-3 w-3" /> {t.time}
-                    </span>
-                  )}
-                  {t.notes && <span className="truncate">{t.notes}</span>}
-                </div>
-              )}
-            </div>
-            <button
-              onClick={() => removeTask(categoryId, t.id, subId)}
-              className="opacity-0 group-hover:opacity-100 p-1.5 rounded-lg hover:bg-destructive/20 text-destructive transition-all"
-              aria-label="Supprimer"
-            >
-              <Trash2 className="h-4 w-4" />
-            </button>
-          </motion.div>
-        ))}
-      </AnimatePresence>
+      <DndContext sensors={sensors} collisionDetection={closestCenter} onDragEnd={onDragEnd}>
+        <SortableContext items={tasks.map((t) => t.id)} strategy={verticalListSortingStrategy}>
+          <AnimatePresence initial={false}>
+            {tasks.map((t) => (
+              <SortableTaskRow
+                key={t.id}
+                task={t}
+                accent={accent}
+                showPriority={showPriority}
+                enableDateTime={enableDateTime}
+                onToggle={() => toggleTask(categoryId, t.id, subId)}
+                onRemove={() => removeTask(categoryId, t.id, subId)}
+              />
+            ))}
+          </AnimatePresence>
+        </SortableContext>
+      </DndContext>
+
 
       {adding ? (
         <motion.div
