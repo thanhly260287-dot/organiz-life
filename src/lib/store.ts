@@ -223,7 +223,7 @@ export const useStore = create<AppState>()(
     }),
     {
       name: "organiz-life-v1",
-      version: 4,
+      version: 5,
       migrate: (persisted: any) => {
         if (persisted?.categories) {
           // Rename "Sport et physique" → "Sport"
@@ -241,18 +241,20 @@ export const useStore = create<AppState>()(
               id: "physique",
               name: "Physique",
               icon: "PersonStanding",
-              color: "#F2994A",
+              color: "#56CCF2",
               priority: 0,
               tasks: [],
               subcategories: [],
               vision: [],
               enableDateTime: false,
             });
-            // Re-number priorities
             persisted.categories = persisted.categories.map((c: any, i: number) => ({ ...c, priority: i + 1 }));
           }
-          persisted.categories = persisted.categories.map((c: any) => ({
+          // Snap colors to brand palette (blue / violet alternating by priority)
+          const BRAND = ["#56CCF2", "#9B51E0"];
+          persisted.categories = persisted.categories.map((c: any, i: number) => ({
             ...c,
+            color: BRAND[i % 2],
             vision: c.vision ?? [],
             subcategories: (c.subcategories ?? []).map((sc: any) => ({ ...sc, vision: sc.vision ?? [] })),
             enableDateTime: c.enableDateTime ?? DATETIME_DEFAULT_IDS.has(c.id),
