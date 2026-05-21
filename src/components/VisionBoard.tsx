@@ -151,7 +151,7 @@ export function VisionBoard({
               <div
                 contentEditable
                 suppressContentEditableWarning
-                onBlur={(e) => updateItem(categoryId, item.id, { content: e.currentTarget.textContent || "" })}
+                onBlur={(e) => updateItem(categoryId, item.id, { content: e.currentTarget.textContent || "" }, subId)}
                 style={{ fontSize: item.fontSize, color: item.color }}
                 className="h-full w-full flex items-center justify-center text-center font-display font-bold outline-none"
               >
