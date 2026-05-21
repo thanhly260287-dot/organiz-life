@@ -297,6 +297,14 @@ function SortableTaskRow({
           </div>
         )}
       </div>
+      {enableAmount && t.amount != null && (
+        <span
+          className={`shrink-0 text-sm font-display font-semibold tabular-nums ${amountSign < 0 ? "text-destructive" : ""}`}
+          style={{ color: amountSign > 0 ? accent : undefined }}
+        >
+          {(t.amount * amountSign).toLocaleString("fr-FR", { style: "currency", currency: "EUR" })}
+        </span>
+      )}
       <button
         onPointerDown={(e) => e.stopPropagation()}
         onClick={onRemove}
