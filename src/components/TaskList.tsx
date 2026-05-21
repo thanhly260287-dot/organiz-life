@@ -78,14 +78,14 @@ export function TaskList({
                   {t.title}
                 </span>
               </div>
-              {(t.date || t.time || t.notes) && (
+              {((enableDateTime && (t.date || t.time)) || t.notes) && (
                 <div className="mt-1 flex flex-wrap items-center gap-3 text-[11px] text-muted-foreground">
-                  {t.date && (
+                  {enableDateTime && t.date && (
                     <span className="inline-flex items-center gap-1">
                       <Calendar className="h-3 w-3" /> {t.date}
                     </span>
                   )}
-                  {t.time && (
+                  {enableDateTime && t.time && (
                     <span className="inline-flex items-center gap-1">
                       <Clock className="h-3 w-3" /> {t.time}
                     </span>
