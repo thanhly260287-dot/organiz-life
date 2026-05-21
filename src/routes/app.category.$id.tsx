@@ -86,57 +86,6 @@ function CategoryPage() {
       </section>
 
       <section className="space-y-4">
-        <div className="flex items-center justify-between">
-          <h2 className="font-display font-semibold text-xl">Sous-catégories</h2>
-        </div>
-        <div className="flex gap-2">
-          <input
-            value={newSub}
-            onChange={(e) => setNewSub(e.target.value)}
-            onKeyDown={(e) => {
-              if (e.key === "Enter" && newSub.trim()) {
-                addSub(category.id, newSub.trim());
-                setNewSub("");
-              }
-            }}
-            placeholder="Ajouter une sous-catégorie…"
-            className="flex-1 glass rounded-xl shadow-glass px-4 py-2.5 text-sm outline-none"
-          />
-          <button
-            onClick={() => {
-              if (newSub.trim()) {
-                addSub(category.id, newSub.trim());
-                setNewSub("");
-              }
-            }}
-            className="inline-flex items-center gap-1 rounded-xl bg-gradient-brand px-4 text-sm font-medium text-white"
-          >
-            <Plus className="h-4 w-4" />
-          </button>
-        </div>
-        <div className="space-y-6">
-          {category.subcategories.map((sc) => (
-            <div key={sc.id} className="glass rounded-2xl shadow-glass p-4">
-              <div className="flex items-center justify-between mb-3">
-                <h3 className="font-display font-semibold">{sc.name}</h3>
-                <button
-                  onClick={() => removeSub(category.id, sc.id)}
-                  className="p-1.5 rounded-lg hover:bg-destructive/20 text-destructive"
-                  aria-label="Supprimer"
-                >
-                  <Trash2 className="h-4 w-4" />
-                </button>
-              </div>
-              <TaskList categoryId={category.id} subId={sc.id} tasks={sc.tasks} accent={category.color} />
-              <div className="mt-4">
-                <VisionBoard categoryId={category.id} subId={sc.id} items={sc.vision ?? []} compact />
-              </div>
-            </div>
-          ))}
-        </div>
-      </section>
-
-      <section className="space-y-4">
         <VisionBoard categoryId={category.id} items={category.vision} />
       </section>
     </main>
