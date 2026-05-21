@@ -33,7 +33,6 @@ interface AppState {
   removeVisionItem: (categoryId: string, itemId: string, subId?: string) => void;
 }
 
-import { DATETIME_DEFAULT_IDS } from "./categories";
 
 const seedCategories = (): Category[] =>
   DEFAULT_CATEGORIES.map((c) => ({
