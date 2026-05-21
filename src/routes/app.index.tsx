@@ -54,11 +54,12 @@ function Dashboard() {
   const onDragEnd = (e: DragEndEvent) => {
     const { active, over } = e;
     if (!over || active.id === over.id) return;
-    const ids = categories.map((c) => c.id);
+    const ids = visibleCategories.map((c) => c.id);
     const oldIdx = ids.indexOf(active.id as string);
     const newIdx = ids.indexOf(over.id as string);
-    reorder(arrayMove(ids, oldIdx, newIdx));
+    reorder([...arrayMove(ids, oldIdx, newIdx), MAIN_VISION_ID]);
   };
+
 
   const submitNew = () => {
     if (!newName.trim()) return;
