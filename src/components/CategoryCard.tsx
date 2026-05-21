@@ -5,6 +5,8 @@ import { CSS } from "@dnd-kit/utilities";
 import { getCategoryProgress, useStore } from "@/lib/store";
 import type { Category } from "@/lib/categories";
 import { IconRender } from "./IconRender";
+import { useCategoryName } from "@/lib/useCategoryName";
+
 
 
 export function CategoryCard({ category, index }: { category: Category; index: number }) {
@@ -13,6 +15,8 @@ export function CategoryCard({ category, index }: { category: Category; index: n
   });
   const showPriority = useStore((s) => s.showCategoryPriority);
   const progress = getCategoryProgress(category);
+  const nameFor = useCategoryName();
+
 
   const style = {
     transform: CSS.Transform.toString(transform),
