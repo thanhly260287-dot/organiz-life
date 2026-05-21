@@ -33,8 +33,16 @@ interface AppState {
   removeVisionItem: (categoryId: string, itemId: string, subId?: string) => void;
 }
 
+import { DATETIME_DEFAULT_IDS } from "./categories";
+
 const seedCategories = (): Category[] =>
-  DEFAULT_CATEGORIES.map((c) => ({ ...c, tasks: [], subcategories: [], vision: [] }));
+  DEFAULT_CATEGORIES.map((c) => ({
+    ...c,
+    tasks: [],
+    subcategories: [],
+    vision: [],
+    enableDateTime: DATETIME_DEFAULT_IDS.has(c.id),
+  }));
 
 export const useStore = create<AppState>()(
   persist(
