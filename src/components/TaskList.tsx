@@ -154,7 +154,8 @@ export function TaskList({
               </button>
               <button
                 onClick={submit}
-                className="text-xs px-3 py-1 rounded-md bg-gradient-brand text-white font-medium"
+                disabled={!canSubmit}
+                className="text-xs px-3 py-1 rounded-md bg-gradient-brand text-white font-medium disabled:opacity-40 disabled:cursor-not-allowed"
               >
                 Ajouter
               </button>
