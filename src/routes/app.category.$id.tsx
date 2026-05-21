@@ -4,7 +4,7 @@ import { useStore, getCategoryProgress } from "@/lib/store";
 import { TaskList } from "@/components/TaskList";
 import { VisionBoard } from "@/components/VisionBoard";
 import { IconRender } from "@/components/IconRender";
-import { ArrowLeft, Trash2 } from "lucide-react";
+import { ArrowLeft, Trash2, CalendarClock } from "lucide-react";
 
 export const Route = createFileRoute("/app/category/$id")({
   component: CategoryPage,
@@ -14,6 +14,7 @@ function CategoryPage() {
   const { id } = Route.useParams();
   const category = useStore((s) => s.categories.find((c) => c.id === id));
   const removeCategory = useStore((s) => s.removeCategory);
+  const updateCategory = useStore((s) => s.updateCategory);
 
   if (!category) {
     return (
