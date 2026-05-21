@@ -5,7 +5,7 @@ import { CSS } from "@dnd-kit/utilities";
 import { getCategoryProgress, useStore } from "@/lib/store";
 import type { Category } from "@/lib/categories";
 import { IconRender } from "./IconRender";
-import { GripVertical } from "lucide-react";
+
 
 export function CategoryCard({ category, index }: { category: Category; index: number }) {
   const { attributes, listeners, setNodeRef, transform, transition, isDragging } = useSortable({
