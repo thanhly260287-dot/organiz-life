@@ -26,6 +26,14 @@ export function AppHeader({ showBack = false }: { showBack?: boolean }) {
           </Link>
         </div>
         <div className="flex items-center gap-1">
+          <Link
+            to="/app/stats"
+            className="p-2.5 rounded-xl hover:bg-accent transition-all hover:scale-105"
+            aria-label="Statistiques"
+            activeProps={{ className: "p-2.5 rounded-xl bg-accent text-primary" }}
+          >
+            <BarChart3 className="h-5 w-5" />
+          </Link>
           <button
             onClick={toggleTheme}
             className="p-2.5 rounded-xl hover:bg-accent transition-all hover:scale-105"
