@@ -177,7 +177,7 @@ export function VisionBoard({
                   value={item.width}
                   onChange={(e) => {
                     const w = Number(e.target.value);
-                    updateItem(categoryId, item.id, { width: w, height: item.type === "image" ? w : item.height });
+                    updateItem(categoryId, item.id, { width: w, height: item.type === "image" ? w : item.height }, subId);
                   }}
                   onClick={(e) => e.stopPropagation()}
                   className="w-24"
