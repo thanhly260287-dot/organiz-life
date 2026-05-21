@@ -195,7 +195,20 @@ export const useStore = create<AppState>()(
           }),
         })),
     }),
-    { name: "organiz-life-v1" }
+    {
+      name: "organiz-life-v1",
+      version: 2,
+      migrate: (persisted: any) => {
+        if (persisted?.categories) {
+          persisted.categories = persisted.categories.map((c: any) => ({
+            ...c,
+            vision: c.vision ?? [],
+            subcategories: (c.subcategories ?? []).map((sc: any) => ({ ...sc, vision: sc.vision ?? [] })),
+          }));
+        }
+        return persisted;
+      },
+    }
   )
 );
 
