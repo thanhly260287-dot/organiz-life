@@ -239,7 +239,7 @@ export const useStore = create<AppState>()(
     }),
     {
       name: "organiz-life-v1",
-      version: 5,
+      version: 6,
       migrate: (persisted: any) => {
         if (persisted?.categories) {
           // Rename "Sport et physique" → "Sport"
@@ -264,23 +264,44 @@ export const useStore = create<AppState>()(
               vision: [],
               enableDateTime: false,
             });
-            persisted.categories = persisted.categories.map((c: any, i: number) => ({ ...c, priority: i + 1 }));
           }
-          // Snap colors to brand palette (blue / violet alternating by priority)
+          // Add main vision board entry if missing
+          if (!persisted.categories.find((c: any) => c.id === MAIN_VISION_ID)) {
+            persisted.categories.push({
+              id: MAIN_VISION_ID,
+              name: "Vision principale",
+              icon: "Sparkles",
+              color: "#9B51E0",
+              priority: 999,
+              tasks: [],
+              subcategories: [],
+              vision: [],
+              enableDateTime: false,
+            });
+          }
+          // Snap colors to brand palette (skip the hidden main vision)
           const BRAND = ["#56CCF2", "#9B51E0"];
-          persisted.categories = persisted.categories.map((c: any, i: number) => ({
-            ...c,
-            color: BRAND[i % 2],
-            vision: c.vision ?? [],
-            subcategories: (c.subcategories ?? []).map((sc: any) => ({ ...sc, vision: sc.vision ?? [] })),
-            enableDateTime: c.enableDateTime ?? DATETIME_DEFAULT_IDS.has(c.id),
-          }));
+          let idx = 0;
+          persisted.categories = persisted.categories.map((c: any) => {
+            const isMain = c.id === MAIN_VISION_ID;
+            const next = {
+              ...c,
+              color: isMain ? c.color ?? "#9B51E0" : BRAND[idx % 2],
+              priority: isMain ? 999 : idx + 1,
+              vision: c.vision ?? [],
+              subcategories: (c.subcategories ?? []).map((sc: any) => ({ ...sc, vision: sc.vision ?? [] })),
+              enableDateTime: c.enableDateTime ?? DATETIME_DEFAULT_IDS.has(c.id),
+            };
+            if (!isMain) idx++;
+            return next;
+          });
         }
         return persisted;
       },
     }
   )
 );
+
 
 export const getCategoryProgress = (c: Category) => {
   const all = [...c.tasks, ...c.subcategories.flatMap((s) => s.tasks)];
