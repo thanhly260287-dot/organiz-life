@@ -145,7 +145,14 @@ function Dashboard() {
           </div>
         </SortableContext>
       </DndContext>
+
+      {mainVision && (
+        <section className="pt-6 space-y-3">
+          <VisionBoard categoryId={MAIN_VISION_ID} items={mainVision.vision} />
+        </section>
+      )}
     </main>
   );
 }
+
 
