@@ -10,6 +10,8 @@ import {
 
 import appCss from "../styles.css?url";
 import { ThemeProvider } from "@/components/ThemeProvider";
+import "@/lib/i18n";
+
 
 function NotFoundComponent() {
   return (
