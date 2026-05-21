@@ -34,10 +34,19 @@ function Dashboard() {
     useSensor(TouchSensor, { activationConstraint: { delay: 350, tolerance: 8 } })
   );
 
-  const filtered = useMemo(
-    () => categories.filter((c) => c.name.toLowerCase().includes(query.toLowerCase())),
-    [categories, query]
+  const visibleCategories = useMemo(
+    () => categories.filter((c) => c.id !== MAIN_VISION_ID),
+    [categories]
   );
+  const mainVision = useMemo(
+    () => categories.find((c) => c.id === MAIN_VISION_ID),
+    [categories]
+  );
+  const filtered = useMemo(
+    () => visibleCategories.filter((c) => c.name.toLowerCase().includes(query.toLowerCase())),
+    [visibleCategories, query]
+  );
+
 
   
 
