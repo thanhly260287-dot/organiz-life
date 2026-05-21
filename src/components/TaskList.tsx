@@ -107,10 +107,11 @@ export function TaskList({
       <DndContext sensors={sensors} collisionDetection={closestCenter} onDragEnd={onDragEnd}>
         <SortableContext items={tasks.map((t) => t.id)} strategy={verticalListSortingStrategy}>
           <AnimatePresence initial={false}>
-            {tasks.map((t) => (
+            {tasks.map((t, i) => (
               <SortableTaskRow
                 key={t.id}
                 task={t}
+                index={i}
                 accent={accent}
                 showPriority={showPriority}
                 enableDateTime={enableDateTime}
