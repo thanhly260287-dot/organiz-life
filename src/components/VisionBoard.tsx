@@ -163,7 +163,7 @@ export function VisionBoard({
                 <button
                   onClick={(e) => {
                     e.stopPropagation();
-                    updateItem(categoryId, item.id, { rotation: item.rotation + 15 });
+                    updateItem(categoryId, item.id, { rotation: item.rotation + 15 }, subId);
                   }}
                   className="p-1.5 hover:bg-accent rounded"
                   aria-label="Rotation"
