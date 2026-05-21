@@ -6,8 +6,13 @@ export interface Task {
   time?: string;
   notes?: string;
   priority?: number;
+  amount?: number;
   createdAt: number;
 }
+
+export const FINANCE_CATEGORY_IDS = new Set(["income", "debts", "invest", "credits"]);
+export const NEGATIVE_FINANCE_IDS = new Set(["debts"]);
+
 
 export interface Subcategory {
   id: string;
