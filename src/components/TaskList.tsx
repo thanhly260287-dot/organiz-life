@@ -57,8 +57,11 @@ export function TaskList({
     reorderTasks(categoryId, arrayMove(ids, oldIdx, newIdx), subId);
   };
 
+  const canSubmit =
+    !!title.trim() && (!enableDateTime || ((!requireDate || !!date) && (!requireTime || !!time)));
+
   const submit = () => {
-    if (!title.trim()) return;
+    if (!canSubmit) return;
     addTask(
       categoryId,
       { title: title.trim(), date: date || undefined, time: time || undefined, priority: priority || undefined },
