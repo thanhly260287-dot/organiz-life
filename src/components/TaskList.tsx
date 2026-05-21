@@ -210,6 +210,7 @@ export function TaskList({
 
 function SortableTaskRow({
   task: t,
+  index,
   accent,
   showPriority,
   enableDateTime,
@@ -219,6 +220,7 @@ function SortableTaskRow({
   onRemove,
 }: {
   task: Task;
+  index: number;
   accent: string;
   showPriority: boolean;
   enableDateTime: boolean;
