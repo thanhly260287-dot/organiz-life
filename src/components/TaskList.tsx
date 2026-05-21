@@ -167,15 +167,6 @@ export function TaskList({
                 </div>
               </>
             )}
-            <input
-              type="number"
-              min={1}
-              max={99}
-              placeholder="Priorité"
-              value={priority}
-              onChange={(e) => setPriority(e.target.value ? Number(e.target.value) : "")}
-              className="text-xs bg-muted rounded-md px-2 py-1 outline-none w-20"
-            />
             {enableAmount && (
               <input
                 type="number"
