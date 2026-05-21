@@ -67,12 +67,19 @@ export const useStore = create<AppState>()(
       categories: seedCategories(),
       theme: "dark",
       textSize: "md",
-      showPriorityNumbers: true,
+      showCategoryPriority: false,
+      taskPriorityCategories: [],
 
       setTheme: (theme) => set({ theme }),
       toggleTheme: () => set((s) => ({ theme: s.theme === "dark" ? "light" : "dark" })),
       setTextSize: (textSize) => set({ textSize }),
-      togglePriorityNumbers: () => set((s) => ({ showPriorityNumbers: !s.showPriorityNumbers })),
+      toggleCategoryPriority: () => set((s) => ({ showCategoryPriority: !s.showCategoryPriority })),
+      toggleTaskPriorityFor: (categoryId) =>
+        set((s) => ({
+          taskPriorityCategories: s.taskPriorityCategories.includes(categoryId)
+            ? s.taskPriorityCategories.filter((id) => id !== categoryId)
+            : [...s.taskPriorityCategories, categoryId],
+        })),
 
       addCategory: ({ name, icon, color }) =>
         set((s) => ({
