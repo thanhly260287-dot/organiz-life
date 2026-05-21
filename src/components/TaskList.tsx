@@ -112,18 +112,28 @@ export function TaskList({
           <div className="flex flex-wrap gap-2">
             {enableDateTime && (
               <>
-                <input
-                  type="date"
-                  value={date}
-                  onChange={(e) => setDate(e.target.value)}
-                  className="text-xs bg-muted rounded-md px-2 py-1 outline-none"
-                />
-                <input
-                  type="time"
-                  value={time}
-                  onChange={(e) => setTime(e.target.value)}
-                  className="text-xs bg-muted rounded-md px-2 py-1 outline-none"
-                />
+                <div className="flex flex-col">
+                  <input
+                    type="date"
+                    value={date}
+                    onChange={(e) => setDate(e.target.value)}
+                    className={`text-xs bg-muted rounded-md px-2 py-1 outline-none ${requireDate && !date ? "ring-1 ring-destructive" : ""}`}
+                  />
+                  {requireDate && <span className="text-[10px] text-muted-foreground mt-0.5">Date requise</span>}
+                </div>
+                <div className="flex flex-col">
+                  <input
+                    type="time"
+                    value={time}
+                    onChange={(e) => setTime(e.target.value)}
+                    className={`text-xs bg-muted rounded-md px-2 py-1 outline-none ${requireTime && !time ? "ring-1 ring-destructive" : ""}`}
+                  />
+                  {requireTime ? (
+                    <span className="text-[10px] text-muted-foreground mt-0.5">Heure requise</span>
+                  ) : (
+                    <span className="text-[10px] text-muted-foreground mt-0.5">Heure optionnelle</span>
+                  )}
+                </div>
               </>
             )}
             <input
