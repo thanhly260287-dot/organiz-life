@@ -4,9 +4,11 @@ import { motion } from "framer-motion";
 import { DndContext, closestCenter, type DragEndEvent, PointerSensor, TouchSensor, useSensor, useSensors } from "@dnd-kit/core";
 import { SortableContext, arrayMove, rectSortingStrategy } from "@dnd-kit/sortable";
 import { Plus, Search } from "lucide-react";
-import { useStore } from "@/lib/store";
+import { useStore, MAIN_VISION_ID } from "@/lib/store";
 import { CategoryCard } from "@/components/CategoryCard";
 import { IconRender } from "@/components/IconRender";
+import { VisionBoard } from "@/components/VisionBoard";
+
 
 
 
