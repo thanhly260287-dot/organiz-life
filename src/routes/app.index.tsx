@@ -17,7 +17,7 @@ const QUOTES = [
 ];
 
 const ICON_CHOICES = ["Star", "Heart", "Zap", "Rocket", "Target", "Flame", "Trophy", "Compass", "BookOpen", "Brain"];
-const COLOR_CHOICES = ["#56CCF2", "#9B51E0", "#27AE60", "#F2C94C", "#EB5757", "#F2994A"];
+const COLOR_CHOICES = ["#56CCF2", "#9B51E0"];
 
 export const Route = createFileRoute("/app/")({
   component: Dashboard,
