@@ -138,7 +138,7 @@ export const useStore = create<AppState>()(
         set((s) => ({
           categories: s.categories.map((c) =>
             c.id === categoryId
-              ? { ...c, subcategories: [...c.subcategories, { id: uid(), name, tasks: [] } as Subcategory] }
+              ? { ...c, subcategories: [...c.subcategories, { id: uid(), name, tasks: [], vision: [] } as Subcategory] }
               : c
           ),
         })),
@@ -149,25 +149,50 @@ export const useStore = create<AppState>()(
           ),
         })),
 
-      addVisionItem: (categoryId, item) =>
+      addVisionItem: (categoryId, item, subId) =>
         set((s) => ({
-          categories: s.categories.map((c) =>
-            c.id === categoryId ? { ...c, vision: [...c.vision, { ...item, id: uid() }] } : c
-          ),
+          categories: s.categories.map((c) => {
+            if (c.id !== categoryId) return c;
+            const newItem = { ...item, id: uid() };
+            if (subId) {
+              return {
+                ...c,
+                subcategories: c.subcategories.map((sc) =>
+                  sc.id === subId ? { ...sc, vision: [...sc.vision, newItem] } : sc
+                ),
+              };
+            }
+            return { ...c, vision: [...c.vision, newItem] };
+          }),
         })),
-      updateVisionItem: (categoryId, itemId, patch) =>
+      updateVisionItem: (categoryId, itemId, patch, subId) =>
         set((s) => ({
-          categories: s.categories.map((c) =>
-            c.id === categoryId
-              ? { ...c, vision: c.vision.map((v) => (v.id === itemId ? { ...v, ...patch } : v)) }
-              : c
-          ),
+          categories: s.categories.map((c) => {
+            if (c.id !== categoryId) return c;
+            const map = (vs: VisionItem[]) => vs.map((v) => (v.id === itemId ? { ...v, ...patch } : v));
+            if (subId) {
+              return {
+                ...c,
+                subcategories: c.subcategories.map((sc) => (sc.id === subId ? { ...sc, vision: map(sc.vision) } : sc)),
+              };
+            }
+            return { ...c, vision: map(c.vision) };
+          }),
         })),
-      removeVisionItem: (categoryId, itemId) =>
+      removeVisionItem: (categoryId, itemId, subId) =>
         set((s) => ({
-          categories: s.categories.map((c) =>
-            c.id === categoryId ? { ...c, vision: c.vision.filter((v) => v.id !== itemId) } : c
-          ),
+          categories: s.categories.map((c) => {
+            if (c.id !== categoryId) return c;
+            if (subId) {
+              return {
+                ...c,
+                subcategories: c.subcategories.map((sc) =>
+                  sc.id === subId ? { ...sc, vision: sc.vision.filter((v) => v.id !== itemId) } : sc
+                ),
+              };
+            }
+            return { ...c, vision: c.vision.filter((v) => v.id !== itemId) };
+          }),
         })),
     }),
     { name: "organiz-life-v1" }
