@@ -30,8 +30,14 @@ export interface VisionItem {
   width: number;
   height: number;
   rotation: number;
+  zIndex?: number;
   fontSize?: number;
   color?: string;
+  fontFamily?: string;
+  fontWeight?: "normal" | "bold";
+  fontStyle?: "normal" | "italic";
+  textDecoration?: "none" | "underline";
+  textAlign?: "left" | "center" | "right";
 }
 
 export interface Category {
