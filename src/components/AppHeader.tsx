@@ -1,7 +1,7 @@
 import { Link, useRouter } from "@tanstack/react-router";
 import { Logo } from "./Logo";
 import { useStore } from "@/lib/store";
-import { Moon, Sun, Settings, ArrowLeft } from "lucide-react";
+import { Moon, Sun, Settings, ArrowLeft, BarChart3 } from "lucide-react";
 
 export function AppHeader({ showBack = false }: { showBack?: boolean }) {
   const theme = useStore((s) => s.theme);
@@ -26,6 +26,14 @@ export function AppHeader({ showBack = false }: { showBack?: boolean }) {
           </Link>
         </div>
         <div className="flex items-center gap-1">
+          <Link
+            to="/app/stats"
+            className="p-2.5 rounded-xl hover:bg-accent transition-all hover:scale-105"
+            aria-label="Statistiques"
+            activeProps={{ className: "p-2.5 rounded-xl bg-accent text-primary" }}
+          >
+            <BarChart3 className="h-5 w-5" />
+          </Link>
           <button
             onClick={toggleTheme}
             className="p-2.5 rounded-xl hover:bg-accent transition-all hover:scale-105"

@@ -4,7 +4,7 @@ import { motion } from "framer-motion";
 import { DndContext, closestCenter, type DragEndEvent, PointerSensor, TouchSensor, useSensor, useSensors } from "@dnd-kit/core";
 import { SortableContext, arrayMove, rectSortingStrategy } from "@dnd-kit/sortable";
 import { Plus, Search, Sparkles } from "lucide-react";
-import { useStore, getCategoryProgress } from "@/lib/store";
+import { useStore } from "@/lib/store";
 import { CategoryCard } from "@/components/CategoryCard";
 import { IconRender } from "@/components/IconRender";
 
@@ -43,18 +43,8 @@ function Dashboard() {
     [categories, query]
   );
 
-  const stats = useMemo(() => {
-    let done = 0;
-    let total = 0;
-    categories.forEach((c) => {
-      const p = getCategoryProgress(c);
-      done += p.done;
-      total += p.total;
-    });
-    return { done, total, pct: total === 0 ? 0 : Math.round((done / total) * 100) };
-  }, [categories]);
-
   const quote = useMemo(() => QUOTES[new Date().getDate() % QUOTES.length], []);
+
 
   const onDragEnd = (e: DragEndEvent) => {
     const { active, over } = e;
@@ -86,32 +76,7 @@ function Dashboard() {
         <h1 className="font-display font-bold text-3xl sm:text-4xl">
           Bienvenue dans <span className="text-gradient">Organiz-Life</span>
         </h1>
-        <p className="mt-1 text-muted-foreground text-sm">Ta progression globale, en un coup d'œil.</p>
-
-        <div className="mt-6 grid sm:grid-cols-3 gap-4">
-          <div className="rounded-2xl bg-card/50 p-4">
-            <div className="text-xs text-muted-foreground">Progression de vie</div>
-            <div className="mt-1 flex items-end gap-2">
-              <span className="text-3xl font-display font-bold text-gradient">{stats.pct}%</span>
-            </div>
-            <div className="mt-3 h-2 rounded-full bg-muted overflow-hidden">
-              <motion.div
-                initial={{ width: 0 }}
-                animate={{ width: `${stats.pct}%` }}
-                transition={{ duration: 1, ease: "easeOut" }}
-                className="h-full bg-gradient-brand"
-              />
-            </div>
-          </div>
-          <div className="rounded-2xl bg-card/50 p-4">
-            <div className="text-xs text-muted-foreground">Tâches accomplies</div>
-            <div className="mt-1 text-3xl font-display font-bold">{stats.done}</div>
-          </div>
-          <div className="rounded-2xl bg-card/50 p-4">
-            <div className="text-xs text-muted-foreground">Catégories actives</div>
-            <div className="mt-1 text-3xl font-display font-bold">{categories.length}</div>
-          </div>
-        </div>
+        <p className="mt-1 text-muted-foreground text-sm">Tes catégories de vie, organisées au même endroit.</p>
       </motion.section>
 
       <section className="flex flex-wrap items-center gap-3">

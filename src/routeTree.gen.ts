@@ -12,6 +12,7 @@ import { Route as rootRouteImport } from './routes/__root'
 import { Route as AppRouteImport } from './routes/app'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as AppIndexRouteImport } from './routes/app.index'
+import { Route as AppStatsRouteImport } from './routes/app.stats'
 import { Route as AppSettingsRouteImport } from './routes/app.settings'
 import { Route as AppCategoryIdRouteImport } from './routes/app.category.$id'
 
@@ -30,6 +31,11 @@ const AppIndexRoute = AppIndexRouteImport.update({
   path: '/',
   getParentRoute: () => AppRoute,
 } as any)
+const AppStatsRoute = AppStatsRouteImport.update({
+  id: '/stats',
+  path: '/stats',
+  getParentRoute: () => AppRoute,
+} as any)
 const AppSettingsRoute = AppSettingsRouteImport.update({
   id: '/settings',
   path: '/settings',
@@ -45,12 +51,14 @@ export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/app': typeof AppRouteWithChildren
   '/app/settings': typeof AppSettingsRoute
+  '/app/stats': typeof AppStatsRoute
   '/app/': typeof AppIndexRoute
   '/app/category/$id': typeof AppCategoryIdRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/app/settings': typeof AppSettingsRoute
+  '/app/stats': typeof AppStatsRoute
   '/app': typeof AppIndexRoute
   '/app/category/$id': typeof AppCategoryIdRoute
 }
@@ -59,19 +67,27 @@ export interface FileRoutesById {
   '/': typeof IndexRoute
   '/app': typeof AppRouteWithChildren
   '/app/settings': typeof AppSettingsRoute
+  '/app/stats': typeof AppStatsRoute
   '/app/': typeof AppIndexRoute
   '/app/category/$id': typeof AppCategoryIdRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/app' | '/app/settings' | '/app/' | '/app/category/$id'
+  fullPaths:
+    | '/'
+    | '/app'
+    | '/app/settings'
+    | '/app/stats'
+    | '/app/'
+    | '/app/category/$id'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/app/settings' | '/app' | '/app/category/$id'
+  to: '/' | '/app/settings' | '/app/stats' | '/app' | '/app/category/$id'
   id:
     | '__root__'
     | '/'
     | '/app'
     | '/app/settings'
+    | '/app/stats'
     | '/app/'
     | '/app/category/$id'
   fileRoutesById: FileRoutesById
@@ -104,6 +120,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AppIndexRouteImport
       parentRoute: typeof AppRoute
     }
+    '/app/stats': {
+      id: '/app/stats'
+      path: '/stats'
+      fullPath: '/app/stats'
+      preLoaderRoute: typeof AppStatsRouteImport
+      parentRoute: typeof AppRoute
+    }
     '/app/settings': {
       id: '/app/settings'
       path: '/settings'
@@ -123,12 +146,14 @@ declare module '@tanstack/react-router' {
 
 interface AppRouteChildren {
   AppSettingsRoute: typeof AppSettingsRoute
+  AppStatsRoute: typeof AppStatsRoute
   AppIndexRoute: typeof AppIndexRoute
   AppCategoryIdRoute: typeof AppCategoryIdRoute
 }
 
 const AppRouteChildren: AppRouteChildren = {
   AppSettingsRoute: AppSettingsRoute,
+  AppStatsRoute: AppStatsRoute,
   AppIndexRoute: AppIndexRoute,
   AppCategoryIdRoute: AppCategoryIdRoute,
 }
