@@ -5,7 +5,17 @@ import { useStore } from "@/lib/store";
 import type { VisionItem } from "@/lib/categories";
 import { toPng } from "html-to-image";
 
-export function VisionBoard({ categoryId, items }: { categoryId: string; items: VisionItem[] }) {
+export function VisionBoard({
+  categoryId,
+  items,
+  subId,
+  compact = false,
+}: {
+  categoryId: string;
+  items: VisionItem[];
+  subId?: string;
+  compact?: boolean;
+}) {
   const boardRef = useRef<HTMLDivElement>(null);
   const fileRef = useRef<HTMLInputElement>(null);
   const [selected, setSelected] = useState<string | null>(null);
@@ -18,32 +28,40 @@ export function VisionBoard({ categoryId, items }: { categoryId: string; items: 
     if (!file) return;
     const reader = new FileReader();
     reader.onload = () => {
-      addItem(categoryId, {
-        type: "image",
-        content: reader.result as string,
-        x: 60,
-        y: 60,
-        width: 220,
-        height: 220,
-        rotation: 0,
-      });
+      addItem(
+        categoryId,
+        {
+          type: "image",
+          content: reader.result as string,
+          x: 40,
+          y: 40,
+          width: compact ? 160 : 220,
+          height: compact ? 160 : 220,
+          rotation: 0,
+        },
+        subId
+      );
     };
     reader.readAsDataURL(file);
     e.target.value = "";
   };
 
   const addText = () => {
-    addItem(categoryId, {
-      type: "text",
-      content: "Inspiration",
-      x: 80,
-      y: 80,
-      width: 240,
-      height: 80,
-      rotation: 0,
-      fontSize: 28,
-      color: "#9B51E0",
-    });
+    addItem(
+      categoryId,
+      {
+        type: "text",
+        content: "Inspiration",
+        x: 60,
+        y: 60,
+        width: 240,
+        height: 80,
+        rotation: 0,
+        fontSize: compact ? 22 : 28,
+        color: "#9B51E0",
+      },
+      subId
+    );
   };
 
   const exportPng = async () => {
@@ -51,14 +69,14 @@ export function VisionBoard({ categoryId, items }: { categoryId: string; items: 
     const dataUrl = await toPng(boardRef.current, { pixelRatio: 2, backgroundColor: "#0b0b14" });
     const a = document.createElement("a");
     a.href = dataUrl;
-    a.download = `vision-board-${categoryId}.png`;
+    a.download = `vision-board-${categoryId}${subId ? "-" + subId : ""}.png`;
     a.click();
   };
 
   const onDrag = (id: string, dx: number, dy: number) => {
     const it = items.find((i) => i.id === id);
     if (!it) return;
-    updateItem(categoryId, id, { x: it.x + dx, y: it.y + dy });
+    updateItem(categoryId, id, { x: it.x + dx, y: it.y + dy }, subId);
   };
 
   return (
@@ -93,7 +111,7 @@ export function VisionBoard({ categoryId, items }: { categoryId: string; items: 
       <div
         ref={boardRef}
         onClick={() => setSelected(null)}
-        className="relative w-full h-[520px] rounded-3xl overflow-hidden bg-aurora glass shadow-elevated"
+        className={`relative w-full ${compact ? "h-[320px]" : "h-[520px]"} rounded-3xl overflow-hidden bg-aurora glass shadow-elevated`}
       >
         {items.length === 0 && (
           <div className="absolute inset-0 flex items-center justify-center text-muted-foreground text-sm pointer-events-none">
@@ -133,7 +151,7 @@ export function VisionBoard({ categoryId, items }: { categoryId: string; items: 
               <div
                 contentEditable
                 suppressContentEditableWarning
-                onBlur={(e) => updateItem(categoryId, item.id, { content: e.currentTarget.textContent || "" })}
+                onBlur={(e) => updateItem(categoryId, item.id, { content: e.currentTarget.textContent || "" }, subId)}
                 style={{ fontSize: item.fontSize, color: item.color }}
                 className="h-full w-full flex items-center justify-center text-center font-display font-bold outline-none"
               >
@@ -145,7 +163,7 @@ export function VisionBoard({ categoryId, items }: { categoryId: string; items: 
                 <button
                   onClick={(e) => {
                     e.stopPropagation();
-                    updateItem(categoryId, item.id, { rotation: item.rotation + 15 });
+                    updateItem(categoryId, item.id, { rotation: item.rotation + 15 }, subId);
                   }}
                   className="p-1.5 hover:bg-accent rounded"
                   aria-label="Rotation"
@@ -159,7 +177,7 @@ export function VisionBoard({ categoryId, items }: { categoryId: string; items: 
                   value={item.width}
                   onChange={(e) => {
                     const w = Number(e.target.value);
-                    updateItem(categoryId, item.id, { width: w, height: item.type === "image" ? w : item.height });
+                    updateItem(categoryId, item.id, { width: w, height: item.type === "image" ? w : item.height }, subId);
                   }}
                   onClick={(e) => e.stopPropagation()}
                   className="w-24"
@@ -167,7 +185,7 @@ export function VisionBoard({ categoryId, items }: { categoryId: string; items: 
                 <button
                   onClick={(e) => {
                     e.stopPropagation();
-                    removeItem(categoryId, item.id);
+                    removeItem(categoryId, item.id, subId);
                   }}
                   className="p-1.5 hover:bg-destructive/20 text-destructive rounded"
                   aria-label="Supprimer"

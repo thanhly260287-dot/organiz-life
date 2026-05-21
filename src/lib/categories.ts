@@ -13,6 +13,7 @@ export interface Subcategory {
   id: string;
   name: string;
   tasks: Task[];
+  vision: VisionItem[];
 }
 
 export interface VisionItem {
