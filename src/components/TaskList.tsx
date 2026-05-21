@@ -88,8 +88,23 @@ export function TaskList({
   };
 
 
+  const total = enableAmount
+    ? tasks.reduce((sum, t) => sum + (t.amount ?? 0), 0) * amountSign
+    : 0;
+
   return (
     <div className="space-y-2">
+      {enableAmount && tasks.some((t) => t.amount != null) && (
+        <div className="glass rounded-xl shadow-glass px-4 py-2 flex items-center justify-between">
+          <span className="text-xs text-muted-foreground uppercase tracking-wide">Total</span>
+          <span
+            className={`text-base font-display font-bold ${total < 0 ? "text-destructive" : ""}`}
+            style={{ color: total >= 0 ? accent : undefined }}
+          >
+            {total.toLocaleString("fr-FR", { style: "currency", currency: "EUR" })}
+          </span>
+        </div>
+      )}
       <DndContext sensors={sensors} collisionDetection={closestCenter} onDragEnd={onDragEnd}>
         <SortableContext items={tasks.map((t) => t.id)} strategy={verticalListSortingStrategy}>
           <AnimatePresence initial={false}>
@@ -100,6 +115,8 @@ export function TaskList({
                 accent={accent}
                 showPriority={showPriority}
                 enableDateTime={enableDateTime}
+                enableAmount={enableAmount}
+                amountSign={amountSign}
                 onToggle={() => toggleTask(categoryId, t.id, subId)}
                 onRemove={() => removeTask(categoryId, t.id, subId)}
               />
@@ -107,6 +124,7 @@ export function TaskList({
           </AnimatePresence>
         </SortableContext>
       </DndContext>
+
 
 
       {adding ? (
