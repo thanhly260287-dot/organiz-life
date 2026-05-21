@@ -100,7 +100,10 @@ function CategoryPage() {
           enableDateTime={!!category.enableDateTime}
           requireDate={category.id === "rdv" || category.id === "events"}
           requireTime={category.id === "rdv"}
+          enableAmount={FINANCE_CATEGORY_IDS.has(category.id)}
+          amountSign={NEGATIVE_FINANCE_IDS.has(category.id) ? -1 : 1}
         />
+
       </section>
 
       <section className="space-y-4">
