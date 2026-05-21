@@ -185,7 +185,7 @@ export function VisionBoard({
                 <button
                   onClick={(e) => {
                     e.stopPropagation();
-                    removeItem(categoryId, item.id);
+                    removeItem(categoryId, item.id, subId);
                   }}
                   className="p-1.5 hover:bg-destructive/20 text-destructive rounded"
                   aria-label="Supprimer"
