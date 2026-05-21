@@ -11,7 +11,7 @@ export function CategoryCard({ category, index }: { category: Category; index: n
   const { attributes, listeners, setNodeRef, transform, transition, isDragging } = useSortable({
     id: category.id,
   });
-  const showPriority = useStore((s) => s.showPriorityNumbers);
+  const showPriority = useStore((s) => s.showCategoryPriority);
   const progress = getCategoryProgress(category);
 
   const style = {

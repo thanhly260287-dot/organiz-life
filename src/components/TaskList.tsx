@@ -40,9 +40,9 @@ export function TaskList({
   const [title, setTitle] = useState("");
   const [date, setDate] = useState("");
   const [time, setTime] = useState("");
-  const [priority, setPriority] = useState<number | "">("");
   const [amount, setAmount] = useState<string>("");
-  const showPriority = useStore((s) => s.showPriorityNumbers);
+  const showPriority = useStore((s) => s.taskPriorityCategories.includes(categoryId));
+  const toggleTaskPriorityFor = useStore((s) => s.toggleTaskPriorityFor);
   const addTask = useStore((s) => s.addTask);
   const toggleTask = useStore((s) => s.toggleTask);
   const removeTask = useStore((s) => s.removeTask);
@@ -74,7 +74,6 @@ export function TaskList({
         title: title.trim(),
         date: date || undefined,
         time: time || undefined,
-        priority: priority || undefined,
         amount: amt,
       },
       subId
@@ -82,10 +81,10 @@ export function TaskList({
     setTitle("");
     setDate("");
     setTime("");
-    setPriority("");
     setAmount("");
     setAdding(false);
   };
+
 
 
   const total = enableAmount
@@ -94,6 +93,17 @@ export function TaskList({
 
   return (
     <div className="space-y-2">
+      {tasks.length > 0 && (
+        <label className="inline-flex items-center gap-2 text-xs text-muted-foreground cursor-pointer select-none">
+          <input
+            type="checkbox"
+            checked={showPriority}
+            onChange={() => toggleTaskPriorityFor(categoryId)}
+            className="accent-primary"
+          />
+          Afficher les numéros de priorité
+        </label>
+      )}
       {enableAmount && tasks.some((t) => t.amount != null) && (
         <div className="glass rounded-xl shadow-glass px-4 py-2 flex items-center justify-between">
           <span className="text-xs text-muted-foreground uppercase tracking-wide">Total</span>
@@ -108,10 +118,11 @@ export function TaskList({
       <DndContext sensors={sensors} collisionDetection={closestCenter} onDragEnd={onDragEnd}>
         <SortableContext items={tasks.map((t) => t.id)} strategy={verticalListSortingStrategy}>
           <AnimatePresence initial={false}>
-            {tasks.map((t) => (
+            {tasks.map((t, i) => (
               <SortableTaskRow
                 key={t.id}
                 task={t}
+                index={i}
                 accent={accent}
                 showPriority={showPriority}
                 enableDateTime={enableDateTime}
@@ -168,15 +179,6 @@ export function TaskList({
                 </div>
               </>
             )}
-            <input
-              type="number"
-              min={1}
-              max={99}
-              placeholder="Priorité"
-              value={priority}
-              onChange={(e) => setPriority(e.target.value ? Number(e.target.value) : "")}
-              className="text-xs bg-muted rounded-md px-2 py-1 outline-none w-20"
-            />
             {enableAmount && (
               <input
                 type="number"
@@ -219,6 +221,7 @@ export function TaskList({
 
 function SortableTaskRow({
   task: t,
+  index,
   accent,
   showPriority,
   enableDateTime,
@@ -228,6 +231,7 @@ function SortableTaskRow({
   onRemove,
 }: {
   task: Task;
+  index: number;
   accent: string;
   showPriority: boolean;
   enableDateTime: boolean;
@@ -269,12 +273,12 @@ function SortableTaskRow({
       </button>
       <div className="min-w-0 flex-1">
         <div className="flex items-center gap-2">
-          {showPriority && t.priority && (
+          {showPriority && (
             <span
-              className="shrink-0 inline-flex h-5 min-w-5 px-1.5 items-center justify-center rounded text-[10px] font-mono font-bold"
+              className="shrink-0 inline-flex h-5 min-w-5 px-1.5 items-center justify-center rounded text-[10px] font-mono font-bold tabular-nums"
               style={{ background: `${accent}33`, color: accent }}
             >
-              {t.priority}
+              {index + 1}
             </span>
           )}
           <span className={`text-sm truncate ${t.done ? "line-through text-muted-foreground" : ""}`}>

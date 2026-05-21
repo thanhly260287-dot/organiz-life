@@ -12,8 +12,8 @@ function Settings() {
   const setTheme = useStore((s) => s.setTheme);
   const textSize = useStore((s) => s.textSize);
   const setTextSize = useStore((s) => s.setTextSize);
-  const showPriority = useStore((s) => s.showPriorityNumbers);
-  const togglePriority = useStore((s) => s.togglePriorityNumbers);
+  const showPriority = useStore((s) => s.showCategoryPriority);
+  const togglePriority = useStore((s) => s.toggleCategoryPriority);
 
   return (
     <main className="mx-auto max-w-2xl px-4 sm:px-6 py-8 space-y-6">
@@ -74,8 +74,8 @@ function Settings() {
           <div className="flex items-center gap-3">
             <Hash className="h-5 w-5" />
             <div className="text-left">
-              <div className="text-sm font-medium">Numéros de priorité</div>
-              <div className="text-xs text-muted-foreground">Affiche 01, 02, 03… sur les catégories et tâches</div>
+              <div className="text-sm font-medium">Numéros de priorité (catégories)</div>
+              <div className="text-xs text-muted-foreground">Affiche 01, 02, 03… sur les catégories principales. Les numéros par tâche se règlent dans chaque catégorie.</div>
             </div>
           </div>
           <div
