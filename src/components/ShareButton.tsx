@@ -19,9 +19,10 @@ interface ShareOption {
   action: () => void;
   color?: string;
 }
+  const [copied, setCopied] = useState(false);
+  const [open, setOpen] = useState(false);
+  const [qrOpen, setQrOpen] = useState(false);
 
-export function ShareButton() {
-  const { t } = useTranslation();
   const [copied, setCopied] = useState(false);
   const [open, setOpen] = useState(false);
 
