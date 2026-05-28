@@ -1,6 +1,7 @@
 import { useState, useCallback } from "react";
 import { useTranslation } from "react-i18next";
 import { Share2, Link, Check, MessageCircle, Mail, Facebook, Twitter, Instagram, Linkedin, Send, Smartphone } from "lucide-react";
+import { QRCodeSVG } from "qrcode.react";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -8,6 +9,8 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog";
+
 
 interface ShareOption {
   id: string;
