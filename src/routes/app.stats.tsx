@@ -185,6 +185,7 @@ function StatsPage() {
       d.cumCreated = cc;
       d.cumDone = cd;
       d.pct = cc === 0 ? 0 : Math.round((cd / cc) * 100);
+    }
     return days;
   }, [taskDatesByCategory, evoCats]);
 
