@@ -382,7 +382,7 @@ export function VisionBoard({
               height: item.height,
               rotate: item.rotation,
               zIndex: item.zIndex ?? 0,
-              cursor: "grab",
+              cursor: selected === item.id ? "grab" : "pointer",
               touchAction: "none",
             }}
             onClick={(e) => {
