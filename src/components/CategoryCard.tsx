@@ -5,7 +5,8 @@ import { useSortable } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
 import { Trash2, GripVertical, Pencil } from "lucide-react";
 import { useTranslation } from "react-i18next";
-import { getCategoryProgress, useStore } from "@/lib/store";
+import { getCategoryProgress, getCategoryFinanceTotal, useStore } from "@/lib/store";
+
 import type { Category } from "@/lib/categories";
 import { IconRender } from "./IconRender";
 import { useCategoryName } from "@/lib/useCategoryName";
@@ -16,11 +17,16 @@ export function CategoryCard({ category, index }: { category: Category; index: n
     id: category.id,
   });
   const showPriority = useStore((s) => s.showCategoryPriority);
+  const showTotal = useStore((s) => s.showCategoryTotal);
   const removeCategory = useStore((s) => s.removeCategory);
   const updateCategory = useStore((s) => s.updateCategory);
   const progress = getCategoryProgress(category);
+  const financeTotal = getCategoryFinanceTotal(category);
   const nameFor = useCategoryName();
   const displayName = nameFor(category.id, category.name);
+  const fmtEUR = (n: number) =>
+    n.toLocaleString("fr-FR", { style: "currency", currency: "EUR", maximumFractionDigits: 0 });
+
 
   const [editing, setEditing] = useState(false);
   const [editName, setEditName] = useState(displayName);
@@ -119,9 +125,22 @@ export function CategoryCard({ category, index }: { category: Category; index: n
               </span>
               )}
             </div>
-            <p className="mt-1 text-xs text-muted-foreground">
-              {t("tasks.taskCount", { done: progress.done, total: progress.total })}
-            </p>
+            <div className="mt-1 flex items-center gap-2 flex-wrap">
+              <p className="text-xs text-muted-foreground">
+                {t("tasks.taskCount", { done: progress.done, total: progress.total })}
+              </p>
+              {showTotal && financeTotal !== null && (
+                <span
+                  className={`text-xs font-bold tabular-nums ${
+                    financeTotal < 0 ? "text-red-500" : "text-green-500"
+                  }`}
+                >
+                  {financeTotal > 0 ? "+" : ""}
+                  {fmtEUR(financeTotal)}
+                </span>
+              )}
+            </div>
+
             <div className="mt-3 h-1.5 w-full rounded-full bg-muted overflow-hidden">
               <div
                 className="h-full rounded-full transition-all duration-500"

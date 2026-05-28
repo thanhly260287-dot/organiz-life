@@ -1,6 +1,7 @@
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
-import { type Category, type Task, type Subcategory, type VisionItem, DEFAULT_CATEGORIES, DATETIME_DEFAULT_IDS } from "./categories";
+import { type Category, type Task, type Subcategory, type VisionItem, DEFAULT_CATEGORIES, DATETIME_DEFAULT_IDS, FINANCE_CATEGORY_IDS, NEGATIVE_FINANCE_IDS } from "./categories";
+
 
 const uid = () => Math.random().toString(36).slice(2, 11);
 
@@ -9,13 +10,16 @@ interface AppState {
   theme: "light" | "dark";
   textSize: "sm" | "md" | "lg";
   showCategoryPriority: boolean;
+  showCategoryTotal: boolean;
   taskPriorityCategories: string[]; // category ids where task priority numbers are shown
 
   setTheme: (t: "light" | "dark") => void;
   toggleTheme: () => void;
   setTextSize: (s: "sm" | "md" | "lg") => void;
   toggleCategoryPriority: () => void;
+  toggleCategoryTotal: () => void;
   toggleTaskPriorityFor: (categoryId: string) => void;
+
 
   addCategory: (data: { name: string; icon: string; color: string }) => void;
   updateCategory: (id: string, patch: Partial<Category>) => void;
@@ -68,12 +72,15 @@ export const useStore = create<AppState>()(
       theme: "dark",
       textSize: "md",
       showCategoryPriority: false,
+      showCategoryTotal: true,
       taskPriorityCategories: [],
 
       setTheme: (theme) => set({ theme }),
       toggleTheme: () => set((s) => ({ theme: s.theme === "dark" ? "light" : "dark" })),
       setTextSize: (textSize) => set({ textSize }),
       toggleCategoryPriority: () => set((s) => ({ showCategoryPriority: !s.showCategoryPriority })),
+      toggleCategoryTotal: () => set((s) => ({ showCategoryTotal: !s.showCategoryTotal })),
+
       toggleTaskPriorityFor: (categoryId) =>
         set((s) => ({
           taskPriorityCategories: s.taskPriorityCategories.includes(categoryId)
@@ -445,4 +452,22 @@ export const getCategoryProgress = (c: Category) => {
   if (all.length === 0) return { done: 0, total: 0, pct: 0 };
   const done = all.filter((t) => t.done).length;
   return { done, total: all.length, pct: Math.round((done / all.length) * 100) };
+};
+
+
+export const isFinanceCategory = (id: string) => FINANCE_CATEGORY_IDS.has(id);
+
+export const getCategoryFinanceTotal = (c: Category): number | null => {
+  if (!FINANCE_CATEGORY_IDS.has(c.id)) return null;
+  const all = [...c.tasks, ...c.subcategories.flatMap((s) => s.tasks)];
+  const defaultSign: 1 | -1 = NEGATIVE_FINANCE_IDS.has(c.id) ? -1 : 1;
+  let any = false;
+  const total = all.reduce((sum, t) => {
+    if (t.amount == null) return sum;
+    any = true;
+    const sign: number =
+      c.id === "credits" ? (t.done ? 1 : -1) : ((t.amountSign ?? defaultSign) as number);
+    return sum + t.amount * sign;
+  }, 0);
+  return any ? total : null;
 };
