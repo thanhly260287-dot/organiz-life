@@ -7,14 +7,15 @@ export interface Task {
   notes?: string;
   priority?: number;
   amount?: number;
+  amountSign?: 1 | -1; // per-task override for finance sum
   reminders?: number[]; // minutes before (e.g. 15, 30, 60)
   notifiedAt?: Record<string, number>; // key = `${minutes}` → timestamp fired
   createdAt: number;
 }
 
 
-export const FINANCE_CATEGORY_IDS = new Set(["income", "debts", "invest", "credits", "savings", "needs"]);
-export const NEGATIVE_FINANCE_IDS = new Set(["debts", "invest", "savings", "needs"]);
+export const FINANCE_CATEGORY_IDS = new Set(["income", "debts", "invest", "credits", "savings", "costs"]);
+export const NEGATIVE_FINANCE_IDS = new Set(["debts", "costs"]);
 
 
 export interface Subcategory {
@@ -86,6 +87,7 @@ export const DEFAULT_CATEGORIES: Omit<Category, "tasks" | "subcategories" | "vis
   { id: "bad-habits", name: "Mauvaises habitudes", icon: "ThumbsDown", color: BRAND_BLUE, priority: 23 },
   { id: "debts", name: "Dettes", icon: "TrendingDown", color: BRAND_VIOLET, priority: 24 },
   { id: "credits", name: "Créances", icon: "HandCoins", color: BRAND_BLUE, priority: 25 },
+  { id: "costs", name: "Coûts", icon: "Receipt", color: BRAND_VIOLET, priority: 26 },
   { id: "leisure", name: "Loisirs", icon: "Gamepad2", color: BRAND_VIOLET, priority: 26 },
   { id: "desires", name: "Ce que je désire dans ma vie", icon: "Heart", color: BRAND_BLUE, priority: 27 },
   { id: "rejections", name: "Ce que je ne veux plus dans ma vie", icon: "Ban", color: BRAND_VIOLET, priority: 28 },

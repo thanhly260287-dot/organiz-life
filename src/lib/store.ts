@@ -110,6 +110,7 @@ export const useStore = create<AppState>()(
               notes: task.notes,
               priority: task.priority,
               amount: task.amount,
+              amountSign: task.amountSign,
               reminders: task.reminders,
               createdAt: Date.now(),
             };
