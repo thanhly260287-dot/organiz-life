@@ -234,9 +234,8 @@ function StatsPage() {
                           <div className="text-sm font-display font-semibold truncate">{r.name}</div>
                           <div
                             className={`text-base font-bold tabular-nums ${
-                              r.total < 0 ? "text-destructive" : ""
+                              r.total < 0 ? "text-red-500" : "text-green-500"
                             }`}
-                            style={{ color: r.total >= 0 ? r.color : undefined }}
                           >
                             {fmtEUR(r.total)}
                           </div>
