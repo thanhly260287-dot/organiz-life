@@ -216,7 +216,6 @@ export function TaskList({
                   {tr("tasks.add")}
                 </button>
               </div>
-            )}
             {!enableAmount && (
               <div className="ml-auto flex gap-2">
                 <button
@@ -234,7 +233,6 @@ export function TaskList({
                 </button>
               </div>
             )}
-            </div>
           </div>
           {enableDateTime && time && (
             <div className="flex flex-wrap items-center gap-1.5 pt-1">
