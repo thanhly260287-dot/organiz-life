@@ -6,7 +6,7 @@ import { useTranslation } from "react-i18next";
 import { useStore, getCategoryProgress, MAIN_VISION_ID } from "@/lib/store";
 import { NEGATIVE_FINANCE_IDS } from "@/lib/categories";
 
-const FINANCE_SUMMARY_IDS = ["couts-et-gains", "gains", "costs", "income", "invest", "savings", "debts", "credits"] as const;
+const FINANCE_SUMMARY_IDS = ["couts-et-gains", "couts", "gains", "costs", "income", "invest", "savings", "debts", "credits"] as const;
 const fmtEUR = (n: number) =>
   n.toLocaleString("fr-FR", { style: "currency", currency: "EUR" });
 import { IconRender } from "@/components/IconRender";

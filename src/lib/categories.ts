@@ -14,10 +14,11 @@ export interface Task {
 }
 
 
-export const FINANCE_CATEGORY_IDS = new Set(["income", "debts", "invest", "credits", "savings", "costs", "gains", "couts-et-gains"]);
-export const NEGATIVE_FINANCE_IDS = new Set(["debts", "costs"]);
+export const FINANCE_CATEGORY_IDS = new Set(["income", "debts", "invest", "credits", "savings", "costs", "couts", "gains", "couts-et-gains"]);
+export const NEGATIVE_FINANCE_IDS = new Set(["debts", "costs", "couts"]);
 // Categories where the sign is forced and cannot be toggled per task
-export const FORCED_SIGN_IDS = new Set(["costs", "gains"]);
+export const FORCED_SIGN_IDS = new Set(["costs", "couts", "gains"]);
+
 
 
 export interface Subcategory {
@@ -78,6 +79,7 @@ export const DEFAULT_CATEGORIES: Omit<Category, "tasks" | "subcategories" | "vis
   { id: "savings", name: "Économies", icon: "PiggyBank", color: BRAND_VIOLET, priority: 12 },
   { id: "invest", name: "Placement", icon: "TrendingUp", color: BRAND_BLUE, priority: 13 },
   { id: "couts-et-gains", name: "Couts et Gains", icon: "Scale", color: BRAND_VIOLET, priority: 13.5 },
+  { id: "couts", name: "Couts", icon: "Receipt", color: BRAND_BLUE, priority: 13.55 },
   { id: "gains", name: "Gains", icon: "TrendingUp", color: BRAND_BLUE, priority: 13.6 },
   { id: "income", name: "Revenus", icon: "Wallet", color: BRAND_VIOLET, priority: 14 },
   { id: "income-res", name: "Ressources revenu", icon: "Coins", color: BRAND_BLUE, priority: 15 },
