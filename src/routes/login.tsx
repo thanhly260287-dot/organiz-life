@@ -6,6 +6,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { lovable } from "@/integrations/lovable/index";
 import { toast } from "sonner";
 import { Logo } from "@/components/Logo";
+import { useTranslation } from "react-i18next";
 
 export const Route = createFileRoute("/login")({
   component: LoginPage,
