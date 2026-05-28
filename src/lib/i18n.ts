@@ -56,7 +56,6 @@ const resources = {
         searchPlaceholder: "Rechercher une catégorie…",
         add: "Ajouter",
         newName: "Nom de la catégorie",
-        editName: "Editar nombre",
         editName: "Modifier le nom",
         icon: "Icône :",
         color: "Couleur :",
