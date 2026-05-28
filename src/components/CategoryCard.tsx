@@ -111,14 +111,12 @@ export function CategoryCard({ category, index }: { category: Category; index: n
                   placeholder={t("dashboard.newName")}
                 />
               ) : (
-                <button
-                  onClick={startEdit}
-                  className="group/name flex items-center gap-1.5 font-display font-semibold text-base truncate"
-                  title={t("dashboard.editName", "Modifier le nom")}
-                >
-                  <span className="truncate">{displayName}</span>
-                  <Pencil className="h-3.5 w-3.5 text-muted-foreground opacity-0 group-hover/name:opacity-100 transition-opacity shrink-0" />
-                </button>
+              <span
+                className="group/name flex items-center gap-1.5 font-display font-semibold text-base truncate"
+                title={t("dashboard.editName", "Modifier le nom")}
+              >
+                <span className="truncate">{displayName}</span>
+              </span>
               )}
             </div>
             <p className="mt-1 text-xs text-muted-foreground">
