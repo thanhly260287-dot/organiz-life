@@ -180,15 +180,34 @@ function LoginPage() {
             <div className="relative">
               <Lock className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
               <input
-                type="password"
+                type={showPassword ? "text" : "password"}
                 required
                 minLength={6}
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 placeholder={t("login.passwordPlaceholder")}
-                className="w-full rounded-xl border bg-background pl-10 pr-3 py-2.5 text-sm focus:border-primary outline-none"
+                className="w-full rounded-xl border bg-background pl-10 pr-10 py-2.5 text-sm focus:border-primary outline-none"
               />
+              <button
+                type="button"
+                onClick={() => setShowPassword((v) => !v)}
+                className="absolute right-3 top-1/2 -translate-y-1/2 p-1 rounded hover:bg-accent transition-colors"
+                aria-label={showPassword ? t("login.hidePassword") : t("login.showPassword")}
+              >
+                {showPassword ? <EyeOff className="h-4 w-4 text-muted-foreground" /> : <Eye className="h-4 w-4 text-muted-foreground" />}
+              </button>
             </div>
+            {mode === "signin" && (
+              <label className="flex items-center gap-2 text-sm cursor-pointer select-none">
+                <input
+                  type="checkbox"
+                  checked={rememberMe}
+                  onChange={(e) => setRememberMe(e.target.checked)}
+                  className="h-4 w-4 rounded border-primary accent-primary"
+                />
+                <span className="text-muted-foreground">{t("login.rememberMe")}</span>
+              </label>
+            )}
             <button
               type="submit"
               disabled={loading}
