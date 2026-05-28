@@ -4,6 +4,11 @@ import { motion, AnimatePresence } from "framer-motion";
 import { ArrowLeft, TrendingUp, CheckCircle2, Layers, PieChart as PieIcon, BarChart3, CalendarDays, LayoutGrid } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import { useStore, getCategoryProgress, MAIN_VISION_ID } from "@/lib/store";
+import { NEGATIVE_FINANCE_IDS } from "@/lib/categories";
+
+const FINANCE_SUMMARY_IDS = ["couts-et-gains", "income", "invest", "savings", "debts", "credits"] as const;
+const fmtEUR = (n: number) =>
+  n.toLocaleString("fr-FR", { style: "currency", currency: "EUR" });
 import { IconRender } from "@/components/IconRender";
 import { useCategoryName } from "@/lib/useCategoryName";
 import { PieChart, Pie, Cell, ResponsiveContainer, Tooltip, BarChart, Bar, XAxis, YAxis, CartesianGrid } from "recharts";
@@ -81,6 +86,25 @@ function StatsPage() {
     });
     return days;
   }, [categories]);
+
+  const finance = useMemo(() => {
+    const rows = FINANCE_SUMMARY_IDS.map((id) => {
+      const c = categories.find((cat) => cat.id === id);
+      if (!c) return null;
+      const all = [...c.tasks, ...c.subcategories.flatMap((s) => s.tasks)];
+      const defaultSign: 1 | -1 = NEGATIVE_FINANCE_IDS.has(id) ? -1 : 1;
+      const total = all.reduce((sum, t) => {
+        if (t.amount == null) return sum;
+        // Credits (créances): négatif tant que non réglé, positif quand réglé
+        const sign: number =
+          id === "credits" ? (t.done ? 1 : -1) : ((t.amountSign ?? defaultSign) as number);
+        return sum + t.amount * sign;
+      }, 0);
+      return { id, name: nameFor(c.id, c.name), color: c.color, icon: c.icon, total };
+    }).filter(Boolean) as { id: string; name: string; color: string; icon: string; total: number }[];
+    const grand = rows.reduce((s, r) => s + r.total, 0);
+    return { rows, grand };
+  }, [categories, nameFor]);
 
   const views: { id: View; label: string; icon: any }[] = [
     { id: "overview", label: t("stats.viewOverview", "Vue d'ensemble"), icon: LayoutGrid },
@@ -172,7 +196,63 @@ function StatsPage() {
           transition={{ duration: 0.2 }}
         >
           {view === "overview" && (
-            <section className="space-y-3">
+            <section className="space-y-6">
+              {finance.rows.length > 0 && (
+                <div className="glass rounded-3xl shadow-elevated p-6 sm:p-8">
+                  <div className="flex items-center justify-between gap-4 flex-wrap">
+                    <h2 className="font-display font-semibold text-xl">
+                      {t("stats.financeTitle", "Bilan financier")}
+                    </h2>
+                    <div className="text-right">
+                      <div className="text-[11px] uppercase tracking-wide text-muted-foreground">
+                        {t("stats.financeGrand", "Total global")}
+                      </div>
+                      <div
+                        className={`text-2xl sm:text-3xl font-display font-bold tabular-nums ${
+                          finance.grand < 0 ? "text-destructive" : "text-gradient"
+                        }`}
+                      >
+                        {fmtEUR(finance.grand)}
+                      </div>
+                    </div>
+                  </div>
+                  <div className="mt-4 grid sm:grid-cols-2 gap-3">
+                    {finance.rows.map((r) => (
+                      <Link
+                        key={r.id}
+                        to="/app/category/$id"
+                        params={{ id: r.id }}
+                        className="rounded-2xl bg-card/50 p-4 hover:shadow-elevated hover:-translate-y-0.5 transition-all flex items-center gap-3"
+                      >
+                        <div
+                          className="h-10 w-10 rounded-xl flex items-center justify-center shrink-0"
+                          style={{ background: `linear-gradient(135deg, ${r.color}, ${r.color}aa)` }}
+                        >
+                          <IconRender name={r.icon} className="h-5 w-5 text-white" />
+                        </div>
+                        <div className="min-w-0 flex-1">
+                          <div className="text-sm font-display font-semibold truncate">{r.name}</div>
+                          <div
+                            className={`text-base font-bold tabular-nums ${
+                              r.total < 0 ? "text-destructive" : ""
+                            }`}
+                            style={{ color: r.total >= 0 ? r.color : undefined }}
+                          >
+                            {fmtEUR(r.total)}
+                          </div>
+                        </div>
+                      </Link>
+                    ))}
+                  </div>
+                  <p className="mt-3 text-[11px] text-muted-foreground">
+                    {t(
+                      "stats.creditsHint",
+                      "Créances : comptées en négatif tant qu'elles ne sont pas réglées, en positif une fois cochées."
+                    )}
+                  </p>
+                </div>
+              )}
+
               <h2 className="font-display font-semibold text-xl">{t("stats.byCategory")}</h2>
               <div className="grid sm:grid-cols-2 gap-3">
                 {ranked.map(({ c, p }) => (
