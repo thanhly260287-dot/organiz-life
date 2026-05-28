@@ -245,7 +245,7 @@ export function TaskList({
               </div>
             )}
           </div>
-          {enableDateTime && time && (
+          {time && (
             <div className="flex flex-wrap items-center gap-1.5 pt-1">
               <Bell className="h-3 w-3 text-muted-foreground" />
               <span className="text-[10px] text-muted-foreground mr-1">Rappel :</span>
