@@ -1,6 +1,7 @@
 import { useState, useCallback } from "react";
 import { useTranslation } from "react-i18next";
 import { Share2, Link, Check, MessageCircle, Mail, Facebook, Twitter, Instagram, Linkedin, Send, Smartphone } from "lucide-react";
+import { QRCodeSVG } from "qrcode.react";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -8,6 +9,8 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog";
+
 
 interface ShareOption {
   id: string;
@@ -21,6 +24,8 @@ export function ShareButton() {
   const { t } = useTranslation();
   const [copied, setCopied] = useState(false);
   const [open, setOpen] = useState(false);
+  const [qrOpen, setQrOpen] = useState(false);
+
 
   const appUrl = typeof window !== "undefined" ? window.location.origin : "https://organiz-life.lovable.app";
   const shareText = t("share.text", "Organise ta vie avec Organiz-Life — l'app premium de développement personnel.");
@@ -39,10 +44,12 @@ export function ShareButton() {
           text: shareText,
           url: appUrl,
         });
+        return;
       } catch {
-        // User cancelled or share failed
+        // User cancelled or share failed -> fallback to QR
       }
     }
+    setQrOpen(true);
   }, [shareTitle, shareText, appUrl, canNativeShare]);
 
   const handleCopyLink = useCallback(async () => {
@@ -53,7 +60,9 @@ export function ShareButton() {
     } catch {
       // Fallback: select text manually
     }
+    setQrOpen(true);
   }, [appUrl]);
+
 
   const options: ShareOption[] = [
     ...(canNativeShare
@@ -133,32 +142,69 @@ export function ShareButton() {
   ];
 
   return (
-    <DropdownMenu open={open} onOpenChange={setOpen}>
-      <DropdownMenuTrigger asChild>
-        <button
-          className="p-2.5 rounded-xl hover:bg-accent transition-all hover:scale-105"
-          aria-label={t("share.share", "Partager")}
-        >
-          <Share2 className="h-5 w-5" />
-        </button>
-      </DropdownMenuTrigger>
-      <DropdownMenuContent align="end" className="w-56">
-        {options.map((opt, idx) => (
-          <DropdownMenuItem
-            key={opt.id}
-            onClick={() => {
-              opt.action();
-              if (opt.id !== "native" && opt.id !== "copy" && opt.id !== "instagram") {
-                setOpen(false);
-              }
-            }}
-            className="flex items-center gap-3 cursor-pointer"
+    <>
+      <DropdownMenu open={open} onOpenChange={setOpen}>
+        <DropdownMenuTrigger asChild>
+          <button
+            className="p-2.5 rounded-xl hover:bg-accent transition-all hover:scale-105"
+            aria-label={t("share.share", "Partager")}
           >
-            <span className={opt.color}>{opt.icon}</span>
-            <span className="text-sm">{opt.label}</span>
-          </DropdownMenuItem>
-        ))}
-      </DropdownMenuContent>
-    </DropdownMenu>
+            <Share2 className="h-5 w-5" />
+          </button>
+        </DropdownMenuTrigger>
+        <DropdownMenuContent align="end" className="w-56">
+          {options.map((opt) => (
+            <DropdownMenuItem
+              key={opt.id}
+              onClick={() => {
+                opt.action();
+                if (opt.id !== "native" && opt.id !== "copy" && opt.id !== "instagram") {
+                  setOpen(false);
+                }
+              }}
+              className="flex items-center gap-3 cursor-pointer"
+            >
+              <span className={opt.color}>{opt.icon}</span>
+              <span className="text-sm">{opt.label}</span>
+            </DropdownMenuItem>
+          ))}
+        </DropdownMenuContent>
+      </DropdownMenu>
+
+      <Dialog open={qrOpen} onOpenChange={setQrOpen}>
+        <DialogContent className="sm:max-w-sm">
+          <DialogHeader>
+            <DialogTitle>{t("share.qrTitle", "Scanner pour ouvrir")}</DialogTitle>
+            <DialogDescription>
+              {copied
+                ? t("share.copied", "Lien copié !")
+                : t("share.qrHint", "Scanne ce QR code pour ouvrir l'application.")}
+            </DialogDescription>
+          </DialogHeader>
+          <div className="flex flex-col items-center gap-4 py-2">
+            <div className="rounded-2xl bg-white p-4 shadow-elevated">
+              <QRCodeSVG value={appUrl} size={208} level="M" includeMargin={false} />
+            </div>
+            <div className="w-full flex items-center gap-2">
+              <input
+                readOnly
+                value={appUrl}
+                onFocus={(e) => e.currentTarget.select()}
+                className="flex-1 min-w-0 rounded-lg border border-border bg-muted/40 px-3 py-2 text-xs"
+              />
+              <button
+                type="button"
+                onClick={handleCopyLink}
+                className="shrink-0 inline-flex items-center gap-1.5 rounded-lg bg-primary text-primary-foreground px-3 py-2 text-xs font-medium hover:opacity-90"
+              >
+                {copied ? <Check className="h-3.5 w-3.5" /> : <Link className="h-3.5 w-3.5" />}
+                {copied ? t("share.copied", "Copié") : t("share.copyLink", "Copier")}
+              </button>
+            </div>
+          </div>
+        </DialogContent>
+      </Dialog>
+    </>
   );
 }
+
