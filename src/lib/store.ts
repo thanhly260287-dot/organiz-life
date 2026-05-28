@@ -451,7 +451,9 @@ export const getCategoryProgress = (c: Category) => {
   const all = [...c.tasks, ...c.subcategories.flatMap((s) => s.tasks)];
   if (all.length === 0) return { done: 0, total: 0, pct: 0 };
   const done = all.filter((t) => t.done).length;
+  return { done, total: all.length, pct: Math.round((done / all.length) * 100) };
 };
+
 
 export const isFinanceCategory = (id: string) => FINANCE_CATEGORY_IDS.has(id);
 
