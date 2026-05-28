@@ -41,6 +41,7 @@ export function VisionBoard({
 }) {
   const boardRef = useRef<HTMLDivElement>(null);
   const fileRef = useRef<HTMLInputElement>(null);
+  const pinchRef = useRef<Map<string, { dist: number; w: number; h: number; x: number; y: number; rot: number; angle: number }>>(new Map());
   const [selected, setSelected] = useState<string | null>(null);
   const addItem = useStore((s) => s.addVisionItem);
   const updateItem = useStore((s) => s.updateVisionItem);
