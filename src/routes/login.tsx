@@ -15,6 +15,7 @@ export const Route = createFileRoute("/login")({
 type Method = "email" | "phone" | "google" | "apple";
 
 function LoginPage() {
+  const { t } = useTranslation();
   const navigate = useNavigate();
   const [method, setMethod] = useState<Method>("email");
   const [mode, setMode] = useState<"signin" | "signup">("signin");
