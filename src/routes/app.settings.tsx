@@ -165,6 +165,35 @@ function Settings() {
             />
           </div>
         </button>
+        <button
+          onClick={toggleTotal}
+          className="w-full flex items-center justify-between rounded-xl p-4 hover:bg-muted transition-colors"
+        >
+          <div className="flex items-center gap-3">
+            <Wallet className="h-5 w-5" />
+            <div className="text-left">
+              <div className="text-sm font-medium">
+                {t("settings.totalTitle", "Total financier sur les catégories")}
+              </div>
+              <div className="text-xs text-muted-foreground">
+                {t(
+                  "settings.totalDesc",
+                  "Affiche le total (vert/rouge) directement sur la ligne des catégories financières."
+                )}
+              </div>
+            </div>
+          </div>
+          <div
+            className={`relative h-6 w-11 rounded-full transition-colors ${showTotal ? "bg-gradient-brand" : "bg-muted"}`}
+          >
+            <motion.div
+              animate={{ x: showTotal ? 22 : 2 }}
+              transition={{ type: "spring", stiffness: 500, damping: 30 }}
+              className="absolute top-0.5 h-5 w-5 rounded-full bg-white shadow"
+            />
+          </div>
+        </button>
+
       </section>
 
       <p className="text-xs text-muted-foreground text-center pt-4">
