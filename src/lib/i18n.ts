@@ -19,7 +19,21 @@ export const SUPPORTED_LANGUAGES = [
   { code: "zh", label: "中文", flag: "🇨🇳" },
   { code: "ja", label: "日本語", flag: "🇯🇵" },
   { code: "hi", label: "हिन्दी", flag: "🇮🇳" },
+  { code: "ko", label: "한국어", flag: "🇰🇷" },
+  { code: "vi", label: "Tiếng Việt", flag: "🇻🇳" },
+  { code: "th", label: "ไทย", flag: "🇹🇭" },
+  { code: "id", label: "Bahasa Indonesia", flag: "🇮🇩" },
+  { code: "pl", label: "Polski", flag: "🇵🇱" },
+  { code: "tr", label: "Türkçe", flag: "🇹🇷" },
+  { code: "uk", label: "Українська", flag: "🇺🇦" },
+  { code: "sv", label: "Svenska", flag: "🇸🇪" },
+  { code: "fi", label: "Suomi", flag: "🇫🇮" },
+  { code: "el", label: "Ελληνικά", flag: "🇬🇷" },
+  { code: "cs", label: "Čeština", flag: "🇨🇿" },
+  { code: "ro", label: "Română", flag: "🇷🇴" },
+  { code: "he", label: "עברית", flag: "🇮🇱" },
 ] as const;
+
 
 
 export type LangCode = (typeof SUPPORTED_LANGUAGES)[number]["code"];
