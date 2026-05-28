@@ -220,49 +220,109 @@ function StatsPage() {
             <section className="space-y-6">
               {finance.rows.length > 0 && (
                 <div className="glass rounded-3xl shadow-elevated p-6 sm:p-8">
-                  <div className="flex items-center justify-between gap-4 flex-wrap">
-                    <h2 className="font-display font-semibold text-xl">
-                      {t("stats.financeTitle", "Bilan financier")}
-                    </h2>
-                    <div className="text-right">
-                      <div className="text-[11px] uppercase tracking-wide text-muted-foreground">
-                        {t("stats.financeGrand", "Total global")}
+                  <div className="flex items-start justify-between gap-4 flex-wrap">
+                    <div>
+                      <h2 className="font-display font-semibold text-xl">
+                        {t("stats.financeTitle", "Bilan financier")}
+                      </h2>
+                      <p className="text-[11px] text-muted-foreground mt-1">
+                        {t(
+                          "stats.financeClickHint",
+                          "Clique sur une catégorie pour cycler : + (addition) → − (soustraction) → exclure → naturel."
+                        )}
+                      </p>
+                    </div>
+                    <div className="flex gap-6">
+                      <div className="text-right">
+                        <div className="text-[11px] uppercase tracking-wide text-muted-foreground">
+                          {t("stats.financeSelected", "Total sélectionné")}
+                        </div>
+                        <div
+                          className={`text-2xl sm:text-3xl font-display font-bold tabular-nums ${
+                            finance.selectedTotal < 0 ? "text-red-500" : "text-green-500"
+                          }`}
+                        >
+                          {fmtEUR(finance.selectedTotal)}
+                        </div>
                       </div>
-                      <div
-                        className={`text-2xl sm:text-3xl font-display font-bold tabular-nums ${
-                          finance.grand < 0 ? "text-red-500" : "text-green-500"
-                        }`}
-                      >
-                        {fmtEUR(finance.grand)}
+                      <div className="text-right">
+                        <div className="text-[11px] uppercase tracking-wide text-muted-foreground">
+                          {t("stats.financeGrand", "Total global")}
+                        </div>
+                        <div
+                          className={`text-xl sm:text-2xl font-display font-bold tabular-nums opacity-80 ${
+                            finance.grand < 0 ? "text-red-500" : "text-green-500"
+                          }`}
+                        >
+                          {fmtEUR(finance.grand)}
+                        </div>
                       </div>
                     </div>
                   </div>
                   <div className="mt-4 grid sm:grid-cols-2 gap-3">
-                    {finance.rows.map((r) => (
-                      <Link
-                        key={r.id}
-                        to="/app/category/$id"
-                        params={{ id: r.id }}
-                        className="rounded-2xl bg-card/50 p-4 hover:shadow-elevated hover:-translate-y-0.5 transition-all flex items-center gap-3"
-                      >
+                    {finance.rows.map((r) => {
+                      const mode = financeSel[r.id]; // undefined | 1 | -1 | 0
+                      const ring =
+                        mode === 1
+                          ? "ring-2 ring-green-500"
+                          : mode === -1
+                            ? "ring-2 ring-red-500"
+                            : mode === 0
+                              ? "opacity-50 ring-1 ring-border"
+                              : "";
+                      const badge =
+                        mode === 1
+                          ? { txt: "+", cls: "bg-green-500 text-white" }
+                          : mode === -1
+                            ? { txt: "−", cls: "bg-red-500 text-white" }
+                            : mode === 0
+                              ? { txt: "∅", cls: "bg-muted text-muted-foreground" }
+                              : { txt: "=", cls: "bg-card text-muted-foreground border border-border" };
+                      return (
                         <div
-                          className="h-10 w-10 rounded-xl flex items-center justify-center shrink-0"
-                          style={{ background: `linear-gradient(135deg, ${r.color}, ${r.color}aa)` }}
+                          key={r.id}
+                          className={`rounded-2xl bg-card/50 p-4 flex items-center gap-3 transition-all ${ring}`}
                         >
-                          <IconRender name={r.icon} className="h-5 w-5 text-white" />
-                        </div>
-                        <div className="min-w-0 flex-1">
-                          <div className="text-sm font-display font-semibold truncate">{r.name}</div>
-                          <div
-                            className={`text-base font-bold tabular-nums ${
-                              r.total < 0 ? "text-red-500" : "text-green-500"
-                            }`}
+                          <button
+                            type="button"
+                            onClick={() => cycleFinanceSel(r.id)}
+                            className="flex-1 flex items-center gap-3 text-left hover:opacity-90"
+                            aria-label="toggle inclusion in selected total"
                           >
-                            {fmtEUR(r.total)}
-                          </div>
+                            <div
+                              className="h-10 w-10 rounded-xl flex items-center justify-center shrink-0"
+                              style={{ background: `linear-gradient(135deg, ${r.color}, ${r.color}aa)` }}
+                            >
+                              <IconRender name={r.icon} className="h-5 w-5 text-white" />
+                            </div>
+                            <div className="min-w-0 flex-1">
+                              <div className="flex items-center gap-2">
+                                <span className="text-sm font-display font-semibold truncate">{r.name}</span>
+                                <span
+                                  className={`shrink-0 inline-flex h-5 min-w-5 px-1.5 items-center justify-center rounded-full text-[11px] font-bold ${badge.cls}`}
+                                >
+                                  {badge.txt}
+                                </span>
+                              </div>
+                              <div
+                                className={`text-base font-bold tabular-nums ${
+                                  r.total < 0 ? "text-red-500" : "text-green-500"
+                                }`}
+                              >
+                                {fmtEUR(r.total)}
+                              </div>
+                            </div>
+                          </button>
+                          <Link
+                            to="/app/category/$id"
+                            params={{ id: r.id }}
+                            className="shrink-0 text-[11px] text-muted-foreground hover:text-foreground underline-offset-2 hover:underline"
+                          >
+                            {t("stats.open", "Ouvrir")}
+                          </Link>
                         </div>
-                      </Link>
-                    ))}
+                      );
+                    })}
                   </div>
                   <p className="mt-3 text-[11px] text-muted-foreground">
                     {t(
