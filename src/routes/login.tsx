@@ -25,11 +25,23 @@ function LoginPage() {
   // email
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [showPassword, setShowPassword] = useState(false);
+  const [rememberMe, setRememberMe] = useState(false);
 
   // phone
   const [phone, setPhone] = useState("");
   const [otpSent, setOtpSent] = useState(false);
   const [otpCode, setOtpCode] = useState("");
+
+  // Load saved email on mount
+  useEffect(() => {
+    const savedEmail = localStorage.getItem("ol_remember_email");
+    if (savedEmail) {
+      setEmail(savedEmail);
+      setRememberMe(true);
+    }
+  }, []);
+
 
   // Redirect if already logged in
   useEffect(() => {
