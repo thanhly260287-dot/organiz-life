@@ -127,6 +127,26 @@ function LoginPage() {
     }
   };
 
+  const handleVerifySignupPhone = async (e: FormEvent) => {
+    e.preventDefault();
+    setLoading(true);
+    try {
+      const { error } = await supabase.auth.verifyOtp({
+        phone: signupPhone.trim(),
+        token: verifyOtp,
+        type: "phone_change",
+      });
+      if (error) throw error;
+      toast.success(t("login.phoneVerified"));
+      setVerifyPhoneStep(false);
+      navigate({ to: "/app" });
+    } catch (err: any) {
+      toast.error(err?.message ?? t("login.codeInvalid"));
+    } finally {
+      setLoading(false);
+    }
+  };
+
   const handleOAuth = async (provider: "google" | "apple") => {
     setLoading(true);
     try {
