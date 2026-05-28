@@ -814,23 +814,34 @@ const resources = {
   },
 };
 
-const isBrowser = typeof window !== "undefined";
-
-const chain = isBrowser ? i18n.use(LanguageDetector).use(initReactI18next) : i18n.use(initReactI18next);
-
-chain.init({
+i18n.use(initReactI18next).init({
   resources,
   fallbackLng: "fr",
-  lng: isBrowser ? undefined : "fr",
+  lng: "fr",
   supportedLngs: SUPPORTED_LANGUAGES.map((l) => l.code),
   interpolation: { escapeValue: false },
-  detection: {
-    order: ["localStorage", "navigator"],
-    caches: ["localStorage"],
-    lookupLocalStorage: "organiz-lang",
-  },
   react: { useSuspense: false },
 });
+
+export const LANG_STORAGE_KEY = "organiz-lang";
+
+export function hydrateClientLanguage() {
+  if (typeof window === "undefined") return;
+  try {
+    const stored = window.localStorage.getItem(LANG_STORAGE_KEY);
+    const nav = window.navigator?.language;
+    const codes = new Set(SUPPORTED_LANGUAGES.map((l) => l.code));
+    const pick = (c?: string | null) => {
+      if (!c) return null;
+      if (codes.has(c)) return c;
+      const base = c.split("-")[0];
+      return codes.has(base) ? base : null;
+    };
+    const target = pick(stored) ?? pick(nav);
+    if (target && target !== i18n.language) i18n.changeLanguage(target);
+  } catch {}
+}
+
 
 
 export const RTL_LANGS = new Set(["ar", "he", "fa", "ur"]);
