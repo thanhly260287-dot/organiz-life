@@ -1,7 +1,7 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useMemo, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { ArrowLeft, TrendingUp, CheckCircle2, Layers, PieChart as PieIcon, BarChart3, CalendarDays, LayoutGrid } from "lucide-react";
+import { ArrowLeft, TrendingUp, CheckCircle2, Layers, PieChart as PieIcon, BarChart3, CalendarDays, LayoutGrid, LineChart as LineIcon } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import { useStore, getCategoryProgress, MAIN_VISION_ID } from "@/lib/store";
 import { NEGATIVE_FINANCE_IDS } from "@/lib/categories";
@@ -11,13 +11,13 @@ const fmtEUR = (n: number) =>
   n.toLocaleString("fr-FR", { style: "currency", currency: "EUR" });
 import { IconRender } from "@/components/IconRender";
 import { useCategoryName } from "@/lib/useCategoryName";
-import { PieChart, Pie, Cell, ResponsiveContainer, Tooltip, BarChart, Bar, XAxis, YAxis, CartesianGrid } from "recharts";
+import { PieChart, Pie, Cell, ResponsiveContainer, Tooltip, BarChart, Bar, XAxis, YAxis, CartesianGrid, AreaChart, Area, Legend } from "recharts";
 
 export const Route = createFileRoute("/app/stats")({
   component: StatsPage,
 });
 
-type View = "overview" | "distribution" | "ranking" | "activity";
+type View = "overview" | "distribution" | "ranking" | "activity" | "evolution";
 
 function StatsPage() {
   const { t } = useTranslation();
@@ -94,6 +94,64 @@ function StatsPage() {
     return days;
   }, [categories]);
 
+  const evolution = useMemo(() => {
+    const DAYS = 30;
+    const today = new Date();
+    const days: { label: string; date: string; created: number; done: number; cumCreated: number; cumDone: number; pct: number }[] = [];
+    for (let i = DAYS - 1; i >= 0; i--) {
+      const d = new Date(today);
+      d.setDate(today.getDate() - i);
+      days.push({
+        label: d.toLocaleDateString(undefined, { day: "2-digit", month: "2-digit" }),
+        date: d.toISOString().slice(0, 10),
+        created: 0,
+        done: 0,
+        cumCreated: 0,
+        cumDone: 0,
+        pct: 0,
+      });
+    }
+    const map = new Map(days.map((d) => [d.date, d]));
+    let baseCreated = 0;
+    let baseDone = 0;
+    const firstDay = days[0].date;
+    categories.forEach((c) => {
+      const all = [...c.tasks, ...c.subcategories.flatMap((s) => s.tasks)];
+      all.forEach((t) => {
+        if (t.createdAt) {
+          const k = new Date(t.createdAt).toISOString().slice(0, 10);
+          if (k < firstDay) baseCreated++;
+          else {
+            const e = map.get(k);
+            if (e) e.created++;
+          }
+        }
+        if (t.done) {
+          const k = t.date ?? (t.createdAt ? new Date(t.createdAt).toISOString().slice(0, 10) : undefined);
+          if (k) {
+            if (k < firstDay) baseDone++;
+            else {
+              const e = map.get(k);
+              if (e) e.done++;
+            }
+          } else {
+            baseDone++;
+          }
+        }
+      });
+    });
+    let cc = baseCreated;
+    let cd = baseDone;
+    days.forEach((d) => {
+      cc += d.created;
+      cd += d.done;
+      d.cumCreated = cc;
+      d.cumDone = cd;
+      d.pct = cc === 0 ? 0 : Math.round((cd / cc) * 100);
+    });
+    return days;
+  }, [categories]);
+
   const finance = useMemo(() => {
     const rows = FINANCE_SUMMARY_IDS.map((id) => {
       const c = categories.find((cat) => cat.id === id);
@@ -154,6 +212,7 @@ function StatsPage() {
     { id: "distribution", label: t("stats.viewDistribution", "Répartition"), icon: PieIcon },
     { id: "ranking", label: t("stats.viewRanking", "Classement"), icon: BarChart3 },
     { id: "activity", label: t("stats.viewActivity", "Activité"), icon: CalendarDays },
+    { id: "evolution", label: t("stats.viewEvolution", "Évolution"), icon: LineIcon },
   ];
 
   return (
@@ -639,6 +698,104 @@ function StatsPage() {
                   <span className="h-2 w-3 rounded-sm" style={{ background: "#9B51E0" }} />
                   {t("stats.done", "Terminées")}
                 </span>
+              </div>
+            </section>
+          )}
+
+          {view === "evolution" && (
+            <section className="glass rounded-3xl shadow-elevated p-6 sm:p-8 space-y-6">
+              <div>
+                <h2 className="font-display font-semibold text-xl">
+                  {t("stats.viewEvolution", "Évolution")} —{" "}
+                  <span className="text-muted-foreground text-sm font-normal">
+                    {t("stats.evolutionHint", "progression cumulée sur 30 jours")}
+                  </span>
+                </h2>
+              </div>
+
+              <div className="h-72">
+                <ResponsiveContainer width="100%" height="100%">
+                  <AreaChart data={evolution} margin={{ left: 0, right: 8, top: 8, bottom: 8 }}>
+                    <defs>
+                      <linearGradient id="evoCreated" x1="0" y1="0" x2="0" y2="1">
+                        <stop offset="0%" stopColor="#56CCF2" stopOpacity={0.5} />
+                        <stop offset="100%" stopColor="#56CCF2" stopOpacity={0} />
+                      </linearGradient>
+                      <linearGradient id="evoDone" x1="0" y1="0" x2="0" y2="1">
+                        <stop offset="0%" stopColor="#9B51E0" stopOpacity={0.6} />
+                        <stop offset="100%" stopColor="#9B51E0" stopOpacity={0} />
+                      </linearGradient>
+                    </defs>
+                    <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--border))" />
+                    <XAxis dataKey="label" stroke="hsl(var(--muted-foreground))" fontSize={11} />
+                    <YAxis stroke="hsl(var(--muted-foreground))" fontSize={11} allowDecimals={false} />
+                    <Tooltip
+                      contentStyle={{
+                        background: "hsl(var(--card))",
+                        border: "1px solid hsl(var(--border))",
+                        borderRadius: 12,
+                      }}
+                    />
+                    <Legend wrapperStyle={{ fontSize: 12 }} />
+                    <Area
+                      type="monotone"
+                      dataKey="cumCreated"
+                      name={t("stats.cumCreated", "Total créées")}
+                      stroke="#56CCF2"
+                      strokeWidth={2}
+                      fill="url(#evoCreated)"
+                    />
+                    <Area
+                      type="monotone"
+                      dataKey="cumDone"
+                      name={t("stats.cumDone", "Total terminées")}
+                      stroke="#9B51E0"
+                      strokeWidth={2}
+                      fill="url(#evoDone)"
+                    />
+                  </AreaChart>
+                </ResponsiveContainer>
+              </div>
+
+              <div>
+                <h3 className="text-sm font-semibold mb-2">
+                  {t("stats.evolutionPct", "Taux de complétion (%)")}
+                </h3>
+                <div className="h-56">
+                  <ResponsiveContainer width="100%" height="100%">
+                    <AreaChart data={evolution} margin={{ left: 0, right: 8, top: 8, bottom: 8 }}>
+                      <defs>
+                        <linearGradient id="evoPct" x1="0" y1="0" x2="0" y2="1">
+                          <stop offset="0%" stopColor="hsl(var(--primary))" stopOpacity={0.6} />
+                          <stop offset="100%" stopColor="hsl(var(--primary))" stopOpacity={0} />
+                        </linearGradient>
+                      </defs>
+                      <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--border))" />
+                      <XAxis dataKey="label" stroke="hsl(var(--muted-foreground))" fontSize={11} />
+                      <YAxis
+                        stroke="hsl(var(--muted-foreground))"
+                        fontSize={11}
+                        domain={[0, 100]}
+                        tickFormatter={(v) => `${v}%`}
+                      />
+                      <Tooltip
+                        contentStyle={{
+                          background: "hsl(var(--card))",
+                          border: "1px solid hsl(var(--border))",
+                          borderRadius: 12,
+                        }}
+                        formatter={(v: any) => [`${v}%`, t("stats.lifeProgress")]}
+                      />
+                      <Area
+                        type="monotone"
+                        dataKey="pct"
+                        stroke="hsl(var(--primary))"
+                        strokeWidth={2}
+                        fill="url(#evoPct)"
+                      />
+                    </AreaChart>
+                  </ResponsiveContainer>
+                </div>
               </div>
             </section>
           )}
