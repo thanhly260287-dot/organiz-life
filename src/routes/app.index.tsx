@@ -97,17 +97,14 @@ function Dashboard() {
             placeholder={t("dashboard.newName")}
             className="w-full bg-transparent outline-none text-base"
           />
-          <div className="flex flex-wrap gap-2 items-center">
-            <span className="text-xs text-muted-foreground mr-1">{t("dashboard.icon")}</span>
-            {ICON_CHOICES.map((ic) => (
-              <button
-                key={ic}
-                onClick={() => setNewIcon(ic)}
-                className={`p-2 rounded-lg transition-all ${newIcon === ic ? "bg-gradient-brand text-white" : "hover:bg-muted"}`}
-              >
-                <IconRender name={ic} className="h-4 w-4" />
-              </button>
-            ))}
+          <div className="space-y-2">
+            <span className="text-xs text-muted-foreground">{t("dashboard.icon")}</span>
+            <IconPicker
+              value={newIcon}
+              onChange={setNewIcon}
+              prefill={newName}
+              placeholder={t("dashboard.searchIcon", "Rechercher une icône…")}
+            />
           </div>
           <div className="flex flex-wrap gap-2 items-center">
             <span className="text-xs text-muted-foreground mr-1">{t("dashboard.color")}</span>
