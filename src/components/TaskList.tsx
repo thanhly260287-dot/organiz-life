@@ -214,8 +214,8 @@ export function TaskList({
                   className="text-sm px-4 py-2 rounded-md bg-gradient-brand text-white font-medium disabled:opacity-40 disabled:cursor-not-allowed"
                 >
                   {tr("tasks.add")}
-                </button>
               </div>
+            )}
             {!enableAmount && (
               <div className="ml-auto flex gap-2">
                 <button
