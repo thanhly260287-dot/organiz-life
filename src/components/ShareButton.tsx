@@ -172,7 +172,7 @@ export function ShareButton() {
               key={opt.id}
               onClick={() => {
                 opt.action();
-                if (opt.id !== "native" && opt.id !== "copy" && opt.id !== "instagram") {
+                if (opt.id !== "native" && opt.id !== "copy" && opt.id !== "instagram" && opt.id !== "snapchat") {
                   setOpen(false);
                 }
               }}
