@@ -248,7 +248,7 @@ export const useStore = create<AppState>()(
     }),
     {
       name: "organiz-life-v1",
-      version: 8,
+      version: 9,
       migrate: (persisted: any) => {
         if (persisted?.categories) {
           // Rename "Sport et physique" → "Sport"
@@ -309,6 +309,26 @@ export const useStore = create<AppState>()(
             const physIdx = persisted.categories.findIndex((c: any) => c.id === "physique");
             const at = physIdx >= 0 ? physIdx + 1 : persisted.categories.length;
             persisted.categories.splice(at, 0, health);
+          }
+          // Rename "Loisirs divers" → "Loisirs" and add "Divers" if missing
+          const leisureCat = persisted.categories.find((c: any) => c.id === "leisure");
+          if (leisureCat && leisureCat.name === "Loisirs divers") {
+            leisureCat.name = "Loisirs";
+          }
+          if (!persisted.categories.find((c: any) => c.id === "misc")) {
+            const leisureIdx = persisted.categories.findIndex((c: any) => c.id === "leisure");
+            const insertAt = leisureIdx >= 0 ? leisureIdx + 1 : persisted.categories.length;
+            persisted.categories.splice(insertAt, 0, {
+              id: "misc",
+              name: "Divers",
+              icon: "Layers",
+              color: "#56CCF2",
+              priority: 0,
+              tasks: [],
+              subcategories: [],
+              vision: [],
+              enableDateTime: false,
+            });
           }
           // Snap colors to brand palette (skip the hidden main vision)
 
