@@ -258,6 +258,8 @@ export function TaskList({
 function SortableTaskRow({
   task: t,
   index,
+  categoryId,
+  subId,
   accent,
   showPriority,
   enableDateTime,
@@ -268,6 +270,8 @@ function SortableTaskRow({
 }: {
   task: Task;
   index: number;
+  categoryId: string;
+  subId?: string;
   accent: string;
   showPriority: boolean;
   enableDateTime: boolean;
@@ -278,12 +282,31 @@ function SortableTaskRow({
 }) {
   const { t: tr } = useTranslation();
   const { attributes, listeners, setNodeRef, transform, transition, isDragging } = useSortable({ id: t.id });
+  const updateTask = useStore((s) => s.updateTask);
+  const [editing, setEditing] = useState(false);
+  const [editTitle, setEditTitle] = useState(t.title);
+
   const style = {
     transform: CSS.Transform.toString(transform),
     transition,
     opacity: isDragging ? 0.5 : 1,
     touchAction: "manipulation" as const,
   };
+
+  const startEdit = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    setEditTitle(t.title);
+    setEditing(true);
+  };
+
+  const submitEdit = () => {
+    const trimmed = editTitle.trim();
+    if (trimmed && trimmed !== t.title) {
+      updateTask(categoryId, t.id, { title: trimmed }, subId);
+    }
+    setEditing(false);
+  };
+
   return (
     <motion.div
       ref={setNodeRef}
@@ -318,9 +341,33 @@ function SortableTaskRow({
               {index + 1}
             </span>
           )}
-          <span className={`text-sm truncate ${t.done ? "line-through text-muted-foreground" : ""}`}>
-            {t.title}
-          </span>
+          {editing ? (
+            <input
+              autoFocus
+              value={editTitle}
+              onChange={(e) => setEditTitle(e.target.value)}
+              onKeyDown={(e) => {
+                if (e.key === "Enter") submitEdit();
+                if (e.key === "Escape") setEditing(false);
+              }}
+              onBlur={submitEdit}
+              onPointerDown={(e) => e.stopPropagation()}
+              onClick={(e) => e.stopPropagation()}
+              className="w-full bg-transparent outline-none text-sm border-b border-primary"
+            />
+          ) : (
+            <button
+              onClick={startEdit}
+              onPointerDown={(e) => e.stopPropagation()}
+              className="group/name flex items-center gap-1.5 text-sm truncate"
+              title={tr("dashboard.editName", "Modifier")}
+            >
+              <span className={`truncate ${t.done ? "line-through text-muted-foreground" : ""}`}>
+                {t.title}
+              </span>
+              <Pencil className="h-3 w-3 text-muted-foreground opacity-0 group-hover/name:opacity-100 transition-opacity shrink-0" />
+            </button>
+          )}
         </div>
         {((enableDateTime && (t.date || t.time)) || t.notes || t.reminders?.length) && (
           <div className="mt-1 flex flex-wrap items-center gap-3 text-[11px] text-muted-foreground">
