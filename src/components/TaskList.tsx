@@ -215,6 +215,31 @@ export function TaskList({
               </button>
             </div>
           </div>
+          {enableDateTime && time && (
+            <div className="flex flex-wrap items-center gap-1.5 pt-1">
+              <Bell className="h-3 w-3 text-muted-foreground" />
+              <span className="text-[10px] text-muted-foreground mr-1">Rappel :</span>
+              {REMINDER_OPTIONS.map((m) => {
+                const active = reminders.includes(m);
+                return (
+                  <button
+                    key={m}
+                    type="button"
+                    onClick={() =>
+                      setReminders((r) => (r.includes(m) ? r.filter((x) => x !== m) : [...r, m]))
+                    }
+                    className={`text-[11px] px-2 py-0.5 rounded-full border transition-colors ${
+                      active
+                        ? "bg-primary text-primary-foreground border-primary"
+                        : "border-border hover:bg-muted"
+                    }`}
+                  >
+                    {reminderLabel(m)} avant
+                  </button>
+                );
+              })}
+            </div>
+          )}
         </motion.div>
       ) : (
         <button
