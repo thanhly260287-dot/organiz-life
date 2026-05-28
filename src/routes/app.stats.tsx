@@ -196,7 +196,63 @@ function StatsPage() {
           transition={{ duration: 0.2 }}
         >
           {view === "overview" && (
-            <section className="space-y-3">
+            <section className="space-y-6">
+              {finance.rows.length > 0 && (
+                <div className="glass rounded-3xl shadow-elevated p-6 sm:p-8">
+                  <div className="flex items-center justify-between gap-4 flex-wrap">
+                    <h2 className="font-display font-semibold text-xl">
+                      {t("stats.financeTitle", "Bilan financier")}
+                    </h2>
+                    <div className="text-right">
+                      <div className="text-[11px] uppercase tracking-wide text-muted-foreground">
+                        {t("stats.financeGrand", "Total global")}
+                      </div>
+                      <div
+                        className={`text-2xl sm:text-3xl font-display font-bold tabular-nums ${
+                          finance.grand < 0 ? "text-destructive" : "text-gradient"
+                        }`}
+                      >
+                        {fmtEUR(finance.grand)}
+                      </div>
+                    </div>
+                  </div>
+                  <div className="mt-4 grid sm:grid-cols-2 gap-3">
+                    {finance.rows.map((r) => (
+                      <Link
+                        key={r.id}
+                        to="/app/category/$id"
+                        params={{ id: r.id }}
+                        className="rounded-2xl bg-card/50 p-4 hover:shadow-elevated hover:-translate-y-0.5 transition-all flex items-center gap-3"
+                      >
+                        <div
+                          className="h-10 w-10 rounded-xl flex items-center justify-center shrink-0"
+                          style={{ background: `linear-gradient(135deg, ${r.color}, ${r.color}aa)` }}
+                        >
+                          <IconRender name={r.icon} className="h-5 w-5 text-white" />
+                        </div>
+                        <div className="min-w-0 flex-1">
+                          <div className="text-sm font-display font-semibold truncate">{r.name}</div>
+                          <div
+                            className={`text-base font-bold tabular-nums ${
+                              r.total < 0 ? "text-destructive" : ""
+                            }`}
+                            style={{ color: r.total >= 0 ? r.color : undefined }}
+                          >
+                            {fmtEUR(r.total)}
+                          </div>
+                        </div>
+                      </Link>
+                    ))}
+                  </div>
+                  <p className="mt-3 text-[11px] text-muted-foreground">
+                    {t(
+                      "stats.creditsHint",
+                      "Créances : comptées en négatif tant qu'elles ne sont pas réglées, en positif une fois cochées."
+                    )}
+                  </p>
+                </div>
+              )}
+
               <h2 className="font-display font-semibold text-xl">{t("stats.byCategory")}</h2>
               <div className="grid sm:grid-cols-2 gap-3">
                 {ranked.map(({ c, p }) => (
