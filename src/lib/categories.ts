@@ -13,8 +13,8 @@ export interface Task {
 }
 
 
-export const FINANCE_CATEGORY_IDS = new Set(["income", "debts", "invest", "credits"]);
-export const NEGATIVE_FINANCE_IDS = new Set(["debts"]);
+export const FINANCE_CATEGORY_IDS = new Set(["income", "debts", "invest", "credits", "savings", "needs"]);
+export const NEGATIVE_FINANCE_IDS = new Set(["debts", "invest", "savings", "needs"]);
 
 
 export interface Subcategory {
