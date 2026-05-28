@@ -2,7 +2,7 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 import { motion } from "framer-motion";
 import { useStore, getCategoryProgress } from "@/lib/store";
 import { TaskList } from "@/components/TaskList";
-import { VisionBoard } from "@/components/VisionBoard";
+
 import { IconRender } from "@/components/IconRender";
 import { ArrowLeft, Trash2, CalendarClock } from "lucide-react";
 import { FINANCE_CATEGORY_IDS, NEGATIVE_FINANCE_IDS } from "@/lib/categories";
