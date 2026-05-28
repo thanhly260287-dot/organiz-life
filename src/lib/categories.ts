@@ -7,14 +7,15 @@ export interface Task {
   notes?: string;
   priority?: number;
   amount?: number;
+  amountSign?: 1 | -1; // per-task override for finance sum
   reminders?: number[]; // minutes before (e.g. 15, 30, 60)
   notifiedAt?: Record<string, number>; // key = `${minutes}` → timestamp fired
   createdAt: number;
 }
 
 
-export const FINANCE_CATEGORY_IDS = new Set(["income", "debts", "invest", "credits", "savings", "needs"]);
-export const NEGATIVE_FINANCE_IDS = new Set(["debts", "invest", "savings", "needs"]);
+export const FINANCE_CATEGORY_IDS = new Set(["income", "debts", "invest", "credits", "savings", "costs"]);
+export const NEGATIVE_FINANCE_IDS = new Set(["debts", "costs"]);
 
 
 export interface Subcategory {
