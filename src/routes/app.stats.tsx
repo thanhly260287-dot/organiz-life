@@ -6,7 +6,7 @@ import { useTranslation } from "react-i18next";
 import { useStore, getCategoryProgress, MAIN_VISION_ID } from "@/lib/store";
 import { NEGATIVE_FINANCE_IDS } from "@/lib/categories";
 
-const FINANCE_SUMMARY_IDS = ["couts-et-gains", "income", "invest", "savings", "debts", "credits"] as const;
+const FINANCE_SUMMARY_IDS = ["couts-et-gains", "gains", "costs", "income", "invest", "savings", "debts", "credits"] as const;
 const fmtEUR = (n: number) =>
   n.toLocaleString("fr-FR", { style: "currency", currency: "EUR" });
 import { IconRender } from "@/components/IconRender";
@@ -209,7 +209,7 @@ function StatsPage() {
                       </div>
                       <div
                         className={`text-2xl sm:text-3xl font-display font-bold tabular-nums ${
-                          finance.grand < 0 ? "text-destructive" : "text-gradient"
+                          finance.grand < 0 ? "text-red-500" : "text-green-500"
                         }`}
                       >
                         {fmtEUR(finance.grand)}
@@ -234,9 +234,8 @@ function StatsPage() {
                           <div className="text-sm font-display font-semibold truncate">{r.name}</div>
                           <div
                             className={`text-base font-bold tabular-nums ${
-                              r.total < 0 ? "text-destructive" : ""
+                              r.total < 0 ? "text-red-500" : "text-green-500"
                             }`}
-                            style={{ color: r.total >= 0 ? r.color : undefined }}
                           >
                             {fmtEUR(r.total)}
                           </div>

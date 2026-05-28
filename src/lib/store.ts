@@ -251,7 +251,7 @@ export const useStore = create<AppState>()(
     }),
     {
       name: "organiz-life-v1",
-      version: 11,
+      version: 12,
       migrate: (persisted: any) => {
         if (persisted?.categories) {
           // Rename "Sport et physique" → "Sport"
@@ -325,6 +325,22 @@ export const useStore = create<AppState>()(
               id: "misc",
               name: "Divers",
               icon: "Layers",
+              color: "#56CCF2",
+              priority: 0,
+              tasks: [],
+              subcategories: [],
+              vision: [],
+              enableDateTime: false,
+            });
+          }
+          // Add "gains" category if missing (after couts-et-gains)
+          if (!persisted.categories.find((c: any) => c.id === "gains")) {
+            const cegIdx = persisted.categories.findIndex((c: any) => c.id === "couts-et-gains");
+            const insertAt = cegIdx >= 0 ? cegIdx + 1 : persisted.categories.length;
+            persisted.categories.splice(insertAt, 0, {
+              id: "gains",
+              name: "Gains",
+              icon: "TrendingUp",
               color: "#56CCF2",
               priority: 0,
               tasks: [],

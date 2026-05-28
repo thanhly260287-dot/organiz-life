@@ -5,7 +5,7 @@ import { useStore, getCategoryProgress } from "@/lib/store";
 import { TaskList } from "@/components/TaskList";
 import { IconRender } from "@/components/IconRender";
 import { ArrowLeft, Trash2, CalendarClock } from "lucide-react";
-import { FINANCE_CATEGORY_IDS, NEGATIVE_FINANCE_IDS } from "@/lib/categories";
+import { FINANCE_CATEGORY_IDS, NEGATIVE_FINANCE_IDS, FORCED_SIGN_IDS } from "@/lib/categories";
 import { useCategoryName } from "@/lib/useCategoryName";
 
 export const Route = createFileRoute("/app/category/$id")({
@@ -105,6 +105,7 @@ function CategoryPage() {
           requireTime={category.id === "rdv"}
           enableAmount={FINANCE_CATEGORY_IDS.has(category.id)}
           amountSign={NEGATIVE_FINANCE_IDS.has(category.id) ? -1 : 1}
+          lockSign={FORCED_SIGN_IDS.has(category.id)}
         />
       </section>
     </main>
