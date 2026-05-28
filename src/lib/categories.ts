@@ -7,8 +7,11 @@ export interface Task {
   notes?: string;
   priority?: number;
   amount?: number;
+  reminders?: number[]; // minutes before (e.g. 15, 30, 60)
+  notifiedAt?: Record<string, number>; // key = `${minutes}` → timestamp fired
   createdAt: number;
 }
+
 
 export const FINANCE_CATEGORY_IDS = new Set(["income", "debts", "invest", "credits"]);
 export const NEGATIVE_FINANCE_IDS = new Set(["debts"]);
