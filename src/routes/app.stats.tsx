@@ -157,7 +157,6 @@ function StatsPage() {
     taskDatesByCategory.forEach((buckets, catId) => {
       if (ids !== null && !ids.has(catId)) return;
       const { created, done } = buckets;
-      const { created, done } = buckets;
       for (let i = 0; i < created.length; i++) {
         const k = created[i];
         if (k < firstDay) baseCreated++;
