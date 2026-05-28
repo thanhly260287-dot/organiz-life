@@ -197,6 +197,10 @@ export function TaskList({
                     <span className="text-[10px] text-muted-foreground mt-0.5">{tr("tasks.timeRequired")}</span>
                   ) : (
                     <span className="text-[10px] text-muted-foreground mt-0.5">{tr("tasks.timeOptional")}</span>
+                  )}
+                </div>
+              </>
+            )}
             {enableAmount && (
               <div className="flex items-center gap-2 ml-auto">
                 <input
@@ -225,10 +229,6 @@ export function TaskList({
               </div>
             )}
 
-                  {tr("tasks.add")}
-                </button>
-              </div>
-            )}
             {!enableAmount && (
               <div className="ml-auto flex gap-2">
                 <button
