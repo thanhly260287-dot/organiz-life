@@ -33,6 +33,12 @@ function LoginPage() {
   const [otpSent, setOtpSent] = useState(false);
   const [otpCode, setOtpCode] = useState("");
 
+  // optional SMS verification after email signup
+  const [signupPhone, setSignupPhone] = useState("");
+  const [verifyPhoneStep, setVerifyPhoneStep] = useState(false);
+  const [verifyOtp, setVerifyOtp] = useState("");
+
+
   // Load saved email on mount
   useEffect(() => {
     const savedEmail = localStorage.getItem("ol_remember_email");
@@ -66,6 +72,16 @@ function LoginPage() {
         });
         if (error) throw error;
         toast.success(t("login.accountCreated"));
+        // If user entered a phone, offer SMS verification step
+        if (signupPhone.trim()) {
+          const { error: phErr } = await supabase.auth.updateUser({ phone: signupPhone.trim() });
+          if (phErr) {
+            toast.error(phErr.message);
+          } else {
+            setVerifyPhoneStep(true);
+            toast.success(t("login.sendingSms"));
+          }
+        }
       } else {
         const { error } = await supabase.auth.signInWithPassword({ email, password });
         if (error) throw error;
@@ -75,6 +91,7 @@ function LoginPage() {
           localStorage.removeItem("ol_remember_email");
         }
       }
+
     } catch (err: any) {
       toast.error(err?.message ?? t("login.loginError"));
     } finally {
@@ -103,6 +120,26 @@ function LoginPage() {
     try {
       const { error } = await supabase.auth.verifyOtp({ phone, token: otpCode, type: "sms" });
       if (error) throw error;
+    } catch (err: any) {
+      toast.error(err?.message ?? t("login.codeInvalid"));
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleVerifySignupPhone = async (e: FormEvent) => {
+    e.preventDefault();
+    setLoading(true);
+    try {
+      const { error } = await supabase.auth.verifyOtp({
+        phone: signupPhone.trim(),
+        token: verifyOtp,
+        type: "phone_change",
+      });
+      if (error) throw error;
+      toast.success(t("login.phoneVerified"));
+      setVerifyPhoneStep(false);
+      navigate({ to: "/app" });
     } catch (err: any) {
       toast.error(err?.message ?? t("login.codeInvalid"));
     } finally {
@@ -219,6 +256,18 @@ function LoginPage() {
                 <span className="text-muted-foreground">{t("login.rememberMe")}</span>
               </label>
             )}
+            {mode === "signup" && (
+              <div className="relative">
+                <Phone className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+                <input
+                  type="tel"
+                  value={signupPhone}
+                  onChange={(e) => setSignupPhone(e.target.value)}
+                  placeholder={t("login.phoneOptional")}
+                  className="w-full rounded-xl border bg-background pl-10 pr-3 py-2.5 text-sm focus:border-primary outline-none"
+                />
+              </div>
+            )}
             <button
               type="submit"
               disabled={loading}
@@ -236,6 +285,38 @@ function LoginPage() {
             </button>
           </form>
         )}
+
+        {verifyPhoneStep && (
+          <form onSubmit={handleVerifySignupPhone} className="space-y-3 rounded-xl border-2 border-primary/40 p-4 bg-primary/5">
+            <p className="text-sm font-medium text-center">{t("login.verifyPhoneTitle")}</p>
+            <p className="text-xs text-muted-foreground text-center">{signupPhone}</p>
+            <input
+              type="text"
+              required
+              value={verifyOtp}
+              onChange={(e) => setVerifyOtp(e.target.value)}
+              placeholder={t("login.otpPlaceholder")}
+              className="w-full rounded-xl border bg-background px-3 py-2.5 text-sm focus:border-primary outline-none tracking-widest text-center"
+            />
+            <button
+              type="submit"
+              disabled={loading}
+              className="w-full rounded-xl bg-gradient-brand px-4 py-2.5 text-sm font-medium text-white shadow-glow hover:scale-[1.02] transition-transform disabled:opacity-60 flex items-center justify-center gap-2"
+            >
+              {loading && <Loader2 className="h-4 w-4 animate-spin" />}
+              {t("login.verifyCode")}
+            </button>
+            <button
+              type="button"
+              onClick={() => { setVerifyPhoneStep(false); setVerifyOtp(""); navigate({ to: "/app" }); }}
+              className="w-full text-xs text-muted-foreground hover:text-foreground"
+            >
+              {t("login.skipStep")}
+            </button>
+          </form>
+        )}
+
+
 
         {method === "phone" && (
           <form onSubmit={otpSent ? handlePhoneVerify : handlePhoneSend} className="space-y-3">
