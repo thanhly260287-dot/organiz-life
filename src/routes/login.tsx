@@ -72,6 +72,16 @@ function LoginPage() {
         });
         if (error) throw error;
         toast.success(t("login.accountCreated"));
+        // If user entered a phone, offer SMS verification step
+        if (signupPhone.trim()) {
+          const { error: phErr } = await supabase.auth.updateUser({ phone: signupPhone.trim() });
+          if (phErr) {
+            toast.error(phErr.message);
+          } else {
+            setVerifyPhoneStep(true);
+            toast.success(t("login.sendingSms"));
+          }
+        }
       } else {
         const { error } = await supabase.auth.signInWithPassword({ email, password });
         if (error) throw error;
@@ -81,6 +91,7 @@ function LoginPage() {
           localStorage.removeItem("ol_remember_email");
         }
       }
+
     } catch (err: any) {
       toast.error(err?.message ?? t("login.loginError"));
     } finally {
