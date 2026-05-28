@@ -41,7 +41,7 @@ export function ShareButton() {
   const encodedUrl = encodeURIComponent(appUrl);
   const encodedTitle = encodeURIComponent(shareTitle);
 
-  const canNativeShare = typeof window !== "undefined" && "share" in navigator && typeof (navigator as any).share === "function";
+  const canNativeShare = typeof navigator !== "undefined" && "share" in navigator && typeof (navigator as any).share === "function";
 
   const handleNativeShare = useCallback(async () => {
     if (canNativeShare) {
