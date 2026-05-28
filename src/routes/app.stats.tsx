@@ -11,13 +11,13 @@ const fmtEUR = (n: number) =>
   n.toLocaleString("fr-FR", { style: "currency", currency: "EUR" });
 import { IconRender } from "@/components/IconRender";
 import { useCategoryName } from "@/lib/useCategoryName";
-import { PieChart, Pie, Cell, ResponsiveContainer, Tooltip, BarChart, Bar, XAxis, YAxis, CartesianGrid } from "recharts";
+import { PieChart, Pie, Cell, ResponsiveContainer, Tooltip, BarChart, Bar, XAxis, YAxis, CartesianGrid, AreaChart, Area, Legend } from "recharts";
 
 export const Route = createFileRoute("/app/stats")({
   component: StatsPage,
 });
 
-type View = "overview" | "distribution" | "ranking" | "activity";
+type View = "overview" | "distribution" | "ranking" | "activity" | "evolution";
 
 function StatsPage() {
   const { t } = useTranslation();
