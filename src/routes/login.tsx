@@ -1,12 +1,13 @@
 import { createFileRoute, useNavigate, Link } from "@tanstack/react-router";
 import { useEffect, useState, type FormEvent } from "react";
 import { motion } from "framer-motion";
-import { Mail, Lock, Phone, Loader2 } from "lucide-react";
+import { Mail, Lock, Phone, Loader2, Eye, EyeOff } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { lovable } from "@/integrations/lovable/index";
 import { toast } from "sonner";
 import { Logo } from "@/components/Logo";
 import { useTranslation } from "react-i18next";
+
 
 export const Route = createFileRoute("/login")({
   component: LoginPage,
