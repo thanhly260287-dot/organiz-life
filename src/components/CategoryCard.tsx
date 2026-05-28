@@ -3,12 +3,14 @@ import { motion } from "framer-motion";
 import { useSortable } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
 import { Trash2, GripVertical } from "lucide-react";
+import { useTranslation } from "react-i18next";
 import { getCategoryProgress, useStore } from "@/lib/store";
 import type { Category } from "@/lib/categories";
 import { IconRender } from "./IconRender";
 import { useCategoryName } from "@/lib/useCategoryName";
 
 export function CategoryCard({ category, index }: { category: Category; index: number }) {
+  const { t } = useTranslation();
   const { attributes, listeners, setNodeRef, transform, transition, isDragging } = useSortable({
     id: category.id,
   });
@@ -16,11 +18,12 @@ export function CategoryCard({ category, index }: { category: Category; index: n
   const removeCategory = useStore((s) => s.removeCategory);
   const progress = getCategoryProgress(category);
   const nameFor = useCategoryName();
+  const displayName = nameFor(category.id, category.name);
 
   const handleDelete = (e: React.MouseEvent | React.PointerEvent) => {
     e.preventDefault();
     e.stopPropagation();
-    if (confirm(`Supprimer la catégorie "${category.name}" ? Cette action est irréversible.`)) {
+    if (confirm(t("dashboard.confirmDeleteCategory", { name: displayName }))) {
       removeCategory(category.id);
     }
   };
@@ -72,10 +75,10 @@ export function CategoryCard({ category, index }: { category: Category; index: n
                   {String(index + 1).padStart(2, "0")}
                 </span>
               )}
-              <h3 className="font-display font-semibold text-base truncate">{category.name}</h3>
+              <h3 className="font-display font-semibold text-base truncate">{displayName}</h3>
             </div>
             <p className="mt-1 text-xs text-muted-foreground">
-              {progress.done} / {progress.total} tâches
+              {t("tasks.taskCount", { done: progress.done, total: progress.total })}
             </p>
             <div className="mt-3 h-1.5 w-full rounded-full bg-muted overflow-hidden">
               <div
@@ -91,7 +94,7 @@ export function CategoryCard({ category, index }: { category: Category; index: n
             <span
               aria-hidden
               className="p-1.5 rounded-md text-muted-foreground/60"
-              title="Maintenir pour déplacer"
+              title={t("dashboard.dragHint")}
             >
               <GripVertical className="h-4 w-4" />
             </span>
@@ -103,7 +106,7 @@ export function CategoryCard({ category, index }: { category: Category; index: n
         onClick={handleDelete}
         onPointerDown={(e) => e.stopPropagation()}
         onTouchStart={(e) => e.stopPropagation()}
-        aria-label={`Supprimer ${category.name}`}
+        aria-label={t("dashboard.deleteCategoryAria", { name: displayName })}
         className="absolute top-2 right-2 z-10 p-1.5 rounded-lg bg-background/80 backdrop-blur text-muted-foreground hover:text-destructive hover:bg-destructive/10 opacity-60 hover:opacity-100 focus:opacity-100 transition-opacity"
       >
         <Trash2 className="h-4 w-4" />

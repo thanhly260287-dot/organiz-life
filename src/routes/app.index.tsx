@@ -4,13 +4,11 @@ import { motion } from "framer-motion";
 import { DndContext, closestCenter, type DragEndEvent, PointerSensor, TouchSensor, useSensor, useSensors } from "@dnd-kit/core";
 import { SortableContext, arrayMove, rectSortingStrategy } from "@dnd-kit/sortable";
 import { Plus, Search } from "lucide-react";
+import { useTranslation } from "react-i18next";
 import { useStore, MAIN_VISION_ID } from "@/lib/store";
 import { CategoryCard } from "@/components/CategoryCard";
 import { IconRender } from "@/components/IconRender";
 import { VisionBoard } from "@/components/VisionBoard";
-
-
-
 
 const ICON_CHOICES = ["Star", "Heart", "Zap", "Rocket", "Target", "Flame", "Trophy", "Compass", "BookOpen", "Brain"];
 const COLOR_CHOICES = ["#56CCF2", "#9B51E0"];
@@ -20,6 +18,7 @@ export const Route = createFileRoute("/app/")({
 });
 
 function Dashboard() {
+  const { t } = useTranslation();
   const categories = useStore((s) => s.categories);
   const reorder = useStore((s) => s.reorderCategories);
   const addCategory = useStore((s) => s.addCategory);
@@ -47,10 +46,6 @@ function Dashboard() {
     [visibleCategories, query]
   );
 
-
-  
-
-
   const onDragEnd = (e: DragEndEvent) => {
     const { active, over } = e;
     if (!over || active.id === over.id) return;
@@ -59,7 +54,6 @@ function Dashboard() {
     const newIdx = ids.indexOf(over.id as string);
     reorder([...arrayMove(ids, oldIdx, newIdx), MAIN_VISION_ID]);
   };
-
 
   const submitNew = () => {
     if (!newName.trim()) return;
@@ -76,7 +70,7 @@ function Dashboard() {
           <input
             value={query}
             onChange={(e) => setQuery(e.target.value)}
-            placeholder="Rechercher une catégorie…"
+            placeholder={t("dashboard.searchPlaceholder")}
             className="w-full glass rounded-xl shadow-glass pl-10 pr-4 py-3 text-sm outline-none focus:ring-2 ring-primary"
           />
         </div>
@@ -84,7 +78,7 @@ function Dashboard() {
           onClick={() => setCreating(true)}
           className="inline-flex items-center gap-2 rounded-xl bg-gradient-brand px-5 py-3 text-sm font-medium text-white shadow-glow hover:scale-105 transition-transform"
         >
-          <Plus className="h-4 w-4" /> Ajouter
+          <Plus className="h-4 w-4" /> {t("dashboard.add")}
         </button>
       </section>
 
@@ -99,11 +93,11 @@ function Dashboard() {
             value={newName}
             onChange={(e) => setNewName(e.target.value)}
             onKeyDown={(e) => e.key === "Enter" && submitNew()}
-            placeholder="Nom de la catégorie"
+            placeholder={t("dashboard.newName")}
             className="w-full bg-transparent outline-none text-base"
           />
           <div className="flex flex-wrap gap-2 items-center">
-            <span className="text-xs text-muted-foreground mr-1">Icône :</span>
+            <span className="text-xs text-muted-foreground mr-1">{t("dashboard.icon")}</span>
             {ICON_CHOICES.map((ic) => (
               <button
                 key={ic}
@@ -115,7 +109,7 @@ function Dashboard() {
             ))}
           </div>
           <div className="flex flex-wrap gap-2 items-center">
-            <span className="text-xs text-muted-foreground mr-1">Couleur :</span>
+            <span className="text-xs text-muted-foreground mr-1">{t("dashboard.color")}</span>
             {COLOR_CHOICES.map((c) => (
               <button
                 key={c}
@@ -127,10 +121,10 @@ function Dashboard() {
           </div>
           <div className="flex gap-2 justify-end">
             <button onClick={() => setCreating(false)} className="text-sm px-4 py-2 rounded-lg hover:bg-muted">
-              Annuler
+              {t("dashboard.cancel")}
             </button>
             <button onClick={submitNew} className="text-sm px-4 py-2 rounded-lg bg-gradient-brand text-white font-medium">
-              Créer
+              {t("dashboard.create")}
             </button>
           </div>
         </motion.div>
@@ -154,5 +148,3 @@ function Dashboard() {
     </main>
   );
 }
-
-
