@@ -242,6 +242,7 @@ function SortableTaskRow({
   onToggle: () => void;
   onRemove: () => void;
 }) {
+  const { t: tr } = useTranslation();
   const { attributes, listeners, setNodeRef, transform, transition, isDragging } = useSortable({ id: t.id });
   const style = {
     transform: CSS.Transform.toString(transform),
