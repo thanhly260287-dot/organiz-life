@@ -56,7 +56,7 @@ export function ShareButton() {
   }, [appUrl]);
 
   const options: ShareOption[] = [
-    ...("share" in navigator && navigator.share
+    ...(canNativeShare
       ? [
           {
             id: "native",
