@@ -197,14 +197,14 @@ export function TaskList({
                 onClick={() => setAdding(false)}
                 className="text-xs px-3 py-1 rounded-md hover:bg-muted"
               >
-                Annuler
+                {tr("tasks.cancel")}
               </button>
               <button
                 onClick={submit}
                 disabled={!canSubmit}
                 className="text-xs px-3 py-1 rounded-md bg-gradient-brand text-white font-medium disabled:opacity-40 disabled:cursor-not-allowed"
               >
-                Ajouter
+                {tr("tasks.add")}
               </button>
             </div>
           </div>
