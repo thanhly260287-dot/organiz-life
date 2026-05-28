@@ -28,6 +28,7 @@ export function TaskList({
   requireTime = false,
   enableAmount = false,
   amountSign = 1,
+  lockSign = false,
 }: {
   categoryId: string;
   subId?: string;
@@ -38,6 +39,7 @@ export function TaskList({
   requireTime?: boolean;
   enableAmount?: boolean;
   amountSign?: 1 | -1;
+  lockSign?: boolean;
 }) {
   const { t: tr } = useTranslation();
   const [adding, setAdding] = useState(false);
