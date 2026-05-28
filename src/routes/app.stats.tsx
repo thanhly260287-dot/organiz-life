@@ -151,11 +151,11 @@ function StatsPage() {
     // Index direct par date pour éviter une Map
     const indexByDate: Record<string, number> = {};
     for (let i = 0; i < DAYS; i++) indexByDate[days[i].date] = i;
-
     let baseCreated = 0;
     let baseDone = 0;
-    const ids = evoCat === "all" ? null : evoCat;
+    const ids = evoAll ? null : new Set(evoCats);
     taskDatesByCategory.forEach((buckets, catId) => {
+      if (ids !== null && !ids.has(catId)) return;
       if (ids !== null && catId !== ids) return;
       const { created, done } = buckets;
       for (let i = 0; i < created.length; i++) {
@@ -185,9 +185,8 @@ function StatsPage() {
       d.cumCreated = cc;
       d.cumDone = cd;
       d.pct = cc === 0 ? 0 : Math.round((cd / cc) * 100);
-    }
     return days;
-  }, [taskDatesByCategory, evoCat]);
+  }, [taskDatesByCategory, evoCats]);
 
 
 
