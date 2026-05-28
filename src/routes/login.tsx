@@ -50,13 +50,13 @@ function LoginPage() {
           options: { emailRedirectTo: `${window.location.origin}/app` },
         });
         if (error) throw error;
-        toast.success("Compte créé ! Vérifie ton email pour confirmer.");
+        toast.success(t("login.accountCreated"));
       } else {
         const { error } = await supabase.auth.signInWithPassword({ email, password });
         if (error) throw error;
       }
     } catch (err: any) {
-      toast.error(err?.message ?? "Erreur de connexion");
+      toast.error(err?.message ?? t("login.loginError"));
     } finally {
       setLoading(false);
     }
@@ -69,9 +69,9 @@ function LoginPage() {
       const { error } = await supabase.auth.signInWithOtp({ phone });
       if (error) throw error;
       setOtpSent(true);
-      toast.success("Code envoyé par SMS");
+      toast.success(t("login.codeSent"));
     } catch (err: any) {
-      toast.error(err?.message ?? "Erreur d'envoi du code");
+      toast.error(err?.message ?? t("login.codeSendError"));
     } finally {
       setLoading(false);
     }
@@ -84,7 +84,7 @@ function LoginPage() {
       const { error } = await supabase.auth.verifyOtp({ phone, token: otpCode, type: "sms" });
       if (error) throw error;
     } catch (err: any) {
-      toast.error(err?.message ?? "Code invalide");
+      toast.error(err?.message ?? t("login.codeInvalid"));
     } finally {
       setLoading(false);
     }
@@ -98,7 +98,7 @@ function LoginPage() {
       });
       if (result.error) throw result.error;
     } catch (err: any) {
-      toast.error(err?.message ?? `Erreur ${provider}`);
+      toast.error(err?.message ?? t("login.providerError", { provider }));
       setLoading(false);
     }
   };
