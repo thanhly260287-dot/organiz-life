@@ -69,6 +69,11 @@ function LoginPage() {
       } else {
         const { error } = await supabase.auth.signInWithPassword({ email, password });
         if (error) throw error;
+        if (rememberMe) {
+          localStorage.setItem("ol_remember_email", email);
+        } else {
+          localStorage.removeItem("ol_remember_email");
+        }
       }
     } catch (err: any) {
       toast.error(err?.message ?? t("login.loginError"));
