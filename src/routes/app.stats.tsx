@@ -30,6 +30,7 @@ function StatsPage() {
   const [view, setView] = useState<View>("overview");
   const [evoCats, setEvoCats] = useState<string[]>(["all"]);
   const evoAll = evoCats.includes("all");
+  const [evoDays, setEvoDays] = useState<number>(30);
   // Per-row selection in the Bilan financier: undefined = included with natural sign,
   // +1 = forced added, -1 = forced subtracted, 0 = excluded. Click cycles through.
   const [financeSel, setFinanceSel] = useState<Record<string, 1 | -1 | 0>>({});
@@ -131,7 +132,7 @@ function StatsPage() {
   }, [categories]);
 
   const evolution = useMemo(() => {
-    const DAYS = 30;
+    const DAYS = evoDays;
     const today = new Date();
     const days: { label: string; date: string; created: number; done: number; cumCreated: number; cumDone: number; pct: number }[] = new Array(DAYS);
     for (let i = 0; i < DAYS; i++) {
@@ -186,7 +187,7 @@ function StatsPage() {
       d.pct = cc === 0 ? 0 : Math.round((cd / cc) * 100);
     }
     return days;
-  }, [taskDatesByCategory, evoCats]);
+  }, [taskDatesByCategory, evoCats, evoDays]);
 
 
 
@@ -746,54 +747,73 @@ function StatsPage() {
                 <h2 className="font-display font-semibold text-xl">
                   {t("stats.viewEvolution", "Évolution")} —{" "}
                   <span className="text-muted-foreground text-sm font-normal">
-                    {t("stats.evolutionHint", "progression cumulée sur 30 jours")}
+                    {t("stats.evolutionHint", "progression cumulée sur")} {evoDays} {t("stats.days", "jours")}
                   </span>
                 </h2>
-                <div className="flex flex-wrap gap-2">
-                  <button
-                    type="button"
-                    onClick={() => setEvoCats(["all"])}
-                    className={`inline-flex items-center gap-1.5 rounded-full px-3 py-1.5 text-xs transition-all border ${
-                      evoAll
-                        ? "bg-gradient-brand text-white border-transparent shadow-sm"
-                        : "bg-card/60 border-border hover:bg-card text-foreground"
-                    }`}
-                  >
-                    {t("stats.allCategories", "Toutes les catégories")}
-                  </button>
-                  {categories.map((c) => {
-                    const active = !evoAll && evoCats.includes(c.id);
-                    return (
+                <div className="flex flex-col gap-2">
+                  {/* Sélecteur de période */}
+                  <div className="flex gap-1">
+                    {[7, 30, 90].map((n) => (
                       <button
-                        key={c.id}
+                        key={n}
                         type="button"
-                        onClick={() =>
-                          setEvoCats((prev) => {
-                            const next = prev.filter((x) => x !== "all");
-                            if (next.includes(c.id)) {
-                              const filtered = next.filter((x) => x !== c.id);
-                              return filtered.length === 0 ? ["all"] : filtered;
-                            }
-                            return [...next, c.id];
-                          })
-                        }
-                        className={`inline-flex items-center gap-1.5 rounded-full px-3 py-1.5 text-xs transition-all border ${
-                          active
+                        onClick={() => setEvoDays(n)}
+                        className={`px-2.5 py-1 text-xs font-medium rounded-lg transition-all border ${
+                          evoDays === n
                             ? "bg-gradient-brand text-white border-transparent shadow-sm"
                             : "bg-card/60 border-border hover:bg-card text-foreground"
                         }`}
                       >
-                        <span
-                          className="h-2 w-2 rounded-full shrink-0"
-                          style={{ background: c.color }}
-                        />
-                        {nameFor(c.id, c.name)}
+                        {n}j
                       </button>
-                    );
-                  })}
+                    ))}
+                  </div>
+                  {/* Filtre catégories */}
+                  <div className="flex flex-wrap gap-2">
+                    <button
+                      type="button"
+                      onClick={() => setEvoCats(["all"])}
+                      className={`inline-flex items-center gap-1.5 rounded-full px-3 py-1.5 text-xs transition-all border ${
+                        evoAll
+                          ? "bg-gradient-brand text-white border-transparent shadow-sm"
+                          : "bg-card/60 border-border hover:bg-card text-foreground"
+                      }`}
+                    >
+                      {t("stats.allCategories", "Toutes les catégories")}
+                    </button>
+                    {categories.map((c) => {
+                      const active = !evoAll && evoCats.includes(c.id);
+                      return (
+                        <button
+                          key={c.id}
+                          type="button"
+                          onClick={() =>
+                            setEvoCats((prev) => {
+                              const next = prev.filter((x) => x !== "all");
+                              if (next.includes(c.id)) {
+                                const filtered = next.filter((x) => x !== c.id);
+                                return filtered.length === 0 ? ["all"] : filtered;
+                              }
+                              return [...next, c.id];
+                            })
+                          }
+                          className={`inline-flex items-center gap-1.5 rounded-full px-3 py-1.5 text-xs transition-all border ${
+                            active
+                              ? "bg-gradient-brand text-white border-transparent shadow-sm"
+                              : "bg-card/60 border-border hover:bg-card text-foreground"
+                          }`}
+                        >
+                          <span
+                            className="h-2 w-2 rounded-full shrink-0"
+                            style={{ background: c.color }}
+                          />
+                          {nameFor(c.id, c.name)}
+                        </button>
+                      );
+                    })}
+                  </div>
                 </div>
               </div>
-
 
               <div className="h-72">
                 <ResponsiveContainer width="100%" height="100%">
