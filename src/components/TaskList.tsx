@@ -81,6 +81,7 @@ export function TaskList({
         date: date || undefined,
         time: time || undefined,
         amount: amt,
+        amountSign: amt != null ? (amountSign as 1 | -1) : undefined,
         reminders: enableDateTime && time && reminders.length ? [...reminders].sort((a, b) => a - b) : undefined,
       },
       subId
@@ -97,7 +98,7 @@ export function TaskList({
 
 
   const total = enableAmount
-    ? tasks.reduce((sum, t) => sum + (t.amount ?? 0), 0) * amountSign
+    ? tasks.reduce((sum, t) => sum + (t.amount ?? 0) * ((t.amountSign ?? amountSign) as number), 0)
     : 0;
 
   return (
