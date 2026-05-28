@@ -339,8 +339,8 @@ export const useStore = create<AppState>()(
           ];
           for (const act of ACT_CATS) {
             if (!persisted.categories.find((c: any) => c.id === act.id)) {
-              const miscIdx = persisted.categories.findIndex((c: any) => c.id === "misc");
-              const insertAt = miscIdx >= 0 ? miscIdx + 1 : persisted.categories.length;
+              const leisureIdx = persisted.categories.findIndex((c: any) => c.id === "leisure");
+              const insertAt = leisureIdx >= 0 ? leisureIdx + 1 : persisted.categories.length;
               persisted.categories.splice(insertAt, 0, {
                 id: act.id,
                 name: act.name,
@@ -352,6 +352,16 @@ export const useStore = create<AppState>()(
                 vision: [],
                 enableDateTime: false,
               });
+            }
+          }
+          // Move "misc" to the end (after no-accept)
+          const miscIdx = persisted.categories.findIndex((c: any) => c.id === "misc");
+          if (miscIdx >= 0) {
+            const noAcceptIdx = persisted.categories.findIndex((c: any) => c.id === "no-accept");
+            if (noAcceptIdx >= 0 && miscIdx < noAcceptIdx) {
+              const [misc] = persisted.categories.splice(miscIdx, 1);
+              const newNoAcceptIdx = persisted.categories.findIndex((c: any) => c.id === "no-accept");
+              persisted.categories.splice(newNoAcceptIdx + 1, 0, misc);
             }
           }
           // Snap colors to brand palette (skip the hidden main vision)
