@@ -85,13 +85,20 @@ export const SUPPORTED_LANGUAGES = [
   { code: "ig", label: "Igbo", flag: "🇳🇬" },
   { code: "zu", label: "isiZulu", flag: "🇿🇦" },
   { code: "xh", label: "isiXhosa", flag: "🇿🇦" },
-  { code: "af", label: "Afrikaans", flag: "🇿🇦" },
   { code: "so", label: "Soomaali", flag: "🇸🇴" },
   { code: "mg", label: "Malagasy", flag: "🇲🇬" },
   { code: "rw", label: "Kinyarwanda", flag: "🇷🇼" },
   { code: "ht", label: "Kreyòl Ayisyen", flag: "🇭🇹" },
-  { code: "eo", label: "Esperanto", flag: "🌍" },
-  { code: "la", label: "Latina", flag: "🏛️" },
+  { code: "fr-CI", label: "Français (Côte d'Ivoire)", flag: "🇨🇮" },
+  { code: "fr-CD", label: "Français (Congo)", flag: "🇨🇩" },
+  { code: "fr-ML", label: "Français (Mali)", flag: "🇲🇱" },
+  { code: "fr-SN", label: "Français (Sénégal)", flag: "🇸🇳" },
+  { code: "fr-CM", label: "Français (Cameroun)", flag: "🇨🇲" },
+  { code: "ar-MA", label: "العربية (المغرب)", flag: "🇲🇦" },
+  { code: "ar-DZ", label: "العربية (الجزائر)", flag: "🇩🇿" },
+  { code: "ar-TN", label: "العربية (تونس)", flag: "🇹🇳" },
+  { code: "ar-EG", label: "العربية (مصر)", flag: "🇪🇬" },
+  { code: "ar-LB", label: "العربية (لبنان)", flag: "🇱🇧" },
 ] as const;
 
 export type LangCode = (typeof SUPPORTED_LANGUAGES)[number]["code"];
