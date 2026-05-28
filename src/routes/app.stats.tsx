@@ -212,6 +212,7 @@ function StatsPage() {
     { id: "distribution", label: t("stats.viewDistribution", "Répartition"), icon: PieIcon },
     { id: "ranking", label: t("stats.viewRanking", "Classement"), icon: BarChart3 },
     { id: "activity", label: t("stats.viewActivity", "Activité"), icon: CalendarDays },
+    { id: "evolution", label: t("stats.viewEvolution", "Évolution"), icon: LineIcon },
   ];
 
   return (
