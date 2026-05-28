@@ -48,7 +48,7 @@ const KEYWORDS: Record<string, string> = {
   evenement: "calendar", événement: "calendar", event: "calendar", events: "calendar",
   rdv: "calendar-clock", "rendez-vous": "calendar-clock", meeting: "calendar-clock",
   cadeau: "gift", cadeaux: "gift", gift: "gift",
-  shopping: "shopping-bag", achat: "shopping-bag", achats: "shopping-bag", course: "shopping-cart", courses: "shopping-cart",
+  shopping: "shopping-bag", achat: "shopping-bag", achats: "shopping-bag", courses: "shopping-cart",
   jardin: "sprout", jardinage: "sprout", garden: "sprout",
   meditation: "lotus", méditation: "lotus", yoga: "lotus",
   spirituel: "sparkles", spirituality: "sparkles",
