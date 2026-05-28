@@ -238,6 +238,78 @@ function StatsPage() {
             <section className="space-y-6">
               {finance.rows.length > 0 && (
                 <div className="glass rounded-3xl shadow-elevated p-6 sm:p-8">
+                  <h2 className="font-display font-semibold text-xl">
+                    {t("stats.globalBalance", "Vue globale financière")}
+                  </h2>
+                  <p className="text-[11px] text-muted-foreground mt-1">
+                    {t("stats.globalBalanceHint", "Agrégation de toutes tes catégories financières.")}
+                  </p>
+                  <div className="mt-4 grid grid-cols-2 sm:grid-cols-4 gap-3">
+                    <div className="rounded-2xl bg-green-500/10 border border-green-500/20 p-3">
+                      <div className="text-[10px] uppercase tracking-wide text-muted-foreground">
+                        {t("stats.totalPos", "Total positif")}
+                      </div>
+                      <div className="text-lg sm:text-xl font-display font-bold tabular-nums text-green-500">
+                        {fmtEUR(finance.totalPos)}
+                      </div>
+                    </div>
+                    <div className="rounded-2xl bg-red-500/10 border border-red-500/20 p-3">
+                      <div className="text-[10px] uppercase tracking-wide text-muted-foreground">
+                        {t("stats.totalNeg", "Total négatif")}
+                      </div>
+                      <div className="text-lg sm:text-xl font-display font-bold tabular-nums text-red-500">
+                        {fmtEUR(finance.totalNeg)}
+                      </div>
+                    </div>
+                    <div className="rounded-2xl bg-card/50 p-3">
+                      <div className="text-[10px] uppercase tracking-wide text-muted-foreground">
+                        {t("stats.netBalance", "Solde net")}
+                      </div>
+                      <div
+                        className={`text-lg sm:text-xl font-display font-bold tabular-nums ${
+                          finance.grand < 0 ? "text-red-500" : "text-green-500"
+                        }`}
+                      >
+                        {fmtEUR(finance.grand)}
+                      </div>
+                    </div>
+                    <div className="rounded-2xl bg-card/50 p-3">
+                      <div className="text-[10px] uppercase tracking-wide text-muted-foreground">
+                        {t("stats.ratio", "Ratio +/−")}
+                      </div>
+                      <div className="text-lg sm:text-xl font-display font-bold tabular-nums">
+                        {finance.totalNeg === 0
+                          ? "∞"
+                          : (finance.totalPos / Math.abs(finance.totalNeg)).toFixed(2)}
+                      </div>
+                    </div>
+                  </div>
+                  {(finance.totalPos > 0 || finance.totalNeg < 0) && (
+                    <div className="mt-4">
+                      <div className="flex h-3 rounded-full overflow-hidden bg-muted">
+                        {(() => {
+                          const denom = finance.totalPos + Math.abs(finance.totalNeg);
+                          if (denom === 0) return null;
+                          const posPct = (finance.totalPos / denom) * 100;
+                          return (
+                            <>
+                              <div className="h-full bg-green-500" style={{ width: `${posPct}%` }} />
+                              <div className="h-full bg-red-500" style={{ width: `${100 - posPct}%` }} />
+                            </>
+                          );
+                        })()}
+                      </div>
+                      <div className="flex justify-between text-[10px] text-muted-foreground mt-1">
+                        <span>+ {fmtEUR(finance.totalPos)}</span>
+                        <span>{fmtEUR(finance.totalNeg)}</span>
+                      </div>
+                    </div>
+                  )}
+                </div>
+              )}
+
+              {finance.rows.length > 0 && (
+                <div className="glass rounded-3xl shadow-elevated p-6 sm:p-8">
                   <div className="flex items-start justify-between gap-4 flex-wrap">
                     <div>
                       <h2 className="font-display font-semibold text-xl">
@@ -279,7 +351,7 @@ function StatsPage() {
                   </div>
                   <div className="mt-4 grid sm:grid-cols-2 gap-3">
                     {finance.rows.map((r) => {
-                      const mode = financeSel[r.id]; // undefined | 1 | -1 | 0
+                      const mode = financeSel[r.id];
                       const ring =
                         mode === 1
                           ? "ring-2 ring-green-500"
@@ -296,48 +368,68 @@ function StatsPage() {
                             : mode === 0
                               ? { txt: "∅", cls: "bg-muted text-muted-foreground" }
                               : { txt: "=", cls: "bg-card text-muted-foreground border border-border" };
+                      const denom = r.pos + Math.abs(r.neg);
+                      const posPct = denom === 0 ? 0 : (r.pos / denom) * 100;
                       return (
                         <div
                           key={r.id}
-                          className={`rounded-2xl bg-card/50 p-4 flex items-center gap-3 transition-all ${ring}`}
+                          className={`rounded-2xl bg-card/50 p-4 flex flex-col gap-3 transition-all ${ring}`}
                         >
-                          <button
-                            type="button"
-                            onClick={() => cycleFinanceSel(r.id)}
-                            className="flex-1 flex items-center gap-3 text-left hover:opacity-90"
-                            aria-label="toggle inclusion in selected total"
-                          >
-                            <div
-                              className="h-10 w-10 rounded-xl flex items-center justify-center shrink-0"
-                              style={{ background: `linear-gradient(135deg, ${r.color}, ${r.color}aa)` }}
+                          <div className="flex items-center gap-3">
+                            <button
+                              type="button"
+                              onClick={() => cycleFinanceSel(r.id)}
+                              className="flex-1 flex items-center gap-3 text-left hover:opacity-90"
+                              aria-label="toggle inclusion in selected total"
                             >
-                              <IconRender name={r.icon} className="h-5 w-5 text-white" />
-                            </div>
-                            <div className="min-w-0 flex-1">
-                              <div className="flex items-center gap-2">
-                                <span className="text-sm font-display font-semibold truncate">{r.name}</span>
-                                <span
-                                  className={`shrink-0 inline-flex h-5 min-w-5 px-1.5 items-center justify-center rounded-full text-[11px] font-bold ${badge.cls}`}
+                              <div
+                                className="h-10 w-10 rounded-xl flex items-center justify-center shrink-0"
+                                style={{ background: `linear-gradient(135deg, ${r.color}, ${r.color}aa)` }}
+                              >
+                                <IconRender name={r.icon} className="h-5 w-5 text-white" />
+                              </div>
+                              <div className="min-w-0 flex-1">
+                                <div className="flex items-center gap-2">
+                                  <span className="text-sm font-display font-semibold truncate">{r.name}</span>
+                                  <span
+                                    className={`shrink-0 inline-flex h-5 min-w-5 px-1.5 items-center justify-center rounded-full text-[11px] font-bold ${badge.cls}`}
+                                  >
+                                    {badge.txt}
+                                  </span>
+                                </div>
+                                <div
+                                  className={`text-base font-bold tabular-nums ${
+                                    r.total < 0 ? "text-red-500" : "text-green-500"
+                                  }`}
                                 >
-                                  {badge.txt}
+                                  {fmtEUR(r.total)}
+                                </div>
+                              </div>
+                            </button>
+                            <Link
+                              to="/app/category/$id"
+                              params={{ id: r.id }}
+                              className="shrink-0 text-[11px] text-muted-foreground hover:text-foreground underline-offset-2 hover:underline"
+                            >
+                              {t("stats.open", "Ouvrir")}
+                            </Link>
+                          </div>
+                          {denom > 0 && (
+                            <div className="space-y-1">
+                              <div className="flex h-1.5 rounded-full overflow-hidden bg-muted">
+                                <div className="h-full bg-green-500" style={{ width: `${posPct}%` }} />
+                                <div className="h-full bg-red-500" style={{ width: `${100 - posPct}%` }} />
+                              </div>
+                              <div className="flex justify-between text-[10px] tabular-nums">
+                                <span className="text-green-500">
+                                  +{fmtEUR(r.pos)} <span className="text-muted-foreground">({r.countPos})</span>
+                                </span>
+                                <span className="text-red-500">
+                                  {fmtEUR(r.neg)} <span className="text-muted-foreground">({r.countNeg})</span>
                                 </span>
                               </div>
-                              <div
-                                className={`text-base font-bold tabular-nums ${
-                                  r.total < 0 ? "text-red-500" : "text-green-500"
-                                }`}
-                              >
-                                {fmtEUR(r.total)}
-                              </div>
                             </div>
-                          </button>
-                          <Link
-                            to="/app/category/$id"
-                            params={{ id: r.id }}
-                            className="shrink-0 text-[11px] text-muted-foreground hover:text-foreground underline-offset-2 hover:underline"
-                          >
-                            {t("stats.open", "Ouvrir")}
-                          </Link>
+                          )}
                         </div>
                       );
                     })}
@@ -350,6 +442,7 @@ function StatsPage() {
                   </p>
                 </div>
               )}
+
 
               <h2 className="font-display font-semibold text-xl">{t("stats.byCategory")}</h2>
               <div className="grid sm:grid-cols-2 gap-3">
