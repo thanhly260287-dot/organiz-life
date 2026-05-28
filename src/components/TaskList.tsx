@@ -71,15 +71,18 @@ export function TaskList({
   };
 
   const canSubmit =
-    !!title.trim() && (!enableDateTime || ((!requireDate || !!date) && (!requireTime || !!time)));
+    (!!title.trim() || (enableAmount && !!amount)) &&
+    (!enableDateTime || ((!requireDate || !!date) && (!requireTime || !!time)));
 
   const submit = () => {
     if (!canSubmit) return;
     const amt = amount ? Math.abs(parseFloat(amount)) : undefined;
+    const finalTitle = title.trim() || (amt != null ? amt.toLocaleString("fr-FR", { style: "currency", currency: "EUR" }) : "");
+    if (!finalTitle) return;
     addTask(
       categoryId,
       {
-        title: title.trim(),
+        title: finalTitle,
         date: date || undefined,
         time: time || undefined,
         amount: amt,
@@ -95,6 +98,7 @@ export function TaskList({
     setReminders([]);
     setAdding(false);
   };
+
 
 
 
@@ -198,7 +202,7 @@ export function TaskList({
               </>
             )}
             {enableAmount && (
-              <div className="flex items-center gap-2">
+              <div className="flex items-center gap-2 ml-auto">
                 <input
                   type="number"
                   step="0.01"
@@ -206,8 +210,15 @@ export function TaskList({
                   placeholder={amountSign < 0 ? tr("tasks.amountNeg") : tr("tasks.amount")}
                   value={amount}
                   onChange={(e) => setAmount(e.target.value)}
-                  className="text-sm bg-muted rounded-md px-3 py-2 outline-none w-36"
+                  onKeyDown={(e) => e.key === "Enter" && submit()}
+                  className="text-sm bg-muted rounded-md px-3 py-2 outline-none w-32"
                 />
+                <button
+                  onClick={() => setAdding(false)}
+                  className="text-sm px-3 py-2 rounded-md hover:bg-muted"
+                >
+                  {tr("tasks.cancel")}
+                </button>
                 <button
                   onClick={submit}
                   disabled={!canSubmit}
@@ -217,6 +228,7 @@ export function TaskList({
                 </button>
               </div>
             )}
+
             {!enableAmount && (
               <div className="ml-auto flex gap-2">
                 <button
