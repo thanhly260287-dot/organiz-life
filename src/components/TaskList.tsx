@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Plus, Check, Trash2, Calendar, Clock } from "lucide-react";
+import { useTranslation } from "react-i18next";
 import { useStore } from "@/lib/store";
 import type { Task } from "@/lib/categories";
 import {
