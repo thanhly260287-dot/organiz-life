@@ -28,7 +28,9 @@ function Landing() {
   return (
     <div className="min-h-screen bg-aurora">
       <header className="mx-auto max-w-7xl px-4 sm:px-6 py-6 flex items-center justify-between">
-        <Logo />
+        <Link to="/app">
+          <Logo />
+        </Link>
         <Link
           to="/app"
           className="inline-flex items-center gap-2 rounded-xl bg-gradient-brand px-5 py-2.5 text-sm font-medium text-white shadow-glow hover:scale-105 transition-transform"
