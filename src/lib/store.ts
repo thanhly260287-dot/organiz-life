@@ -9,13 +9,16 @@ interface AppState {
   theme: "light" | "dark";
   textSize: "sm" | "md" | "lg";
   showCategoryPriority: boolean;
+  showCategoryTotal: boolean;
   taskPriorityCategories: string[]; // category ids where task priority numbers are shown
 
   setTheme: (t: "light" | "dark") => void;
   toggleTheme: () => void;
   setTextSize: (s: "sm" | "md" | "lg") => void;
   toggleCategoryPriority: () => void;
+  toggleCategoryTotal: () => void;
   toggleTaskPriorityFor: (categoryId: string) => void;
+
 
   addCategory: (data: { name: string; icon: string; color: string }) => void;
   updateCategory: (id: string, patch: Partial<Category>) => void;
