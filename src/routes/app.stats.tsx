@@ -96,14 +96,47 @@ function StatsPage() {
     return days;
   }, [categories]);
 
+  // Précalcule, une seule fois par changement de catégories, les dates (YYYY-MM-DD)
+  // de création et de complétion par catégorie. Évite de re-parcourir toutes les
+  // tâches et de réallouer/reparser les dates à chaque changement de filtre.
+  const taskDatesByCategory = useMemo(() => {
+    const result = new Map<string, { created: string[]; done: (string | null)[] }>();
+    const toKey = (v: string | number | Date) => {
+      const d = new Date(v);
+      // toISOString peut être coûteux ; construit la clé manuellement (UTC)
+      const y = d.getUTCFullYear();
+      const m = String(d.getUTCMonth() + 1).padStart(2, "0");
+      const day = String(d.getUTCDate()).padStart(2, "0");
+      return `${y}-${m}-${day}`;
+    };
+    categories.forEach((c) => {
+      const created: string[] = [];
+      const done: (string | null)[] = [];
+      const collect = (tasks: typeof c.tasks) => {
+        for (const t of tasks) {
+          if (t.createdAt) created.push(toKey(t.createdAt));
+          if (t.done) {
+            if (t.date) done.push(t.date);
+            else if (t.createdAt) done.push(toKey(t.createdAt));
+            else done.push(null);
+          }
+        }
+      };
+      collect(c.tasks);
+      for (const s of c.subcategories) collect(s.tasks);
+      result.set(c.id, { created, done });
+    });
+    return result;
+  }, [categories]);
+
   const evolution = useMemo(() => {
     const DAYS = 30;
     const today = new Date();
-    const days: { label: string; date: string; created: number; done: number; cumCreated: number; cumDone: number; pct: number }[] = [];
-    for (let i = DAYS - 1; i >= 0; i--) {
+    const days: { label: string; date: string; created: number; done: number; cumCreated: number; cumDone: number; pct: number }[] = new Array(DAYS);
+    for (let i = 0; i < DAYS; i++) {
       const d = new Date(today);
-      d.setDate(today.getDate() - i);
-      days.push({
+      d.setDate(today.getDate() - (DAYS - 1 - i));
+      days[i] = {
         label: d.toLocaleDateString(undefined, { day: "2-digit", month: "2-digit" }),
         date: d.toISOString().slice(0, 10),
         created: 0,
@@ -111,50 +144,50 @@ function StatsPage() {
         cumCreated: 0,
         cumDone: 0,
         pct: 0,
-      });
+      };
     }
-    const map = new Map(days.map((d) => [d.date, d]));
+    const firstDay = days[0].date;
+    // Index direct par date pour éviter une Map
+    const indexByDate: Record<string, number> = {};
+    for (let i = 0; i < DAYS; i++) indexByDate[days[i].date] = i;
+
     let baseCreated = 0;
     let baseDone = 0;
-    const firstDay = days[0].date;
-    const source = evoCat === "all" ? categories : categories.filter((c) => c.id === evoCat);
-    source.forEach((c) => {
-
-      const all = [...c.tasks, ...c.subcategories.flatMap((s) => s.tasks)];
-      all.forEach((t) => {
-        if (t.createdAt) {
-          const k = new Date(t.createdAt).toISOString().slice(0, 10);
-          if (k < firstDay) baseCreated++;
-          else {
-            const e = map.get(k);
-            if (e) e.created++;
-          }
+    const ids = evoCat === "all" ? null : evoCat;
+    taskDatesByCategory.forEach((buckets, catId) => {
+      if (ids !== null && catId !== ids) return;
+      const { created, done } = buckets;
+      for (let i = 0; i < created.length; i++) {
+        const k = created[i];
+        if (k < firstDay) baseCreated++;
+        else {
+          const idx = indexByDate[k];
+          if (idx !== undefined) days[idx].created++;
         }
-        if (t.done) {
-          const k = t.date ?? (t.createdAt ? new Date(t.createdAt).toISOString().slice(0, 10) : undefined);
-          if (k) {
-            if (k < firstDay) baseDone++;
-            else {
-              const e = map.get(k);
-              if (e) e.done++;
-            }
-          } else {
-            baseDone++;
-          }
+      }
+      for (let i = 0; i < done.length; i++) {
+        const k = done[i];
+        if (k === null) { baseDone++; continue; }
+        if (k < firstDay) baseDone++;
+        else {
+          const idx = indexByDate[k];
+          if (idx !== undefined) days[idx].done++;
         }
-      });
+      }
     });
     let cc = baseCreated;
     let cd = baseDone;
-    days.forEach((d) => {
+    for (let i = 0; i < DAYS; i++) {
+      const d = days[i];
       cc += d.created;
       cd += d.done;
       d.cumCreated = cc;
       d.cumDone = cd;
       d.pct = cc === 0 ? 0 : Math.round((cd / cc) * 100);
-    });
+    }
     return days;
-  }, [categories, evoCat]);
+  }, [taskDatesByCategory, evoCat]);
+
 
 
   const finance = useMemo(() => {
