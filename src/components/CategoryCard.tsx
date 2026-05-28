@@ -5,7 +5,8 @@ import { useSortable } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
 import { Trash2, GripVertical, Pencil } from "lucide-react";
 import { useTranslation } from "react-i18next";
-import { getCategoryProgress, useStore } from "@/lib/store";
+import { getCategoryProgress, getCategoryFinanceTotal, useStore } from "@/lib/store";
+
 import type { Category } from "@/lib/categories";
 import { IconRender } from "./IconRender";
 import { useCategoryName } from "@/lib/useCategoryName";
