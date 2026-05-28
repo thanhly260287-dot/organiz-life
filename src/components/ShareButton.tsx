@@ -19,12 +19,13 @@ interface ShareOption {
   action: () => void;
   color?: string;
 }
+
+export function ShareButton() {
+  const { t } = useTranslation();
   const [copied, setCopied] = useState(false);
   const [open, setOpen] = useState(false);
   const [qrOpen, setQrOpen] = useState(false);
 
-  const [copied, setCopied] = useState(false);
-  const [open, setOpen] = useState(false);
 
   const appUrl = typeof window !== "undefined" ? window.location.origin : "https://organiz-life.lovable.app";
   const shareText = t("share.text", "Organise ta vie avec Organiz-Life — l'app premium de développement personnel.");
