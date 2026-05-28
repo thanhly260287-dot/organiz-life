@@ -251,7 +251,7 @@ export const useStore = create<AppState>()(
     }),
     {
       name: "organiz-life-v1",
-      version: 12,
+      version: 13,
       migrate: (persisted: any) => {
         if (persisted?.categories) {
           // Rename "Sport et physique" → "Sport"
