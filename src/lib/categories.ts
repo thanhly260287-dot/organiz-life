@@ -14,10 +14,11 @@ export interface Task {
 }
 
 
-export const FINANCE_CATEGORY_IDS = new Set(["income", "debts", "invest", "credits", "savings", "costs", "gains", "couts-et-gains"]);
-export const NEGATIVE_FINANCE_IDS = new Set(["debts", "costs"]);
+export const FINANCE_CATEGORY_IDS = new Set(["income", "debts", "invest", "credits", "savings", "costs", "couts", "gains", "couts-et-gains"]);
+export const NEGATIVE_FINANCE_IDS = new Set(["debts", "costs", "couts"]);
 // Categories where the sign is forced and cannot be toggled per task
-export const FORCED_SIGN_IDS = new Set(["costs", "gains"]);
+export const FORCED_SIGN_IDS = new Set(["costs", "couts", "gains"]);
+
 
 
 export interface Subcategory {
