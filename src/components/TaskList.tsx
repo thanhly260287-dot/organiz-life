@@ -198,31 +198,42 @@ export function TaskList({
               </>
             )}
             {enableAmount && (
-              <input
-                type="number"
-                step="0.01"
-                min={0}
-                placeholder={amountSign < 0 ? tr("tasks.amountNeg") : tr("tasks.amount")}
-                value={amount}
-                onChange={(e) => setAmount(e.target.value)}
-                className="text-xs bg-muted rounded-md px-2 py-1 outline-none w-28"
-              />
+              <div className="flex items-center gap-2">
+                <input
+                  type="number"
+                  step="0.01"
+                  min={0}
+                  placeholder={amountSign < 0 ? tr("tasks.amountNeg") : tr("tasks.amount")}
+                  value={amount}
+                  onChange={(e) => setAmount(e.target.value)}
+                  className="text-sm bg-muted rounded-md px-3 py-2 outline-none w-36"
+                />
+                <button
+                  onClick={submit}
+                  disabled={!canSubmit}
+                  className="text-sm px-4 py-2 rounded-md bg-gradient-brand text-white font-medium disabled:opacity-40 disabled:cursor-not-allowed"
+                >
+                  {tr("tasks.add")}
+                </button>
+              </div>
             )}
-            <div className="ml-auto flex gap-1">
-              <button
-                onClick={() => setAdding(false)}
-                className="text-xs px-3 py-1 rounded-md hover:bg-muted"
-              >
-                {tr("tasks.cancel")}
-              </button>
-              <button
-                onClick={submit}
-                disabled={!canSubmit}
-                className="text-xs px-3 py-1 rounded-md bg-gradient-brand text-white font-medium disabled:opacity-40 disabled:cursor-not-allowed"
-              >
-                {tr("tasks.add")}
-              </button>
-            </div>
+            {!enableAmount && (
+              <div className="ml-auto flex gap-2">
+                <button
+                  onClick={() => setAdding(false)}
+                  className="text-sm px-4 py-2 rounded-md hover:bg-muted"
+                >
+                  {tr("tasks.cancel")}
+                </button>
+                <button
+                  onClick={submit}
+                  disabled={!canSubmit}
+                  className="text-sm px-4 py-2 rounded-md bg-gradient-brand text-white font-medium disabled:opacity-40 disabled:cursor-not-allowed"
+                >
+                  {tr("tasks.add")}
+                </button>
+              </div>
+            )}
           </div>
           {enableDateTime && time && (
             <div className="flex flex-wrap items-center gap-1.5 pt-1">
