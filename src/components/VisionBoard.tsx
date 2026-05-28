@@ -370,7 +370,7 @@ export function VisionBoard({
           <motion.div
             key={item.id}
             data-vb-item
-            drag
+            drag={selected === item.id}
             dragMomentum={false}
             onDragEnd={(_, info) => onDrag(item.id, info.offset.x, info.offset.y)}
             initial={false}
