@@ -128,10 +128,12 @@ export function TaskList({
         <SortableContext items={tasks.map((t) => t.id)} strategy={verticalListSortingStrategy}>
           <AnimatePresence initial={false}>
             {tasks.map((t, i) => (
-              <SortableTaskRow
+            <SortableTaskRow
                 key={t.id}
                 task={t}
                 index={i}
+                categoryId={categoryId}
+                subId={subId}
                 accent={accent}
                 showPriority={showPriority}
                 enableDateTime={enableDateTime}
