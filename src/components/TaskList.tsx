@@ -319,7 +319,13 @@ function SortableTaskRow({
   const style = {
     transform: CSS.Transform.toString(transform),
     transition,
-    opacity: isDragging ? 0.5 : 1,
+    opacity: isDragging ? 0.95 : 1,
+    zIndex: isDragging ? 50 : "auto",
+    boxShadow: isDragging
+      ? "0 20px 40px -10px rgba(0,0,0,0.4), 0 0 0 2px hsl(var(--primary))"
+      : undefined,
+    scale: isDragging ? 1.03 : 1,
+    rotate: isDragging ? "-1deg" : "0deg",
     touchAction: "manipulation" as const,
   };
 
@@ -345,10 +351,11 @@ function SortableTaskRow({
       initial={{ opacity: 0, x: -10 }}
       animate={{ opacity: 1, x: 0 }}
       exit={{ opacity: 0, x: 10 }}
-      className="group flex items-center gap-3 rounded-xl glass shadow-glass p-3 select-none"
+      className={`group flex items-center gap-3 rounded-xl glass shadow-glass p-3 select-none ${isDragging ? "cursor-grabbing" : ""}`}
       {...attributes}
       {...listeners}
     >
+
       <button
         onPointerDown={(e) => e.stopPropagation()}
         onClick={onToggle}

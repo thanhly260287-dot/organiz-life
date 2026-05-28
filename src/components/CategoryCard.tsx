@@ -57,7 +57,13 @@ export function CategoryCard({ category, index }: { category: Category; index: n
   const style = {
     transform: CSS.Transform.toString(transform),
     transition,
-    opacity: isDragging ? 0.05 : 1,
+    opacity: isDragging ? 0.95 : 1,
+    zIndex: isDragging ? 50 : "auto",
+    boxShadow: isDragging
+      ? "0 25px 50px -10px rgba(0,0,0,0.45), 0 0 0 2px hsl(var(--primary))"
+      : undefined,
+    scale: isDragging ? 1.04 : 1,
+    rotate: isDragging ? "-1.5deg" : "0deg",
     touchAction: "manipulation" as const,
   };
 
@@ -68,8 +74,9 @@ export function CategoryCard({ category, index }: { category: Category; index: n
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ delay: index * 0.03 }}
-      className="relative group/card"
+      className={`relative group/card rounded-2xl ${isDragging ? "cursor-grabbing" : ""}`}
     >
+
       <Link
         to="/app/category/$id"
         params={{ id: category.id }}
