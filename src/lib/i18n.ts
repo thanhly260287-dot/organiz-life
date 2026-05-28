@@ -762,7 +762,10 @@ export function hydrateClientLanguage() {
       return codes.has(base) ? base : null;
     };
     const target = pick(stored) ?? pick(nav);
+    // If a previously stored value is no longer supported, drop it
+    if (stored && !pick(stored)) window.localStorage.removeItem(LANG_STORAGE_KEY);
     if (target && target !== i18n.language) i18n.changeLanguage(target);
+
   } catch {
     // ignore
   }
