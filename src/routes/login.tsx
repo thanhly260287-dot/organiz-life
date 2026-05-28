@@ -155,7 +155,7 @@ function LoginPage() {
                 required
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
-                placeholder="ton@email.com"
+                placeholder={t("login.emailPlaceholder")}
                 className="w-full rounded-xl border bg-background pl-10 pr-3 py-2.5 text-sm focus:border-primary outline-none"
               />
             </div>
@@ -167,7 +167,7 @@ function LoginPage() {
                 minLength={6}
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
-                placeholder="Mot de passe"
+                placeholder={t("login.passwordPlaceholder")}
                 className="w-full rounded-xl border bg-background pl-10 pr-3 py-2.5 text-sm focus:border-primary outline-none"
               />
             </div>
@@ -177,14 +177,14 @@ function LoginPage() {
               className="w-full rounded-xl bg-gradient-brand px-4 py-2.5 text-sm font-medium text-white shadow-glow hover:scale-[1.02] transition-transform disabled:opacity-60 flex items-center justify-center gap-2"
             >
               {loading && <Loader2 className="h-4 w-4 animate-spin" />}
-              {mode === "signin" ? "Se connecter" : "Créer mon compte"}
+              {mode === "signin" ? t("login.signIn") : t("login.signUp")}
             </button>
             <button
               type="button"
               onClick={() => setMode(mode === "signin" ? "signup" : "signin")}
               className="w-full text-xs text-muted-foreground hover:text-foreground"
             >
-              {mode === "signin" ? "Pas encore de compte ? Inscris-toi" : "Déjà un compte ? Se connecter"}
+              {mode === "signin" ? t("login.switchToSignUp") : t("login.switchToSignIn")}
             </button>
           </form>
         )}
@@ -198,7 +198,7 @@ function LoginPage() {
                 required
                 value={phone}
                 onChange={(e) => setPhone(e.target.value)}
-                placeholder="+33 6 12 34 56 78"
+                placeholder={t("login.phonePlaceholder")}
                 disabled={otpSent}
                 className="w-full rounded-xl border bg-background pl-10 pr-3 py-2.5 text-sm focus:border-primary outline-none disabled:opacity-60"
               />
@@ -209,7 +209,7 @@ function LoginPage() {
                 required
                 value={otpCode}
                 onChange={(e) => setOtpCode(e.target.value)}
-                placeholder="Code reçu par SMS"
+                placeholder={t("login.otpPlaceholder")}
                 className="w-full rounded-xl border bg-background px-3 py-2.5 text-sm focus:border-primary outline-none tracking-widest text-center"
               />
             )}
@@ -219,7 +219,7 @@ function LoginPage() {
               className="w-full rounded-xl bg-gradient-brand px-4 py-2.5 text-sm font-medium text-white shadow-glow hover:scale-[1.02] transition-transform disabled:opacity-60 flex items-center justify-center gap-2"
             >
               {loading && <Loader2 className="h-4 w-4 animate-spin" />}
-              {otpSent ? "Vérifier le code" : "Recevoir le code SMS"}
+              {otpSent ? t("login.verifyCode") : t("login.sendCode")}
             </button>
             {otpSent && (
               <button
@@ -227,7 +227,7 @@ function LoginPage() {
                 onClick={() => { setOtpSent(false); setOtpCode(""); }}
                 className="w-full text-xs text-muted-foreground hover:text-foreground"
               >
-                Changer de numéro
+                {t("login.changeNumber")}
               </button>
             )}
           </form>
@@ -240,12 +240,12 @@ function LoginPage() {
             className="w-full rounded-xl bg-gradient-brand px-4 py-3 text-sm font-medium text-white shadow-glow hover:scale-[1.02] transition-transform disabled:opacity-60 flex items-center justify-center gap-2"
           >
             {loading ? <Loader2 className="h-4 w-4 animate-spin" /> : null}
-            Continuer avec {method === "google" ? "Google" : "Apple"}
+            {t("login.continueWith", { provider: method === "google" ? "Google" : "Apple" })}
           </button>
         )}
 
         <p className="text-xs text-center text-muted-foreground">
-          En continuant, tu acceptes nos conditions d'utilisation.
+          {t("login.terms")}
         </p>
       </motion.div>
     </main>
