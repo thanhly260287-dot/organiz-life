@@ -159,3 +159,9 @@
     100% { background-position: 200% 0; }
   }
 }
+
+@media print {
+  header.sticky, .bg-aurora { display: none !important; }
+  body, html { background: white !important; }
+  * { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+}

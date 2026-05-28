@@ -14,6 +14,7 @@ import { Route as IndexRouteImport } from './routes/index'
 import { Route as AppIndexRouteImport } from './routes/app.index'
 import { Route as AppStatsRouteImport } from './routes/app.stats'
 import { Route as AppSettingsRouteImport } from './routes/app.settings'
+import { Route as AppPrintRouteImport } from './routes/app.print'
 import { Route as AppCategoryIdRouteImport } from './routes/app.category.$id'
 
 const AppRoute = AppRouteImport.update({
@@ -41,6 +42,11 @@ const AppSettingsRoute = AppSettingsRouteImport.update({
   path: '/settings',
   getParentRoute: () => AppRoute,
 } as any)
+const AppPrintRoute = AppPrintRouteImport.update({
+  id: '/print',
+  path: '/print',
+  getParentRoute: () => AppRoute,
+} as any)
 const AppCategoryIdRoute = AppCategoryIdRouteImport.update({
   id: '/category/$id',
   path: '/category/$id',
@@ -50,6 +56,7 @@ const AppCategoryIdRoute = AppCategoryIdRouteImport.update({
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/app': typeof AppRouteWithChildren
+  '/app/print': typeof AppPrintRoute
   '/app/settings': typeof AppSettingsRoute
   '/app/stats': typeof AppStatsRoute
   '/app/': typeof AppIndexRoute
@@ -57,6 +64,7 @@ export interface FileRoutesByFullPath {
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/app/print': typeof AppPrintRoute
   '/app/settings': typeof AppSettingsRoute
   '/app/stats': typeof AppStatsRoute
   '/app': typeof AppIndexRoute
@@ -66,6 +74,7 @@ export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/app': typeof AppRouteWithChildren
+  '/app/print': typeof AppPrintRoute
   '/app/settings': typeof AppSettingsRoute
   '/app/stats': typeof AppStatsRoute
   '/app/': typeof AppIndexRoute
@@ -76,16 +85,24 @@ export interface FileRouteTypes {
   fullPaths:
     | '/'
     | '/app'
+    | '/app/print'
     | '/app/settings'
     | '/app/stats'
     | '/app/'
     | '/app/category/$id'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/app/settings' | '/app/stats' | '/app' | '/app/category/$id'
+  to:
+    | '/'
+    | '/app/print'
+    | '/app/settings'
+    | '/app/stats'
+    | '/app'
+    | '/app/category/$id'
   id:
     | '__root__'
     | '/'
     | '/app'
+    | '/app/print'
     | '/app/settings'
     | '/app/stats'
     | '/app/'
@@ -134,6 +151,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AppSettingsRouteImport
       parentRoute: typeof AppRoute
     }
+    '/app/print': {
+      id: '/app/print'
+      path: '/print'
+      fullPath: '/app/print'
+      preLoaderRoute: typeof AppPrintRouteImport
+      parentRoute: typeof AppRoute
+    }
     '/app/category/$id': {
       id: '/app/category/$id'
       path: '/category/$id'
@@ -145,6 +169,7 @@ declare module '@tanstack/react-router' {
 }
 
 interface AppRouteChildren {
+  AppPrintRoute: typeof AppPrintRoute
   AppSettingsRoute: typeof AppSettingsRoute
   AppStatsRoute: typeof AppStatsRoute
   AppIndexRoute: typeof AppIndexRoute
@@ -152,6 +177,7 @@ interface AppRouteChildren {
 }
 
 const AppRouteChildren: AppRouteChildren = {
+  AppPrintRoute: AppPrintRoute,
   AppSettingsRoute: AppSettingsRoute,
   AppStatsRoute: AppStatsRoute,
   AppIndexRoute: AppIndexRoute,
@@ -167,13 +193,3 @@ const rootRouteChildren: RootRouteChildren = {
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
-
-import type { getRouter } from './router.tsx'
-import type { startInstance } from './start.ts'
-declare module '@tanstack/react-start' {
-  interface Register {
-    ssr: true
-    router: Awaited<ReturnType<typeof getRouter>>
-    config: Awaited<ReturnType<typeof startInstance.getOptions>>
-  }
-}
