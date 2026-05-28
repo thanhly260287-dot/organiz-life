@@ -351,8 +351,8 @@ export const useStore = create<AppState>()(
           }
           // Add "gains" category if missing (after couts)
           if (!persisted.categories.find((c: any) => c.id === "gains")) {
-            const cegIdx = persisted.categories.findIndex((c: any) => c.id === "couts-et-gains");
-            const insertAt = cegIdx >= 0 ? cegIdx + 1 : persisted.categories.length;
+            const coutsIdx = persisted.categories.findIndex((c: any) => c.id === "couts");
+            const insertAt = coutsIdx >= 0 ? coutsIdx + 1 : persisted.categories.length;
             persisted.categories.splice(insertAt, 0, {
               id: "gains",
               name: "Gains",
