@@ -1,12 +1,19 @@
-import { Link, useRouter } from "@tanstack/react-router";
+import { Link, useRouter, useNavigate } from "@tanstack/react-router";
 import { Logo } from "./Logo";
 import { useStore } from "@/lib/store";
-import { Moon, Sun, Settings, ArrowLeft, BarChart3, Printer } from "lucide-react";
+import { Moon, Sun, Settings, ArrowLeft, BarChart3, Printer, LogOut } from "lucide-react";
+import { supabase } from "@/integrations/supabase/client";
 
 export function AppHeader({ showBack = false }: { showBack?: boolean }) {
   const theme = useStore((s) => s.theme);
   const toggleTheme = useStore((s) => s.toggleTheme);
   const router = useRouter();
+  const navigate = useNavigate();
+
+  const handleLogout = async () => {
+    await supabase.auth.signOut();
+    navigate({ to: "/login" });
+  };
 
   return (
     <header className="sticky top-0 z-40 glass border-b">
@@ -56,6 +63,13 @@ export function AppHeader({ showBack = false }: { showBack?: boolean }) {
           >
             <Settings className="h-5 w-5" />
           </Link>
+          <button
+            onClick={handleLogout}
+            className="p-2.5 rounded-xl hover:bg-accent transition-all hover:scale-105"
+            aria-label="Se déconnecter"
+          >
+            <LogOut className="h-5 w-5" />
+          </button>
         </div>
       </div>
     </header>
