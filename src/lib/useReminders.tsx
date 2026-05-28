@@ -3,7 +3,7 @@ import { toast } from "sonner";
 import { useStore } from "./store";
 import type { Task } from "./categories";
 
-export const REMINDER_OPTIONS = [15, 30, 60] as const;
+export const REMINDER_OPTIONS = [15, 30, 60, 1440] as const;
 
 export function reminderLabel(m: number) {
   if (m >= 60) return `${m / 60}h`;
