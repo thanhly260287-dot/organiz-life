@@ -72,7 +72,7 @@ export function TaskList({
 
   const canSubmit =
     (!!title.trim() || (enableAmount && !!amount)) &&
-    (!enableDateTime || ((!requireDate || !!date) && (!requireTime || !!time)));
+    ((!requireDate || !!date) && (!requireTime || !!time));
 
   const submit = () => {
     if (!canSubmit) return;
@@ -87,7 +87,7 @@ export function TaskList({
         time: time || undefined,
         amount: amt,
         amountSign: amt != null ? (amountSign as 1 | -1) : undefined,
-        reminders: enableDateTime && time && reminders.length ? [...reminders].sort((a, b) => a - b) : undefined,
+        reminders: time && reminders.length ? [...reminders].sort((a, b) => a - b) : undefined,
       },
       subId
     );
@@ -175,32 +175,30 @@ export function TaskList({
             className="w-full bg-transparent outline-none text-lg placeholder:text-muted-foreground"
           />
           <div className="flex flex-wrap gap-2">
-            {enableDateTime && (
-              <>
-                <div className="flex flex-col">
-                  <input
-                    type="date"
-                    value={date}
-                    onChange={(e) => setDate(e.target.value)}
-                    className={`text-xs bg-muted rounded-md px-2 py-1 outline-none ${requireDate && !date ? "ring-1 ring-destructive" : ""}`}
-                  />
-                  {requireDate && <span className="text-[10px] text-muted-foreground mt-0.5">{tr("tasks.dateRequired")}</span>}
-                </div>
-                <div className="flex flex-col">
-                  <input
-                    type="time"
-                    value={time}
-                    onChange={(e) => setTime(e.target.value)}
-                    className={`text-xs bg-muted rounded-md px-2 py-1 outline-none ${requireTime && !time ? "ring-1 ring-destructive" : ""}`}
-                  />
-                  {requireTime ? (
-                    <span className="text-[10px] text-muted-foreground mt-0.5">{tr("tasks.timeRequired")}</span>
-                  ) : (
-                    <span className="text-[10px] text-muted-foreground mt-0.5">{tr("tasks.timeOptional")}</span>
-                  )}
-                </div>
-              </>
-            )}
+            <>
+              <div className="flex flex-col">
+                <input
+                  type="date"
+                  value={date}
+                  onChange={(e) => setDate(e.target.value)}
+                  className={`text-xs bg-muted rounded-md px-2 py-1 outline-none ${requireDate && !date ? "ring-1 ring-destructive" : ""}`}
+                />
+                {requireDate && <span className="text-[10px] text-muted-foreground mt-0.5">{tr("tasks.dateRequired")}</span>}
+              </div>
+              <div className="flex flex-col">
+                <input
+                  type="time"
+                  value={time}
+                  onChange={(e) => setTime(e.target.value)}
+                  className={`text-xs bg-muted rounded-md px-2 py-1 outline-none ${requireTime && !time ? "ring-1 ring-destructive" : ""}`}
+                />
+                {requireTime ? (
+                  <span className="text-[10px] text-muted-foreground mt-0.5">{tr("tasks.timeRequired")}</span>
+                ) : (
+                  <span className="text-[10px] text-muted-foreground mt-0.5">{tr("tasks.timeOptional")}</span>
+                )}
+              </div>
+            </>
             {enableAmount && (
               <div className="flex items-center gap-2 ml-auto">
                 <input
@@ -247,7 +245,7 @@ export function TaskList({
               </div>
             )}
           </div>
-          {enableDateTime && time && (
+          {time && (
             <div className="flex flex-wrap items-center gap-1.5 pt-1">
               <Bell className="h-3 w-3 text-muted-foreground" />
               <span className="text-[10px] text-muted-foreground mr-1">Rappel :</span>
@@ -401,14 +399,14 @@ function SortableTaskRow({
             </button>
           )}
         </div>
-        {((enableDateTime && (t.date || t.time)) || t.notes || t.reminders?.length) && (
+        {(t.date || t.time || t.notes || t.reminders?.length) && (
           <div className="mt-1 flex flex-wrap items-center gap-3 text-[11px] text-muted-foreground">
-            {enableDateTime && t.date && (
+            {t.date && (
               <span className="inline-flex items-center gap-1">
                 <Calendar className="h-3 w-3" /> {t.date}
               </span>
             )}
-            {enableDateTime && t.time && (
+            {t.time && (
               <span className="inline-flex items-center gap-1">
                 <Clock className="h-3 w-3" /> {t.time}
               </span>
