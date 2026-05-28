@@ -3,7 +3,7 @@ import { useTranslation } from "react-i18next";
 const KNOWN_IDS = new Set([
   "rdv","today","week","month","events","needs","goals","ideas","sport","physique","health",
   "savings","invest","income","income-res","income-sol","problems","problems-res","problems-sol",
-  "flaws","qualities","good-habits","bad-habits","debts","credits","leisure","__main__",
+  "flaws","qualities","good-habits","bad-habits","debts","credits","leisure","misc","__main__",
 ]);
 
 export function useCategoryName() {
