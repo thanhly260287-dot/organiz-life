@@ -117,7 +117,9 @@ function StatsPage() {
     let baseCreated = 0;
     let baseDone = 0;
     const firstDay = days[0].date;
-    categories.forEach((c) => {
+    const source = evoCat === "all" ? categories : categories.filter((c) => c.id === evoCat);
+    source.forEach((c) => {
+
       const all = [...c.tasks, ...c.subcategories.flatMap((s) => s.tasks)];
       all.forEach((t) => {
         if (t.createdAt) {
