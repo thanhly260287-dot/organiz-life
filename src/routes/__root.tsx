@@ -11,7 +11,9 @@ import {
 import appCss from "../styles.css?url";
 import { ThemeProvider } from "@/components/ThemeProvider";
 import { Toaster } from "@/components/ui/sonner";
-import "@/lib/i18n";
+import i18n, { hydrateClientLanguage, LANG_STORAGE_KEY } from "@/lib/i18n";
+import { useEffect } from "react";
+
 
 
 function NotFoundComponent() {
@@ -105,9 +107,16 @@ function RootShell({ children }: { children: React.ReactNode }) {
     </html>
   );
 }
-
 function RootComponent() {
   const { queryClient } = Route.useRouteContext();
+  useEffect(() => {
+    hydrateClientLanguage();
+    const onChange = (lng: string) => {
+      try { window.localStorage.setItem(LANG_STORAGE_KEY, lng); } catch {}
+    };
+    i18n.on("languageChanged", onChange);
+    return () => { i18n.off("languageChanged", onChange); };
+  }, []);
   return (
     <QueryClientProvider client={queryClient}>
       <ThemeProvider>
@@ -117,3 +126,5 @@ function RootComponent() {
     </QueryClientProvider>
   );
 }
+
+

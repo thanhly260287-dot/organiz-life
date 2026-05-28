@@ -1,6 +1,7 @@
 import i18n from "i18next";
 import { initReactI18next } from "react-i18next";
-import LanguageDetector from "i18next-browser-languagedetector";
+
+
 
 export const SUPPORTED_LANGUAGES = [
   { code: "fr", label: "Français", flag: "🇫🇷" },
@@ -814,20 +815,38 @@ const resources = {
   },
 };
 
-i18n
-  .use(LanguageDetector)
-  .use(initReactI18next)
-  .init({
-    resources,
-    fallbackLng: "fr",
-    supportedLngs: SUPPORTED_LANGUAGES.map((l) => l.code),
-    interpolation: { escapeValue: false },
-    detection: {
-      order: ["localStorage", "navigator"],
-      caches: ["localStorage"],
-      lookupLocalStorage: "organiz-lang",
-    },
-  });
+i18n.use(initReactI18next).init({
+  resources,
+  fallbackLng: "fr",
+  lng: "fr",
+  supportedLngs: SUPPORTED_LANGUAGES.map((l) => l.code),
+  interpolation: { escapeValue: false },
+  react: { useSuspense: false },
+});
+
+export const LANG_STORAGE_KEY = "organiz-lang";
+
+export function hydrateClientLanguage() {
+  if (typeof window === "undefined") return;
+  try {
+    const stored = window.localStorage.getItem(LANG_STORAGE_KEY);
+    const nav = window.navigator?.language;
+    const codes = new Set<string>(SUPPORTED_LANGUAGES.map((l) => l.code));
+    const pick = (c?: string | null): string | null => {
+      if (!c) return null;
+      if (codes.has(c)) return c;
+      const base = c.split("-")[0];
+      return codes.has(base) ? base : null;
+    };
+    const target = pick(stored) ?? pick(nav);
+    if (target && target !== i18n.language) i18n.changeLanguage(target);
+  } catch {
+    // ignore
+  }
+}
+
+
+
 
 export const RTL_LANGS = new Set(["ar", "he", "fa", "ur"]);
 
