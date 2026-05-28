@@ -112,17 +112,44 @@ export function VisionBoard({
     updateItem(categoryId, id, { x: it.x + dx, y: it.y + dy }, subId);
   };
 
-  const startResize = (e: React.PointerEvent, item: VisionItem) => {
+  const startResize = (
+    e: React.PointerEvent,
+    item: VisionItem,
+    corner: "br" | "bl" | "tr" | "tl"
+  ) => {
     e.stopPropagation();
     e.preventDefault();
     const startX = e.clientX;
     const startY = e.clientY;
     const startW = item.width;
     const startH = item.height;
+    const startLeft = item.x;
+    const startTop = item.y;
     const move = (ev: PointerEvent) => {
-      const w = Math.max(40, startW + (ev.clientX - startX));
-      const h = Math.max(30, startH + (ev.clientY - startY));
-      updateItem(categoryId, item.id, { width: w, height: h }, subId);
+      const dx = ev.clientX - startX;
+      const dy = ev.clientY - startY;
+      let w = startW;
+      let h = startH;
+      let x = startLeft;
+      let y = startTop;
+      if (corner === "br") {
+        w = Math.max(40, startW + dx);
+        h = Math.max(30, startH + dy);
+      } else if (corner === "bl") {
+        w = Math.max(40, startW - dx);
+        h = Math.max(30, startH + dy);
+        x = startLeft + (startW - w);
+      } else if (corner === "tr") {
+        w = Math.max(40, startW + dx);
+        h = Math.max(30, startH - dy);
+        y = startTop + (startH - h);
+      } else {
+        w = Math.max(40, startW - dx);
+        h = Math.max(30, startH - dy);
+        x = startLeft + (startW - w);
+        y = startTop + (startH - h);
+      }
+      updateItem(categoryId, item.id, { width: w, height: h, x, y }, subId);
     };
     const up = () => {
       window.removeEventListener("pointermove", move);
@@ -131,6 +158,7 @@ export function VisionBoard({
     window.addEventListener("pointermove", move);
     window.addEventListener("pointerup", up);
   };
+
 
   const startRotate = (e: React.PointerEvent, item: VisionItem) => {
     e.stopPropagation();
