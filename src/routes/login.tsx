@@ -187,18 +187,6 @@ function LoginPage() {
                 <span className="text-muted-foreground">{t("login.rememberMe")}</span>
               </label>
             )}
-            {mode === "signup" && (
-              <div className="relative">
-                <Phone className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-                <input
-                  type="tel"
-                  value={signupPhone}
-                  onChange={(e) => setSignupPhone(e.target.value)}
-                  placeholder={t("login.phoneOptional")}
-                  className="w-full rounded-xl border bg-background pl-10 pr-3 py-2.5 text-sm focus:border-primary outline-none"
-                />
-              </div>
-            )}
             <button
               type="submit"
               disabled={loading}
@@ -217,81 +205,6 @@ function LoginPage() {
           </form>
         )}
 
-        {verifyPhoneStep && (
-          <form onSubmit={handleVerifySignupPhone} className="space-y-3 rounded-xl border-2 border-primary/40 p-4 bg-primary/5">
-            <p className="text-sm font-medium text-center">{t("login.verifyPhoneTitle")}</p>
-            <p className="text-xs text-muted-foreground text-center">{signupPhone}</p>
-            <input
-              type="text"
-              required
-              value={verifyOtp}
-              onChange={(e) => setVerifyOtp(e.target.value)}
-              placeholder={t("login.otpPlaceholder")}
-              className="w-full rounded-xl border bg-background px-3 py-2.5 text-sm focus:border-primary outline-none tracking-widest text-center"
-            />
-            <button
-              type="submit"
-              disabled={loading}
-              className="w-full rounded-xl bg-gradient-brand px-4 py-2.5 text-sm font-medium text-white shadow-glow hover:scale-[1.02] transition-transform disabled:opacity-60 flex items-center justify-center gap-2"
-            >
-              {loading && <Loader2 className="h-4 w-4 animate-spin" />}
-              {t("login.verifyCode")}
-            </button>
-            <button
-              type="button"
-              onClick={() => { setVerifyPhoneStep(false); setVerifyOtp(""); navigate({ to: "/app" }); }}
-              className="w-full text-xs text-muted-foreground hover:text-foreground"
-            >
-              {t("login.skipStep")}
-            </button>
-          </form>
-        )}
-
-
-
-        {method === "phone" && (
-          <form onSubmit={otpSent ? handlePhoneVerify : handlePhoneSend} className="space-y-3">
-            <div className="relative">
-              <Phone className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-              <input
-                type="tel"
-                required
-                value={phone}
-                onChange={(e) => setPhone(e.target.value)}
-                placeholder={t("login.phonePlaceholder")}
-                disabled={otpSent}
-                className="w-full rounded-xl border bg-background pl-10 pr-3 py-2.5 text-sm focus:border-primary outline-none disabled:opacity-60"
-              />
-            </div>
-            {otpSent && (
-              <input
-                type="text"
-                required
-                value={otpCode}
-                onChange={(e) => setOtpCode(e.target.value)}
-                placeholder={t("login.otpPlaceholder")}
-                className="w-full rounded-xl border bg-background px-3 py-2.5 text-sm focus:border-primary outline-none tracking-widest text-center"
-              />
-            )}
-            <button
-              type="submit"
-              disabled={loading}
-              className="w-full rounded-xl bg-gradient-brand px-4 py-2.5 text-sm font-medium text-white shadow-glow hover:scale-[1.02] transition-transform disabled:opacity-60 flex items-center justify-center gap-2"
-            >
-              {loading && <Loader2 className="h-4 w-4 animate-spin" />}
-              {otpSent ? t("login.verifyCode") : t("login.sendCode")}
-            </button>
-            {otpSent && (
-              <button
-                type="button"
-                onClick={() => { setOtpSent(false); setOtpCode(""); }}
-                className="w-full text-xs text-muted-foreground hover:text-foreground"
-              >
-                {t("login.changeNumber")}
-              </button>
-            )}
-          </form>
-        )}
 
         {(method === "google" || method === "apple") && (
           <button
