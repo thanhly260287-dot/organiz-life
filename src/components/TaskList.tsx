@@ -152,7 +152,7 @@ export function TaskList({
             onChange={(e) => setTitle(e.target.value)}
             onKeyDown={(e) => e.key === "Enter" && submit()}
             placeholder={tr("tasks.newTask")}
-            className="w-full bg-transparent outline-none text-sm placeholder:text-muted-foreground"
+            className="w-full bg-transparent outline-none text-lg placeholder:text-muted-foreground"
           />
           <div className="flex flex-wrap gap-2">
             {enableDateTime && (
@@ -212,9 +212,9 @@ export function TaskList({
       ) : (
         <button
           onClick={() => setAdding(true)}
-          className="w-full flex items-center justify-center gap-2 text-sm text-muted-foreground hover:text-foreground rounded-xl border-2 border-dashed py-3 transition-colors hover:border-foreground/30"
+          className="w-full flex items-center justify-center gap-2 text-base text-muted-foreground hover:text-foreground rounded-xl border-2 border-dashed py-3 transition-colors hover:border-foreground/30"
         >
-          <Plus className="h-4 w-4" /> Ajouter
+          <Plus className="h-5 w-5" /> {tr("tasks.add")}
         </button>
       )}
     </div>
