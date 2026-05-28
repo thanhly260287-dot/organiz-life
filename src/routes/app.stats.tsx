@@ -709,14 +709,25 @@ function StatsPage() {
 
           {view === "evolution" && (
             <section className="glass rounded-3xl shadow-elevated p-6 sm:p-8 space-y-6">
-              <div>
+              <div className="flex flex-wrap items-start justify-between gap-3">
                 <h2 className="font-display font-semibold text-xl">
                   {t("stats.viewEvolution", "Évolution")} —{" "}
                   <span className="text-muted-foreground text-sm font-normal">
                     {t("stats.evolutionHint", "progression cumulée sur 30 jours")}
                   </span>
                 </h2>
+                <select
+                  value={evoCat}
+                  onChange={(e) => setEvoCat(e.target.value)}
+                  className="rounded-xl bg-card/60 border border-border px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary"
+                >
+                  <option value="all">{t("stats.allCategories", "Toutes les catégories")}</option>
+                  {categories.map((c) => (
+                    <option key={c.id} value={c.id}>{nameFor(c.id, c.name)}</option>
+                  ))}
+                </select>
               </div>
+
 
               <div className="h-72">
                 <ResponsiveContainer width="100%" height="100%">
