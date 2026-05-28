@@ -103,7 +103,7 @@ function LoginPage() {
           to="/"
           className="absolute top-4 left-4 inline-flex items-center gap-1.5 text-xs text-muted-foreground hover:text-foreground transition-colors"
         >
-          <ArrowLeft className="h-3.5 w-3.5" /> {t("header.back")}
+          <ArrowLeft className="h-3.5 w-3.5" /> <span suppressHydrationWarning>{t("header.back")}</span>
         </Link>
 
         <div className="flex flex-col items-center gap-3 pt-2">
