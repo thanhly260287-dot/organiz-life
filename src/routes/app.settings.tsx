@@ -1,8 +1,9 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useStore } from "@/lib/store";
 import { motion } from "framer-motion";
-import { Moon, Sun, Hash, Globe } from "lucide-react";
+import { Moon, Sun, Hash, Globe, Search, Check } from "lucide-react";
 import { useTranslation } from "react-i18next";
+import { useMemo, useState } from "react";
 import { SUPPORTED_LANGUAGES } from "@/lib/i18n";
 
 export const Route = createFileRoute("/app/settings")({
@@ -17,6 +18,19 @@ function Settings() {
   const setTextSize = useStore((s) => s.setTextSize);
   const showPriority = useStore((s) => s.showCategoryPriority);
   const togglePriority = useStore((s) => s.toggleCategoryPriority);
+  const [langQuery, setLangQuery] = useState("");
+
+  const filteredLangs = useMemo(() => {
+    const q = langQuery.trim().toLowerCase();
+    if (!q) return SUPPORTED_LANGUAGES;
+    return SUPPORTED_LANGUAGES.filter(
+      (l) => l.label.toLowerCase().includes(q) || l.code.toLowerCase().includes(q),
+    );
+  }, [langQuery]);
+
+  const currentLang =
+    SUPPORTED_LANGUAGES.find((l) => l.code === i18n.language) ??
+    SUPPORTED_LANGUAGES.find((l) => l.code === i18n.language.split("-")[0]);
 
   return (
     <main className="mx-auto max-w-2xl px-4 sm:px-6 py-8 space-y-6">
@@ -26,22 +40,51 @@ function Settings() {
       </motion.div>
 
       <section className="glass rounded-2xl shadow-glass p-6 space-y-4">
-        <h2 className="font-display font-semibold flex items-center gap-2">
-          <Globe className="h-4 w-4" /> {t("settings.language")}
-        </h2>
+        <div className="flex items-center justify-between gap-3 flex-wrap">
+          <h2 className="font-display font-semibold flex items-center gap-2">
+            <Globe className="h-4 w-4" /> {t("settings.language")}
+          </h2>
+          {currentLang && (
+            <span className="text-sm text-muted-foreground flex items-center gap-1.5">
+              <span className="text-lg leading-none">{currentLang.flag}</span>
+              {currentLang.label}
+            </span>
+          )}
+        </div>
         <p className="text-xs text-muted-foreground">{t("settings.languageDesc")}</p>
-        <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
-          {SUPPORTED_LANGUAGES.map((l) => (
-            <button
-              key={l.code}
-              onClick={() => i18n.changeLanguage(l.code)}
-              className={`rounded-xl border-2 px-3 py-2 text-sm transition-all ${
-                i18n.language === l.code ? "border-primary shadow-glow" : "border-border hover:border-foreground/20"
-              }`}
-            >
-              {l.label}
-            </button>
-          ))}
+
+        <div className="relative">
+          <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+          <input
+            type="text"
+            value={langQuery}
+            onChange={(e) => setLangQuery(e.target.value)}
+            placeholder={t("settings.language") + "…"}
+            className="w-full rounded-xl border border-border bg-background pl-9 pr-3 py-2 text-sm outline-none focus:border-primary"
+          />
+        </div>
+
+        <div className="max-h-80 overflow-y-auto rounded-xl border border-border divide-y divide-border">
+          {filteredLangs.map((l) => {
+            const active = i18n.language === l.code;
+            return (
+              <button
+                key={l.code}
+                onClick={() => i18n.changeLanguage(l.code)}
+                className={`w-full flex items-center gap-3 px-3 py-2.5 text-sm text-left transition-colors ${
+                  active ? "bg-primary/10 text-primary" : "hover:bg-muted"
+                }`}
+              >
+                <span className="text-xl leading-none w-6 text-center">{l.flag}</span>
+                <span className="flex-1 truncate">{l.label}</span>
+                <span className="text-xs text-muted-foreground uppercase">{l.code}</span>
+                {active && <Check className="h-4 w-4 text-primary" />}
+              </button>
+            );
+          })}
+          {filteredLangs.length === 0 && (
+            <div className="px-3 py-6 text-center text-sm text-muted-foreground">—</div>
+          )}
         </div>
       </section>
 
