@@ -45,6 +45,8 @@ export function TaskList({
   const [date, setDate] = useState("");
   const [time, setTime] = useState("");
   const [amount, setAmount] = useState<string>("");
+  const [reminders, setReminders] = useState<number[]>([]);
+
   const showPriority = useStore((s) => s.taskPriorityCategories.includes(categoryId));
   const toggleTaskPriorityFor = useStore((s) => s.toggleTaskPriorityFor);
   const addTask = useStore((s) => s.addTask);
