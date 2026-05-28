@@ -156,7 +156,7 @@ function StatsPage() {
     const ids = evoAll ? null : new Set(evoCats);
     taskDatesByCategory.forEach((buckets, catId) => {
       if (ids !== null && !ids.has(catId)) return;
-      if (ids !== null && catId !== ids) return;
+      const { created, done } = buckets;
       const { created, done } = buckets;
       for (let i = 0; i < created.length; i++) {
         const k = created[i];
@@ -749,17 +749,49 @@ function StatsPage() {
                   <span className="text-muted-foreground text-sm font-normal">
                     {t("stats.evolutionHint", "progression cumulée sur 30 jours")}
                   </span>
-                </h2>
-                <select
-                  value={evoCat}
-                  onChange={(e) => setEvoCat(e.target.value)}
-                  className="rounded-xl bg-card/60 border border-border px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary"
-                >
-                  <option value="all">{t("stats.allCategories", "Toutes les catégories")}</option>
-                  {categories.map((c) => (
-                    <option key={c.id} value={c.id}>{nameFor(c.id, c.name)}</option>
-                  ))}
-                </select>
+                <div className="flex flex-wrap gap-2">
+                  <button
+                    type="button"
+                    onClick={() => setEvoCats(["all"])}
+                    className={`inline-flex items-center gap-1.5 rounded-full px-3 py-1.5 text-xs transition-all border ${
+                      evoAll
+                        ? "bg-gradient-brand text-white border-transparent shadow-sm"
+                        : "bg-card/60 border-border hover:bg-card text-foreground"
+                    }`}
+                  >
+                    {t("stats.allCategories", "Toutes les catégories")}
+                  </button>
+                  {categories.map((c) => {
+                    const active = !evoAll && evoCats.includes(c.id);
+                    return (
+                      <button
+                        key={c.id}
+                        type="button"
+                        onClick={() =>
+                          setEvoCats((prev) => {
+                            const next = prev.filter((x) => x !== "all");
+                            if (next.includes(c.id)) {
+                              const filtered = next.filter((x) => x !== c.id);
+                              return filtered.length === 0 ? ["all"] : filtered;
+                            }
+                            return [...next, c.id];
+                          })
+                        }
+                        className={`inline-flex items-center gap-1.5 rounded-full px-3 py-1.5 text-xs transition-all border ${
+                          active
+                            ? "bg-gradient-brand text-white border-transparent shadow-sm"
+                            : "bg-card/60 border-border hover:bg-card text-foreground"
+                        }`}
+                      >
+                        <span
+                          className="h-2 w-2 rounded-full shrink-0"
+                          style={{ background: c.color }}
+                        />
+                        {nameFor(c.id, c.name)}
+                      </button>
+                    );
+                  })}
+                </div>
               </div>
 
 
