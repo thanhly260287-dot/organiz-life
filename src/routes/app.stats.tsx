@@ -209,7 +209,7 @@ function StatsPage() {
                       </div>
                       <div
                         className={`text-2xl sm:text-3xl font-display font-bold tabular-nums ${
-                          finance.grand < 0 ? "text-destructive" : "text-gradient"
+                          finance.grand < 0 ? "text-red-500" : "text-green-500"
                         }`}
                       >
                         {fmtEUR(finance.grand)}
