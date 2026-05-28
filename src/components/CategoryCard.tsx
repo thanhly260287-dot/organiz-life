@@ -15,12 +15,17 @@ export function CategoryCard({ category, index }: { category: Category; index: n
   const { t } = useTranslation();
   const { attributes, listeners, setNodeRef, transform, transition, isDragging } = useSortable({
     id: category.id,
-  });
   const showPriority = useStore((s) => s.showCategoryPriority);
+  const showTotal = useStore((s) => s.showCategoryTotal);
   const removeCategory = useStore((s) => s.removeCategory);
   const updateCategory = useStore((s) => s.updateCategory);
   const progress = getCategoryProgress(category);
+  const financeTotal = getCategoryFinanceTotal(category);
   const nameFor = useCategoryName();
+  const displayName = nameFor(category.id, category.name);
+  const fmtEUR = (n: number) =>
+    n.toLocaleString("fr-FR", { style: "currency", currency: "EUR", maximumFractionDigits: 0 });
+
   const displayName = nameFor(category.id, category.name);
 
   const [editing, setEditing] = useState(false);
