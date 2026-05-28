@@ -345,8 +345,15 @@ export function VisionBoard({
           >
             <Trash2 className="h-3.5 w-3.5" />
           </button>
+          <button
+            onClick={() => setSelected(null)}
+            className="ml-1 px-3 py-1.5 rounded bg-primary text-primary-foreground text-xs font-medium hover:opacity-90"
+          >
+            Valider
+          </button>
         </div>
       )}
+
 
       <div
         ref={boardRef}
