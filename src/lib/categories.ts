@@ -87,6 +87,7 @@ export const DEFAULT_CATEGORIES: Omit<Category, "tasks" | "subcategories" | "vis
   { id: "bad-habits", name: "Mauvaises habitudes", icon: "ThumbsDown", color: BRAND_BLUE, priority: 23 },
   { id: "debts", name: "Dettes", icon: "TrendingDown", color: BRAND_VIOLET, priority: 24 },
   { id: "credits", name: "Créances", icon: "HandCoins", color: BRAND_BLUE, priority: 25 },
+  { id: "costs", name: "Coûts", icon: "Receipt", color: BRAND_VIOLET, priority: 26 },
   { id: "leisure", name: "Loisirs", icon: "Gamepad2", color: BRAND_VIOLET, priority: 26 },
   { id: "desires", name: "Ce que je désire dans ma vie", icon: "Heart", color: BRAND_BLUE, priority: 27 },
   { id: "rejections", name: "Ce que je ne veux plus dans ma vie", icon: "Ban", color: BRAND_VIOLET, priority: 28 },
