@@ -14,7 +14,7 @@ export interface Task {
 }
 
 
-export const FINANCE_CATEGORY_IDS = new Set(["income", "debts", "invest", "credits", "savings", "costs"]);
+export const FINANCE_CATEGORY_IDS = new Set(["income", "debts", "invest", "credits", "savings", "costs", "couts-et-gains"]);
 export const NEGATIVE_FINANCE_IDS = new Set(["debts", "costs"]);
 
 
@@ -75,6 +75,7 @@ export const DEFAULT_CATEGORIES: Omit<Category, "tasks" | "subcategories" | "vis
   { id: "health", name: "Santé", icon: "HeartPulse", color: BRAND_BLUE, priority: 11 },
   { id: "savings", name: "Économies", icon: "PiggyBank", color: BRAND_VIOLET, priority: 12 },
   { id: "invest", name: "Placement", icon: "TrendingUp", color: BRAND_BLUE, priority: 13 },
+  { id: "couts-et-gains", name: "Couts et Gains", icon: "Scale", color: BRAND_VIOLET, priority: 13.5 },
   { id: "income", name: "Revenus", icon: "Wallet", color: BRAND_VIOLET, priority: 14 },
   { id: "income-res", name: "Ressources revenu", icon: "Coins", color: BRAND_BLUE, priority: 15 },
   { id: "income-sol", name: "Solutions revenu", icon: "Rocket", color: BRAND_VIOLET, priority: 16 },
