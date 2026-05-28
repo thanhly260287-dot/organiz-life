@@ -103,17 +103,17 @@ export function TaskList({
             onChange={() => toggleTaskPriorityFor(categoryId)}
             className="accent-primary"
           />
-          Afficher les numéros de priorité
+          {tr("tasks.showPriority")}
         </label>
       )}
       {enableAmount && tasks.some((t) => t.amount != null) && (
         <div className="glass rounded-xl shadow-glass px-4 py-2 flex items-center justify-between">
-          <span className="text-xs text-muted-foreground uppercase tracking-wide">Total</span>
+          <span className="text-xs text-muted-foreground uppercase tracking-wide">{tr("tasks.total")}</span>
           <span
             className={`text-base font-display font-bold ${total < 0 ? "text-destructive" : ""}`}
             style={{ color: total >= 0 ? accent : undefined }}
           >
-            {total.toLocaleString("fr-FR", { style: "currency", currency: "EUR" })}
+            {total.toLocaleString(tr("common.year") ? "fr-FR" : "fr-FR", { style: "currency", currency: "EUR" })}
           </span>
         </div>
       )}
@@ -151,7 +151,7 @@ export function TaskList({
             value={title}
             onChange={(e) => setTitle(e.target.value)}
             onKeyDown={(e) => e.key === "Enter" && submit()}
-            placeholder="Nouvelle tâche…"
+            placeholder={tr("tasks.newTask")}
             className="w-full bg-transparent outline-none text-sm placeholder:text-muted-foreground"
           />
           <div className="flex flex-wrap gap-2">
@@ -164,7 +164,7 @@ export function TaskList({
                     onChange={(e) => setDate(e.target.value)}
                     className={`text-xs bg-muted rounded-md px-2 py-1 outline-none ${requireDate && !date ? "ring-1 ring-destructive" : ""}`}
                   />
-                  {requireDate && <span className="text-[10px] text-muted-foreground mt-0.5">Date requise</span>}
+                  {requireDate && <span className="text-[10px] text-muted-foreground mt-0.5">{tr("tasks.dateRequired")}</span>}
                 </div>
                 <div className="flex flex-col">
                   <input
@@ -174,9 +174,9 @@ export function TaskList({
                     className={`text-xs bg-muted rounded-md px-2 py-1 outline-none ${requireTime && !time ? "ring-1 ring-destructive" : ""}`}
                   />
                   {requireTime ? (
-                    <span className="text-[10px] text-muted-foreground mt-0.5">Heure requise</span>
+                    <span className="text-[10px] text-muted-foreground mt-0.5">{tr("tasks.timeRequired")}</span>
                   ) : (
-                    <span className="text-[10px] text-muted-foreground mt-0.5">Heure optionnelle</span>
+                    <span className="text-[10px] text-muted-foreground mt-0.5">{tr("tasks.timeOptional")}</span>
                   )}
                 </div>
               </>
@@ -186,7 +186,7 @@ export function TaskList({
                 type="number"
                 step="0.01"
                 min={0}
-                placeholder={amountSign < 0 ? "Montant (−€)" : "Montant (€)"}
+                placeholder={amountSign < 0 ? tr("tasks.amountNeg") : tr("tasks.amount")}
                 value={amount}
                 onChange={(e) => setAmount(e.target.value)}
                 className="text-xs bg-muted rounded-md px-2 py-1 outline-none w-28"
@@ -269,7 +269,7 @@ function SortableTaskRow({
           borderColor: t.done ? accent : "var(--border)",
           background: t.done ? accent : "transparent",
         }}
-        aria-label="Terminer"
+        aria-label={tr("tasks.complete")}
       >
         {t.done && <Check className="h-3.5 w-3.5 text-white" />}
       </button>
@@ -308,14 +308,14 @@ function SortableTaskRow({
           className={`shrink-0 text-sm font-display font-semibold tabular-nums ${amountSign < 0 ? "text-destructive" : ""}`}
           style={{ color: amountSign > 0 ? accent : undefined }}
         >
-          {(t.amount * amountSign).toLocaleString("fr-FR", { style: "currency", currency: "EUR" })}
+          {(t.amount * amountSign).toLocaleString(tr("common.year") ? "fr-FR" : "fr-FR", { style: "currency", currency: "EUR" })}
         </span>
       )}
       <button
         onPointerDown={(e) => e.stopPropagation()}
         onClick={onRemove}
         className="opacity-0 group-hover:opacity-100 p-1.5 rounded-lg hover:bg-destructive/20 text-destructive transition-all"
-        aria-label="Supprimer"
+        aria-label={tr("tasks.delete")}
       >
         <Trash2 className="h-4 w-4" />
       </button>
