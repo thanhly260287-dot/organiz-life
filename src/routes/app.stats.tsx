@@ -28,9 +28,11 @@ function StatsPage() {
     [allCategories]
   );
   const [view, setView] = useState<View>("overview");
+  const [evoCat, setEvoCat] = useState<string>("all");
   // Per-row selection in the Bilan financier: undefined = included with natural sign,
   // +1 = forced added, -1 = forced subtracted, 0 = excluded. Click cycles through.
   const [financeSel, setFinanceSel] = useState<Record<string, 1 | -1 | 0>>({});
+
 
   const stats = useMemo(() => {
     let done = 0;
@@ -115,7 +117,9 @@ function StatsPage() {
     let baseCreated = 0;
     let baseDone = 0;
     const firstDay = days[0].date;
-    categories.forEach((c) => {
+    const source = evoCat === "all" ? categories : categories.filter((c) => c.id === evoCat);
+    source.forEach((c) => {
+
       const all = [...c.tasks, ...c.subcategories.flatMap((s) => s.tasks)];
       all.forEach((t) => {
         if (t.createdAt) {
@@ -150,7 +154,8 @@ function StatsPage() {
       d.pct = cc === 0 ? 0 : Math.round((cd / cc) * 100);
     });
     return days;
-  }, [categories]);
+  }, [categories, evoCat]);
+
 
   const finance = useMemo(() => {
     const rows = FINANCE_SUMMARY_IDS.map((id) => {
@@ -704,14 +709,25 @@ function StatsPage() {
 
           {view === "evolution" && (
             <section className="glass rounded-3xl shadow-elevated p-6 sm:p-8 space-y-6">
-              <div>
+              <div className="flex flex-wrap items-start justify-between gap-3">
                 <h2 className="font-display font-semibold text-xl">
                   {t("stats.viewEvolution", "Évolution")} —{" "}
                   <span className="text-muted-foreground text-sm font-normal">
                     {t("stats.evolutionHint", "progression cumulée sur 30 jours")}
                   </span>
                 </h2>
+                <select
+                  value={evoCat}
+                  onChange={(e) => setEvoCat(e.target.value)}
+                  className="rounded-xl bg-card/60 border border-border px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary"
+                >
+                  <option value="all">{t("stats.allCategories", "Toutes les catégories")}</option>
+                  {categories.map((c) => (
+                    <option key={c.id} value={c.id}>{nameFor(c.id, c.name)}</option>
+                  ))}
+                </select>
               </div>
+
 
               <div className="h-72">
                 <ResponsiveContainer width="100%" height="100%">
