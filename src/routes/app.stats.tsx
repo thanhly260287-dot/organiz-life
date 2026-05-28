@@ -96,29 +96,46 @@ function StatsPage() {
       if (!c) return null;
       const all = [...c.tasks, ...c.subcategories.flatMap((s) => s.tasks)];
       const defaultSign: 1 | -1 = NEGATIVE_FINANCE_IDS.has(id) ? -1 : 1;
-      const total = all.reduce((sum, t) => {
-        if (t.amount == null) return sum;
-        // Credits (créances): négatif tant que non réglé, positif quand réglé
+      let total = 0;
+      let pos = 0;
+      let neg = 0;
+      let countPos = 0;
+      let countNeg = 0;
+      all.forEach((t) => {
+        if (t.amount == null) return;
         const sign: number =
           id === "credits" ? (t.done ? 1 : -1) : ((t.amountSign ?? defaultSign) as number);
-        return sum + t.amount * sign;
-      }, 0);
-      return { id, name: nameFor(c.id, c.name), color: c.color, icon: c.icon, total };
-    }).filter(Boolean) as { id: string; name: string; color: string; icon: string; total: number }[];
+        const v = t.amount * sign;
+        total += v;
+        if (v >= 0) {
+          pos += v;
+          countPos++;
+        } else {
+          neg += v;
+          countNeg++;
+        }
+      });
+      return { id, name: nameFor(c.id, c.name), color: c.color, icon: c.icon, total, pos, neg, countPos, countNeg, count: countPos + countNeg };
+    }).filter(Boolean) as {
+      id: string; name: string; color: string; icon: string;
+      total: number; pos: number; neg: number; countPos: number; countNeg: number; count: number;
+    }[];
     const grand = rows.reduce((s, r) => s + r.total, 0);
+    const totalPos = rows.reduce((s, r) => s + r.pos, 0);
+    const totalNeg = rows.reduce((s, r) => s + r.neg, 0);
     const selectedTotal = rows.reduce((s, r) => {
-      const mode = financeSel[r.id]; // undefined = include natural, 0 = excluded, 1 = +abs, -1 = -abs
+      const mode = financeSel[r.id];
       if (mode === 0) return s;
       if (mode === 1) return s + Math.abs(r.total);
       if (mode === -1) return s - Math.abs(r.total);
       return s + r.total;
     }, 0);
-    return { rows, grand, selectedTotal };
+    return { rows, grand, totalPos, totalNeg, selectedTotal };
   }, [categories, nameFor, financeSel]);
 
   const cycleFinanceSel = (id: string) =>
     setFinanceSel((prev) => {
-      const cur = prev[id]; // undefined → 1 → -1 → 0 → undefined
+      const cur = prev[id];
       const next: 1 | -1 | 0 | undefined =
         cur === undefined ? 1 : cur === 1 ? -1 : cur === -1 ? 0 : undefined;
       const copy = { ...prev };
@@ -126,6 +143,7 @@ function StatsPage() {
       else copy[id] = next;
       return copy;
     });
+
 
   const views: { id: View; label: string; icon: any }[] = [
     { id: "overview", label: t("stats.viewOverview", "Vue d'ensemble"), icon: LayoutGrid },
