@@ -43,10 +43,12 @@ interface ShareOption {
           text: shareText,
           url: appUrl,
         });
+        return;
       } catch {
-        // User cancelled or share failed
+        // User cancelled or share failed -> fallback to QR
       }
     }
+    setQrOpen(true);
   }, [shareTitle, shareText, appUrl, canNativeShare]);
 
   const handleCopyLink = useCallback(async () => {
@@ -57,7 +59,9 @@ interface ShareOption {
     } catch {
       // Fallback: select text manually
     }
+    setQrOpen(true);
   }, [appUrl]);
+
 
   const options: ShareOption[] = [
     ...(canNativeShare
