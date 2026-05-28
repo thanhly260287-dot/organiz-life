@@ -29,8 +29,8 @@ function Dashboard() {
   const [newColor, setNewColor] = useState(COLOR_CHOICES[1]);
 
   const sensors = useSensors(
-    useSensor(PointerSensor, { activationConstraint: { delay: 350, tolerance: 8 } }),
-    useSensor(TouchSensor, { activationConstraint: { delay: 350, tolerance: 8 } })
+    useSensor(PointerSensor, { activationConstraint: { delay: 180, tolerance: 5 } }),
+    useSensor(TouchSensor, { activationConstraint: { delay: 180, tolerance: 5 } })
   );
 
   const visibleCategories = useMemo(
