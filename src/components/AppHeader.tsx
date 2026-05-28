@@ -1,5 +1,6 @@
 import { Link, useRouter, useNavigate } from "@tanstack/react-router";
 import { Logo } from "./Logo";
+import { ShareButton } from "./ShareButton";
 import { useStore } from "@/lib/store";
 import { Moon, Sun, Settings, ArrowLeft, BarChart3, Printer, LogOut } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
@@ -35,6 +36,7 @@ export function AppHeader({ showBack = false }: { showBack?: boolean }) {
           </Link>
         </div>
         <div className="flex items-center gap-1">
+          <ShareButton />
           <Link
             to="/app/print"
             className="p-2.5 rounded-xl hover:bg-accent transition-all hover:scale-105"
