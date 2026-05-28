@@ -1,8 +1,9 @@
+import { useState } from "react";
 import { Link } from "@tanstack/react-router";
 import { motion } from "framer-motion";
 import { useSortable } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
-import { Trash2, GripVertical } from "lucide-react";
+import { Trash2, GripVertical, Pencil } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import { getCategoryProgress, useStore } from "@/lib/store";
 import type { Category } from "@/lib/categories";
