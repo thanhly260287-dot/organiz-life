@@ -36,6 +36,7 @@ export function AppHeader({ showBack = false }: { showBack?: boolean }) {
           </Link>
         </div>
         <div className="flex items-center gap-1">
+          <ShareButton />
           <Link
             to="/app/print"
             className="p-2.5 rounded-xl hover:bg-accent transition-all hover:scale-105"
