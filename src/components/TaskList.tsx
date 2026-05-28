@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Plus, Check, Trash2, Calendar, Clock, Bell, Pencil } from "lucide-react";
+import { Plus, Check, Trash2, Calendar, Clock, Bell, Pencil, Plus as PlusSign, Minus as MinusSign } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import { useStore } from "@/lib/store";
 import { REMINDER_OPTIONS, reminderLabel } from "@/lib/useReminders";
