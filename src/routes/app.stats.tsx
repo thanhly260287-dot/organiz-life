@@ -4,6 +4,11 @@ import { motion, AnimatePresence } from "framer-motion";
 import { ArrowLeft, TrendingUp, CheckCircle2, Layers, PieChart as PieIcon, BarChart3, CalendarDays, LayoutGrid } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import { useStore, getCategoryProgress, MAIN_VISION_ID } from "@/lib/store";
+import { NEGATIVE_FINANCE_IDS } from "@/lib/categories";
+
+const FINANCE_SUMMARY_IDS = ["couts-et-gains", "income", "invest", "savings", "debts", "credits"] as const;
+const fmtEUR = (n: number) =>
+  n.toLocaleString("fr-FR", { style: "currency", currency: "EUR" });
 import { IconRender } from "@/components/IconRender";
 import { useCategoryName } from "@/lib/useCategoryName";
 import { PieChart, Pie, Cell, ResponsiveContainer, Tooltip, BarChart, Bar, XAxis, YAxis, CartesianGrid } from "recharts";
