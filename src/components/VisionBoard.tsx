@@ -370,7 +370,7 @@ export function VisionBoard({
           <motion.div
             key={item.id}
             data-vb-item
-            drag
+            drag={selected === item.id}
             dragMomentum={false}
             onDragEnd={(_, info) => onDrag(item.id, info.offset.x, info.offset.y)}
             initial={false}
@@ -382,7 +382,7 @@ export function VisionBoard({
               height: item.height,
               rotate: item.rotation,
               zIndex: item.zIndex ?? 0,
-              cursor: "grab",
+              cursor: selected === item.id ? "grab" : "pointer",
               touchAction: "none",
             }}
             onClick={(e) => {
