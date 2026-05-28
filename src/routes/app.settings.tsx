@@ -1,13 +1,16 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useStore } from "@/lib/store";
 import { motion } from "framer-motion";
-import { Moon, Sun, Hash } from "lucide-react";
+import { Moon, Sun, Hash, Globe } from "lucide-react";
+import { useTranslation } from "react-i18next";
+import { SUPPORTED_LANGUAGES } from "@/lib/i18n";
 
 export const Route = createFileRoute("/app/settings")({
   component: Settings,
 });
 
 function Settings() {
+  const { t, i18n } = useTranslation();
   const theme = useStore((s) => s.theme);
   const setTheme = useStore((s) => s.setTheme);
   const textSize = useStore((s) => s.textSize);
@@ -18,30 +21,50 @@ function Settings() {
   return (
     <main className="mx-auto max-w-2xl px-4 sm:px-6 py-8 space-y-6">
       <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }}>
-        <h1 className="font-display font-bold text-3xl">Paramètres</h1>
-        <p className="text-sm text-muted-foreground mt-1">Personnalise ton expérience.</p>
+        <h1 className="font-display font-bold text-3xl">{t("settings.title")}</h1>
+        <p className="text-sm text-muted-foreground mt-1">{t("settings.subtitle")}</p>
       </motion.div>
 
       <section className="glass rounded-2xl shadow-glass p-6 space-y-4">
-        <h2 className="font-display font-semibold">Apparence</h2>
-        <div className="grid grid-cols-2 gap-3">
-          {(["light", "dark"] as const).map((t) => (
+        <h2 className="font-display font-semibold flex items-center gap-2">
+          <Globe className="h-4 w-4" /> {t("settings.language")}
+        </h2>
+        <p className="text-xs text-muted-foreground">{t("settings.languageDesc")}</p>
+        <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
+          {SUPPORTED_LANGUAGES.map((l) => (
             <button
-              key={t}
-              onClick={() => setTheme(t)}
-              className={`relative rounded-xl border-2 p-4 flex items-center gap-3 transition-all ${
-                theme === t ? "border-primary shadow-glow" : "border-border hover:border-foreground/20"
+              key={l.code}
+              onClick={() => i18n.changeLanguage(l.code)}
+              className={`rounded-xl border-2 px-3 py-2 text-sm transition-all ${
+                i18n.language === l.code ? "border-primary shadow-glow" : "border-border hover:border-foreground/20"
               }`}
             >
-              {t === "light" ? <Sun className="h-5 w-5" /> : <Moon className="h-5 w-5" />}
-              <span className="text-sm font-medium capitalize">{t === "light" ? "Clair" : "Sombre"}</span>
+              {l.label}
             </button>
           ))}
         </div>
       </section>
 
       <section className="glass rounded-2xl shadow-glass p-6 space-y-4">
-        <h2 className="font-display font-semibold">Taille du texte</h2>
+        <h2 className="font-display font-semibold">{t("settings.appearance")}</h2>
+        <div className="grid grid-cols-2 gap-3">
+          {(["light", "dark"] as const).map((tt) => (
+            <button
+              key={tt}
+              onClick={() => setTheme(tt)}
+              className={`relative rounded-xl border-2 p-4 flex items-center gap-3 transition-all ${
+                theme === tt ? "border-primary shadow-glow" : "border-border hover:border-foreground/20"
+              }`}
+            >
+              {tt === "light" ? <Sun className="h-5 w-5" /> : <Moon className="h-5 w-5" />}
+              <span className="text-sm font-medium">{tt === "light" ? t("settings.light") : t("settings.dark")}</span>
+            </button>
+          ))}
+        </div>
+      </section>
+
+      <section className="glass rounded-2xl shadow-glass p-6 space-y-4">
+        <h2 className="font-display font-semibold">{t("settings.textSize")}</h2>
         <div className="grid grid-cols-3 gap-3">
           {(["sm", "md", "lg"] as const).map((s) => (
             <button
@@ -58,7 +81,7 @@ function Settings() {
                 Aa
               </span>
               <div className="text-xs text-muted-foreground mt-1">
-                {s === "sm" ? "Petit" : s === "md" ? "Moyen" : "Grand"}
+                {s === "sm" ? t("settings.small") : s === "md" ? t("settings.medium") : t("settings.large")}
               </div>
             </button>
           ))}
@@ -66,7 +89,7 @@ function Settings() {
       </section>
 
       <section className="glass rounded-2xl shadow-glass p-6 space-y-4">
-        <h2 className="font-display font-semibold">Affichage</h2>
+        <h2 className="font-display font-semibold">{t("settings.display")}</h2>
         <button
           onClick={togglePriority}
           className="w-full flex items-center justify-between rounded-xl p-4 hover:bg-muted transition-colors"
@@ -74,8 +97,8 @@ function Settings() {
           <div className="flex items-center gap-3">
             <Hash className="h-5 w-5" />
             <div className="text-left">
-              <div className="text-sm font-medium">Numéros de priorité (catégories)</div>
-              <div className="text-xs text-muted-foreground">Affiche 01, 02, 03… sur les catégories principales. Les numéros par tâche se règlent dans chaque catégorie.</div>
+              <div className="text-sm font-medium">{t("settings.priorityTitle")}</div>
+              <div className="text-xs text-muted-foreground">{t("settings.priorityDesc")}</div>
             </div>
           </div>
           <div
@@ -91,7 +114,7 @@ function Settings() {
       </section>
 
       <p className="text-xs text-muted-foreground text-center pt-4">
-        💾 Tes données sont sauvegardées localement. La synchronisation cloud et l'authentification arrivent bientôt.
+        {t("settings.localStorage")}
       </p>
     </main>
   );

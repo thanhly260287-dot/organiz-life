@@ -2,16 +2,19 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 import { useMemo } from "react";
 import { motion } from "framer-motion";
 import { ArrowLeft, TrendingUp, CheckCircle2, Layers } from "lucide-react";
+import { useTranslation } from "react-i18next";
 import { useStore, getCategoryProgress, MAIN_VISION_ID } from "@/lib/store";
 import { IconRender } from "@/components/IconRender";
+import { useCategoryName } from "@/lib/useCategoryName";
 
 export const Route = createFileRoute("/app/stats")({
   component: StatsPage,
 });
 
 function StatsPage() {
+  const { t } = useTranslation();
+  const nameFor = useCategoryName();
   const categories = useStore((s) => s.categories.filter((c) => c.id !== MAIN_VISION_ID));
-
 
   const stats = useMemo(() => {
     let done = 0;
@@ -38,7 +41,7 @@ function StatsPage() {
         to="/app"
         className="inline-flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground"
       >
-        <ArrowLeft className="h-4 w-4" /> Retour aux catégories
+        <ArrowLeft className="h-4 w-4" /> {t("stats.backCategories")}
       </Link>
 
       <motion.section
@@ -47,16 +50,16 @@ function StatsPage() {
         className="glass rounded-3xl shadow-elevated p-6 sm:p-8"
       >
         <h1 className="font-display font-bold text-3xl sm:text-4xl">
-          <span className="text-gradient">Statistiques</span> & progression
+          <span className="text-gradient">{t("stats.title")}</span> {t("stats.andProgress")}
         </h1>
         <p className="mt-1 text-muted-foreground text-sm">
-          Visualise ton évolution sur toutes les catégories de vie.
+          {t("stats.subtitle")}
         </p>
 
         <div className="mt-6 grid sm:grid-cols-3 gap-4">
           <div className="rounded-2xl bg-card/50 p-4">
             <div className="flex items-center gap-2 text-xs text-muted-foreground">
-              <TrendingUp className="h-3.5 w-3.5" /> Progression de vie
+              <TrendingUp className="h-3.5 w-3.5" /> {t("stats.lifeProgress")}
             </div>
             <div className="mt-1 text-3xl font-display font-bold text-gradient">{stats.pct}%</div>
             <div className="mt-3 h-2 rounded-full bg-muted overflow-hidden">
@@ -70,7 +73,7 @@ function StatsPage() {
           </div>
           <div className="rounded-2xl bg-card/50 p-4">
             <div className="flex items-center gap-2 text-xs text-muted-foreground">
-              <CheckCircle2 className="h-3.5 w-3.5" /> Tâches accomplies
+              <CheckCircle2 className="h-3.5 w-3.5" /> {t("stats.tasksDone")}
             </div>
             <div className="mt-1 text-3xl font-display font-bold">
               {stats.done}
@@ -79,7 +82,7 @@ function StatsPage() {
           </div>
           <div className="rounded-2xl bg-card/50 p-4">
             <div className="flex items-center gap-2 text-xs text-muted-foreground">
-              <Layers className="h-3.5 w-3.5" /> Catégories actives
+              <Layers className="h-3.5 w-3.5" /> {t("stats.activeCategories")}
             </div>
             <div className="mt-1 text-3xl font-display font-bold">{categories.length}</div>
           </div>
@@ -87,7 +90,7 @@ function StatsPage() {
       </motion.section>
 
       <section className="space-y-3">
-        <h2 className="font-display font-semibold text-xl">Progression par catégorie</h2>
+        <h2 className="font-display font-semibold text-xl">{t("stats.byCategory")}</h2>
         <div className="grid sm:grid-cols-2 gap-3">
           {ranked.map(({ c, p }) => (
             <Link
@@ -105,7 +108,7 @@ function StatsPage() {
                 </div>
                 <div className="min-w-0 flex-1">
                   <div className="flex items-center justify-between gap-2">
-                    <h3 className="font-display font-semibold text-sm truncate">{c.name}</h3>
+                    <h3 className="font-display font-semibold text-sm truncate">{nameFor(c.id, c.name)}</h3>
                     <span className="text-xs font-mono tabular-nums text-muted-foreground">
                       {p.done}/{p.total} · {p.pct}%
                     </span>

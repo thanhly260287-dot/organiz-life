@@ -2,6 +2,7 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 import { motion } from "framer-motion";
 import { Logo } from "@/components/Logo";
 import { ArrowRight, Sparkles, Target, Layers, HeartPulse, Wallet, ImageIcon } from "lucide-react";
+import { useTranslation } from "react-i18next";
 
 export const Route = createFileRoute("/")({
   component: Landing,
@@ -13,16 +14,17 @@ export const Route = createFileRoute("/")({
   }),
 });
 
-const features = [
-  { icon: Layers, title: "Catégories illimitées", desc: "Organise chaque domaine de ta vie avec des cartes élégantes, drag & drop, priorités." },
-  { icon: Target, title: "Objectifs & habitudes", desc: "Suis ta progression jour après jour avec des barres élégantes et motivantes." },
-  { icon: HeartPulse, title: "Santé & bien-être", desc: "Sport, alimentation, mental — garde tout en équilibre dans une seule app." },
-  { icon: Wallet, title: "Finances claires", desc: "Revenus, dettes, économies, placements. Une vue claire sur ton patrimoine." },
-  { icon: ImageIcon, title: "Vision Board créatif", desc: "Imagine ta vie idéale. Drag, rotation, export PNG haute qualité." },
-  { icon: Sparkles, title: "Premium & inspirant", desc: "Design ultra moderne, mode sombre & clair, animations fluides." },
-];
+const FEATURE_ICONS = [Layers, Target, HeartPulse, Wallet, ImageIcon, Sparkles];
+const FEATURE_KEYS = ["categories", "goals", "health", "finance", "vision", "premium"] as const;
 
 function Landing() {
+  const { t } = useTranslation();
+  const features = FEATURE_KEYS.map((k, i) => ({
+    Icon: FEATURE_ICONS[i],
+    title: t(`landing.features.${k}.title`),
+    desc: t(`landing.features.${k}.desc`),
+  }));
+
   return (
     <div className="min-h-screen bg-aurora">
       <header className="mx-auto max-w-7xl px-4 sm:px-6 py-6 flex items-center justify-between">
@@ -31,7 +33,7 @@ function Landing() {
           to="/app"
           className="inline-flex items-center gap-2 rounded-xl bg-gradient-brand px-5 py-2.5 text-sm font-medium text-white shadow-glow hover:scale-105 transition-transform"
         >
-          Ouvrir l'app <ArrowRight className="h-4 w-4" />
+          {t("landing.openApp")} <ArrowRight className="h-4 w-4" />
         </Link>
       </header>
 
@@ -43,7 +45,7 @@ function Landing() {
           className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full glass shadow-glass text-xs font-medium mb-8"
         >
           <Sparkles className="h-3.5 w-3.5 text-gradient" style={{ color: "var(--brand-violet)" }} />
-          Ta vie, organisée comme jamais
+          {t("landing.badge")}
         </motion.div>
 
         <motion.h1
@@ -52,9 +54,9 @@ function Landing() {
           transition={{ delay: 0.1, duration: 0.7 }}
           className="font-display font-bold text-5xl sm:text-7xl tracking-tight leading-[1.05]"
         >
-          Deviens la meilleure
+          {t("landing.heroLine1")}
           <br />
-          <span className="text-gradient">version de toi.</span>
+          <span className="text-gradient">{t("landing.heroLine2")}</span>
         </motion.h1>
 
         <motion.p
@@ -63,7 +65,7 @@ function Landing() {
           transition={{ delay: 0.3, duration: 0.7 }}
           className="mt-6 text-lg sm:text-xl text-muted-foreground max-w-2xl mx-auto"
         >
-          Organise ton quotidien, tes objectifs, ta santé, tes finances et ton bien-être dans une app premium, fluide et inspirante.
+          {t("landing.subtitle")}
         </motion.p>
 
         <motion.div
@@ -76,14 +78,14 @@ function Landing() {
             to="/app"
             className="group inline-flex items-center gap-2 rounded-2xl bg-gradient-brand px-7 py-3.5 text-base font-semibold text-white shadow-glow hover:scale-105 transition-transform"
           >
-            Commencer gratuitement
+            {t("landing.startFree")}
             <ArrowRight className="h-4 w-4 group-hover:translate-x-1 transition-transform" />
           </Link>
           <a
             href="#features"
             className="inline-flex items-center gap-2 rounded-2xl glass shadow-glass px-7 py-3.5 text-base font-medium hover:scale-105 transition-transform"
           >
-            Découvrir
+            {t("landing.discover")}
           </a>
         </motion.div>
       </section>
@@ -100,7 +102,7 @@ function Landing() {
               className="group glass rounded-2xl p-6 shadow-glass hover:shadow-elevated hover:-translate-y-1 transition-all"
             >
               <div className="h-11 w-11 rounded-xl bg-gradient-brand flex items-center justify-center shadow-glow mb-4">
-                <f.icon className="h-5 w-5 text-white" />
+                <f.Icon className="h-5 w-5 text-white" />
               </div>
               <h3 className="font-display font-semibold text-lg">{f.title}</h3>
               <p className="mt-1.5 text-sm text-muted-foreground">{f.desc}</p>
@@ -112,7 +114,7 @@ function Landing() {
       <footer className="border-t">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 py-8 flex flex-wrap items-center justify-between gap-4 text-sm text-muted-foreground">
           <Logo size={28} />
-          <p>© {new Date().getFullYear()} Organiz-Life. Conçu pour t'inspirer.</p>
+          <p>© {new Date().getFullYear()} Organiz-Life. {t("landing.copyright")}</p>
         </div>
       </footer>
     </div>

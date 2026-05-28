@@ -6,6 +6,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { lovable } from "@/integrations/lovable/index";
 import { toast } from "sonner";
 import { Logo } from "@/components/Logo";
+import { useTranslation } from "react-i18next";
 
 export const Route = createFileRoute("/login")({
   component: LoginPage,
@@ -14,6 +15,7 @@ export const Route = createFileRoute("/login")({
 type Method = "email" | "phone" | "google" | "apple";
 
 function LoginPage() {
+  const { t } = useTranslation();
   const navigate = useNavigate();
   const [method, setMethod] = useState<Method>("email");
   const [mode, setMode] = useState<"signin" | "signup">("signin");
@@ -50,13 +52,13 @@ function LoginPage() {
           options: { emailRedirectTo: `${window.location.origin}/app` },
         });
         if (error) throw error;
-        toast.success("Compte créé ! Vérifie ton email pour confirmer.");
+        toast.success(t("login.accountCreated"));
       } else {
         const { error } = await supabase.auth.signInWithPassword({ email, password });
         if (error) throw error;
       }
     } catch (err: any) {
-      toast.error(err?.message ?? "Erreur de connexion");
+      toast.error(err?.message ?? t("login.loginError"));
     } finally {
       setLoading(false);
     }
@@ -69,9 +71,9 @@ function LoginPage() {
       const { error } = await supabase.auth.signInWithOtp({ phone });
       if (error) throw error;
       setOtpSent(true);
-      toast.success("Code envoyé par SMS");
+      toast.success(t("login.codeSent"));
     } catch (err: any) {
-      toast.error(err?.message ?? "Erreur d'envoi du code");
+      toast.error(err?.message ?? t("login.codeSendError"));
     } finally {
       setLoading(false);
     }
@@ -84,7 +86,7 @@ function LoginPage() {
       const { error } = await supabase.auth.verifyOtp({ phone, token: otpCode, type: "sms" });
       if (error) throw error;
     } catch (err: any) {
-      toast.error(err?.message ?? "Code invalide");
+      toast.error(err?.message ?? t("login.codeInvalid"));
     } finally {
       setLoading(false);
     }
@@ -98,7 +100,7 @@ function LoginPage() {
       });
       if (result.error) throw result.error;
     } catch (err: any) {
-      toast.error(err?.message ?? `Erreur ${provider}`);
+      toast.error(err?.message ?? t("login.providerError", { provider }));
       setLoading(false);
     }
   };
@@ -113,10 +115,10 @@ function LoginPage() {
         <div className="flex flex-col items-center gap-3">
           <Link to="/"><Logo size={48} /></Link>
           <h1 className="font-display font-bold text-2xl text-center">
-            {mode === "signin" ? "Bon retour" : "Crée ton compte"}
+            {mode === "signin" ? t("login.welcomeBack") : t("login.createAccount")}
           </h1>
           <p className="text-sm text-muted-foreground text-center">
-            Choisis ta méthode de connexion préférée
+            {t("login.choose")}
           </p>
         </div>
 
@@ -153,7 +155,7 @@ function LoginPage() {
                 required
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
-                placeholder="ton@email.com"
+                placeholder={t("login.emailPlaceholder")}
                 className="w-full rounded-xl border bg-background pl-10 pr-3 py-2.5 text-sm focus:border-primary outline-none"
               />
             </div>
@@ -165,7 +167,7 @@ function LoginPage() {
                 minLength={6}
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
-                placeholder="Mot de passe"
+                placeholder={t("login.passwordPlaceholder")}
                 className="w-full rounded-xl border bg-background pl-10 pr-3 py-2.5 text-sm focus:border-primary outline-none"
               />
             </div>
@@ -175,14 +177,14 @@ function LoginPage() {
               className="w-full rounded-xl bg-gradient-brand px-4 py-2.5 text-sm font-medium text-white shadow-glow hover:scale-[1.02] transition-transform disabled:opacity-60 flex items-center justify-center gap-2"
             >
               {loading && <Loader2 className="h-4 w-4 animate-spin" />}
-              {mode === "signin" ? "Se connecter" : "Créer mon compte"}
+              {mode === "signin" ? t("login.signIn") : t("login.signUp")}
             </button>
             <button
               type="button"
               onClick={() => setMode(mode === "signin" ? "signup" : "signin")}
               className="w-full text-xs text-muted-foreground hover:text-foreground"
             >
-              {mode === "signin" ? "Pas encore de compte ? Inscris-toi" : "Déjà un compte ? Se connecter"}
+              {mode === "signin" ? t("login.switchToSignUp") : t("login.switchToSignIn")}
             </button>
           </form>
         )}
@@ -196,7 +198,7 @@ function LoginPage() {
                 required
                 value={phone}
                 onChange={(e) => setPhone(e.target.value)}
-                placeholder="+33 6 12 34 56 78"
+                placeholder={t("login.phonePlaceholder")}
                 disabled={otpSent}
                 className="w-full rounded-xl border bg-background pl-10 pr-3 py-2.5 text-sm focus:border-primary outline-none disabled:opacity-60"
               />
@@ -207,7 +209,7 @@ function LoginPage() {
                 required
                 value={otpCode}
                 onChange={(e) => setOtpCode(e.target.value)}
-                placeholder="Code reçu par SMS"
+                placeholder={t("login.otpPlaceholder")}
                 className="w-full rounded-xl border bg-background px-3 py-2.5 text-sm focus:border-primary outline-none tracking-widest text-center"
               />
             )}
@@ -217,7 +219,7 @@ function LoginPage() {
               className="w-full rounded-xl bg-gradient-brand px-4 py-2.5 text-sm font-medium text-white shadow-glow hover:scale-[1.02] transition-transform disabled:opacity-60 flex items-center justify-center gap-2"
             >
               {loading && <Loader2 className="h-4 w-4 animate-spin" />}
-              {otpSent ? "Vérifier le code" : "Recevoir le code SMS"}
+              {otpSent ? t("login.verifyCode") : t("login.sendCode")}
             </button>
             {otpSent && (
               <button
@@ -225,7 +227,7 @@ function LoginPage() {
                 onClick={() => { setOtpSent(false); setOtpCode(""); }}
                 className="w-full text-xs text-muted-foreground hover:text-foreground"
               >
-                Changer de numéro
+                {t("login.changeNumber")}
               </button>
             )}
           </form>
@@ -238,12 +240,12 @@ function LoginPage() {
             className="w-full rounded-xl bg-gradient-brand px-4 py-3 text-sm font-medium text-white shadow-glow hover:scale-[1.02] transition-transform disabled:opacity-60 flex items-center justify-center gap-2"
           >
             {loading ? <Loader2 className="h-4 w-4 animate-spin" /> : null}
-            Continuer avec {method === "google" ? "Google" : "Apple"}
+            {t("login.continueWith", { provider: method === "google" ? "Google" : "Apple" })}
           </button>
         )}
 
         <p className="text-xs text-center text-muted-foreground">
-          En continuant, tu acceptes nos conditions d'utilisation.
+          {t("login.terms")}
         </p>
       </motion.div>
     </main>
