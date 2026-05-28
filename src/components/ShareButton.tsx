@@ -91,6 +91,13 @@ export function ShareButton() {
       color: "text-green-500",
     },
     {
+      id: "snapchat",
+      label: "Snapchat",
+      icon: <SnapchatIcon className="h-4 w-4" />,
+      action: handleCopyLink,
+      color: "text-yellow-400",
+    },
+    {
       id: "sms",
       label: t("share.sms", "SMS"),
       icon: <Smartphone className="h-4 w-4" />,
