@@ -83,5 +83,6 @@ export const DEFAULT_CATEGORIES: Omit<Category, "tasks" | "subcategories" | "vis
   { id: "bad-habits", name: "Mauvaises habitudes", icon: "ThumbsDown", color: BRAND_BLUE, priority: 23 },
   { id: "debts", name: "Dettes", icon: "TrendingDown", color: BRAND_VIOLET, priority: 24 },
   { id: "credits", name: "Créances", icon: "HandCoins", color: BRAND_BLUE, priority: 25 },
-  { id: "leisure", name: "Loisirs divers", icon: "Gamepad2", color: BRAND_VIOLET, priority: 26 },
+  { id: "leisure", name: "Loisirs", icon: "Gamepad2", color: BRAND_VIOLET, priority: 26 },
+  { id: "misc", name: "Divers", icon: "Layers", color: BRAND_BLUE, priority: 27 },
 ];
