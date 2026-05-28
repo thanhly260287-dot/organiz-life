@@ -19,7 +19,9 @@ function AppLayout() {
       <div className="fixed inset-0 bg-aurora opacity-40 pointer-events-none -z-10" />
       <AppHeader />
       <RemindersRunner />
-      <Outlet />
+      <div className="pt-16">
+        <Outlet />
+      </div>
     </div>
   );
 }
