@@ -95,7 +95,31 @@ export function CategoryCard({ category, index }: { category: Category; index: n
                   {String(index + 1).padStart(2, "0")}
                 </span>
               )}
-              <h3 className="font-display font-semibold text-base truncate">{displayName}</h3>
+              {editing ? (
+                <input
+                  autoFocus
+                  value={editName}
+                  onChange={(e) => setEditName(e.target.value)}
+                  onKeyDown={(e) => {
+                    if (e.key === "Enter") submitEdit();
+                    if (e.key === "Escape") setEditing(false);
+                  }}
+                  onBlur={submitEdit}
+                  onPointerDown={(e) => e.stopPropagation()}
+                  onClick={(e) => e.stopPropagation()}
+                  className="w-full bg-transparent outline-none text-base font-display font-semibold border-b border-primary"
+                  placeholder={t("dashboard.newName")}
+                />
+              ) : (
+                <button
+                  onClick={startEdit}
+                  className="group/name flex items-center gap-1.5 font-display font-semibold text-base truncate"
+                  title={t("dashboard.editName", "Modifier le nom")}
+                >
+                  <span className="truncate">{displayName}</span>
+                  <Pencil className="h-3.5 w-3.5 text-muted-foreground opacity-0 group-hover/name:opacity-100 transition-opacity shrink-0" />
+                </button>
+              )}
             </div>
             <p className="mt-1 text-xs text-muted-foreground">
               {t("tasks.taskCount", { done: progress.done, total: progress.total })}
