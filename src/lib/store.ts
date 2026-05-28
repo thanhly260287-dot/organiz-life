@@ -469,5 +469,3 @@ export const getCategoryFinanceTotal = (c: Category): number | null => {
   }, 0);
   return any ? total : null;
 };
-
-};
