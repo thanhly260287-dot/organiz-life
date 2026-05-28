@@ -67,15 +67,16 @@ const seedCategories = (): Category[] => [
 export const useStore = create<AppState>()(
   persist(
     (set) => ({
-      categories: seedCategories(),
-      theme: "dark",
-      textSize: "md",
       showCategoryPriority: false,
+      showCategoryTotal: true,
       taskPriorityCategories: [],
 
       setTheme: (theme) => set({ theme }),
       toggleTheme: () => set((s) => ({ theme: s.theme === "dark" ? "light" : "dark" })),
       setTextSize: (textSize) => set({ textSize }),
+      toggleCategoryPriority: () => set((s) => ({ showCategoryPriority: !s.showCategoryPriority })),
+      toggleCategoryTotal: () => set((s) => ({ showCategoryTotal: !s.showCategoryTotal })),
+
       toggleCategoryPriority: () => set((s) => ({ showCategoryPriority: !s.showCategoryPriority })),
       toggleTaskPriorityFor: (categoryId) =>
         set((s) => ({
