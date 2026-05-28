@@ -72,7 +72,7 @@ export function TaskList({
 
   const canSubmit =
     (!!title.trim() || (enableAmount && !!amount)) &&
-    (!enableDateTime || ((!requireDate || !!date) && (!requireTime || !!time)));
+    ((!requireDate || !!date) && (!requireTime || !!time));
 
   const submit = () => {
     if (!canSubmit) return;
@@ -87,7 +87,7 @@ export function TaskList({
         time: time || undefined,
         amount: amt,
         amountSign: amt != null ? (amountSign as 1 | -1) : undefined,
-        reminders: enableDateTime && time && reminders.length ? [...reminders].sort((a, b) => a - b) : undefined,
+        reminders: time && reminders.length ? [...reminders].sort((a, b) => a - b) : undefined,
       },
       subId
     );
