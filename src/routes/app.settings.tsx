@@ -16,13 +16,13 @@ function Settings() {
   const theme = useStore((s) => s.theme);
   const setTheme = useStore((s) => s.setTheme);
   const textSize = useStore((s) => s.textSize);
+  const setTextSize = useStore((s) => s.setTextSize);
   const showPriority = useStore((s) => s.showCategoryPriority);
   const togglePriority = useStore((s) => s.toggleCategoryPriority);
   const showTotal = useStore((s) => s.showCategoryTotal);
   const toggleTotal = useStore((s) => s.toggleCategoryTotal);
-
-  const togglePriority = useStore((s) => s.toggleCategoryPriority);
   const [langQuery, setLangQuery] = useState("");
+
 
   const filteredLangs = useMemo(() => {
     const q = langQuery.trim().toLowerCase();
