@@ -112,17 +112,44 @@ export function VisionBoard({
     updateItem(categoryId, id, { x: it.x + dx, y: it.y + dy }, subId);
   };
 
-  const startResize = (e: React.PointerEvent, item: VisionItem) => {
+  const startResize = (
+    e: React.PointerEvent,
+    item: VisionItem,
+    corner: "br" | "bl" | "tr" | "tl"
+  ) => {
     e.stopPropagation();
     e.preventDefault();
     const startX = e.clientX;
     const startY = e.clientY;
     const startW = item.width;
     const startH = item.height;
+    const startLeft = item.x;
+    const startTop = item.y;
     const move = (ev: PointerEvent) => {
-      const w = Math.max(40, startW + (ev.clientX - startX));
-      const h = Math.max(30, startH + (ev.clientY - startY));
-      updateItem(categoryId, item.id, { width: w, height: h }, subId);
+      const dx = ev.clientX - startX;
+      const dy = ev.clientY - startY;
+      let w = startW;
+      let h = startH;
+      let x = startLeft;
+      let y = startTop;
+      if (corner === "br") {
+        w = Math.max(40, startW + dx);
+        h = Math.max(30, startH + dy);
+      } else if (corner === "bl") {
+        w = Math.max(40, startW - dx);
+        h = Math.max(30, startH + dy);
+        x = startLeft + (startW - w);
+      } else if (corner === "tr") {
+        w = Math.max(40, startW + dx);
+        h = Math.max(30, startH - dy);
+        y = startTop + (startH - h);
+      } else {
+        w = Math.max(40, startW - dx);
+        h = Math.max(30, startH - dy);
+        x = startLeft + (startW - w);
+        y = startTop + (startH - h);
+      }
+      updateItem(categoryId, item.id, { width: w, height: h, x, y }, subId);
     };
     const up = () => {
       window.removeEventListener("pointermove", move);
@@ -131,6 +158,7 @@ export function VisionBoard({
     window.addEventListener("pointermove", move);
     window.addEventListener("pointerup", up);
   };
+
 
   const startRotate = (e: React.PointerEvent, item: VisionItem) => {
     e.stopPropagation();
@@ -317,8 +345,15 @@ export function VisionBoard({
           >
             <Trash2 className="h-3.5 w-3.5" />
           </button>
+          <button
+            onClick={() => setSelected(null)}
+            className="ml-1 px-3 py-1.5 rounded bg-primary text-primary-foreground text-xs font-medium hover:opacity-90"
+          >
+            Valider
+          </button>
         </div>
       )}
+
 
       <div
         ref={boardRef}
@@ -392,19 +427,35 @@ export function VisionBoard({
                 {/* Rotation handle (top center) */}
                 <div
                   onPointerDown={(e) => startRotate(e, item)}
-                  className="absolute -top-8 left-1/2 -translate-x-1/2 p-1.5 rounded-full bg-card shadow-elevated cursor-grab"
+                  className="absolute -top-10 left-1/2 -translate-x-1/2 h-9 w-9 flex items-center justify-center rounded-full bg-card shadow-elevated cursor-grab border-2 border-primary touch-none"
                   title="Faire tourner"
                 >
-                  <RotateCw className="h-3.5 w-3.5" />
+                  <RotateCw className="h-4 w-4" />
                 </div>
-                {/* Resize handle (bottom right) */}
+                {/* Corner resize handles */}
                 <div
-                  onPointerDown={(e) => startResize(e, item)}
-                  className="absolute -bottom-2 -right-2 h-4 w-4 rounded-full bg-primary shadow-elevated cursor-nwse-resize"
+                  onPointerDown={(e) => startResize(e, item, "tl")}
+                  className="absolute -top-2.5 -left-2.5 h-6 w-6 rounded-full bg-primary border-2 border-card shadow-elevated cursor-nwse-resize touch-none"
+                  title="Redimensionner"
+                />
+                <div
+                  onPointerDown={(e) => startResize(e, item, "tr")}
+                  className="absolute -top-2.5 -right-2.5 h-6 w-6 rounded-full bg-primary border-2 border-card shadow-elevated cursor-nesw-resize touch-none"
+                  title="Redimensionner"
+                />
+                <div
+                  onPointerDown={(e) => startResize(e, item, "bl")}
+                  className="absolute -bottom-2.5 -left-2.5 h-6 w-6 rounded-full bg-primary border-2 border-card shadow-elevated cursor-nesw-resize touch-none"
+                  title="Redimensionner"
+                />
+                <div
+                  onPointerDown={(e) => startResize(e, item, "br")}
+                  className="absolute -bottom-2.5 -right-2.5 h-6 w-6 rounded-full bg-primary border-2 border-card shadow-elevated cursor-nwse-resize touch-none"
                   title="Redimensionner"
                 />
               </>
             )}
+
           </motion.div>
         ))}
       </div>

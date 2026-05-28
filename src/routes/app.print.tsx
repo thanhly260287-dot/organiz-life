@@ -243,7 +243,7 @@ function CategoriesPage({
       <header className="border-b border-neutral-300 pb-3 mb-4 flex items-baseline justify-between">
         <h1 className="text-2xl font-bold tracking-tight">Organiz-Life</h1>
         <span className="text-xs text-neutral-500">
-          {new Date().toLocaleDateString()}
+          {new Date().toLocaleDateString("fr-FR")}
         </span>
       </header>
       <div
@@ -354,7 +354,7 @@ function VisionPage({
       <header className="border-b border-neutral-300 pb-3 mb-4 flex items-baseline justify-between">
         <h1 className="text-2xl font-bold tracking-tight">Vision Board</h1>
         <span className="text-xs text-neutral-500">
-          {new Date().toLocaleDateString()}
+          {new Date().toLocaleDateString("fr-FR")}
         </span>
       </header>
       <div
