@@ -399,6 +399,14 @@ export const useStore = create<AppState>()(
               persisted.categories.splice(newNoAcceptIdx + 1, 0, misc);
             }
           }
+          // Move "gains" right after "invest"
+          const gains = persisted.categories.find((c: any) => c.id === "gains");
+          if (gains) {
+            persisted.categories = persisted.categories.filter((c: any) => c.id !== "gains");
+            const investIdx = persisted.categories.findIndex((c: any) => c.id === "invest");
+            const at = investIdx >= 0 ? investIdx + 1 : persisted.categories.length;
+            persisted.categories.splice(at, 0, gains);
+          }
           // Snap colors to brand palette (skip the hidden main vision)
 
           const BRAND = ["#56CCF2", "#9B51E0"];
