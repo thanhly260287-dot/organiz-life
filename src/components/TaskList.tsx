@@ -197,12 +197,8 @@ export function TaskList({
                     <span className="text-[10px] text-muted-foreground mt-0.5">{tr("tasks.timeRequired")}</span>
                   ) : (
                     <span className="text-[10px] text-muted-foreground mt-0.5">{tr("tasks.timeOptional")}</span>
-                  )}
-                </div>
-              </>
-            )}
             {enableAmount && (
-              <div className="flex items-center gap-2">
+              <div className="flex items-center gap-2 ml-auto">
                 <input
                   type="number"
                   step="0.01"
@@ -210,13 +206,25 @@ export function TaskList({
                   placeholder={amountSign < 0 ? tr("tasks.amountNeg") : tr("tasks.amount")}
                   value={amount}
                   onChange={(e) => setAmount(e.target.value)}
-                  className="text-sm bg-muted rounded-md px-3 py-2 outline-none w-36"
+                  onKeyDown={(e) => e.key === "Enter" && submit()}
+                  className="text-sm bg-muted rounded-md px-3 py-2 outline-none w-32"
                 />
+                <button
+                  onClick={() => setAdding(false)}
+                  className="text-sm px-3 py-2 rounded-md hover:bg-muted"
+                >
+                  {tr("tasks.cancel")}
+                </button>
                 <button
                   onClick={submit}
                   disabled={!canSubmit}
                   className="text-sm px-4 py-2 rounded-md bg-gradient-brand text-white font-medium disabled:opacity-40 disabled:cursor-not-allowed"
                 >
+                  {tr("tasks.add")}
+                </button>
+              </div>
+            )}
+
                   {tr("tasks.add")}
                 </button>
               </div>
