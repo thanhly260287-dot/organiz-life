@@ -87,6 +87,25 @@ function StatsPage() {
     return days;
   }, [categories]);
 
+  const finance = useMemo(() => {
+    const rows = FINANCE_SUMMARY_IDS.map((id) => {
+      const c = categories.find((cat) => cat.id === id);
+      if (!c) return null;
+      const all = [...c.tasks, ...c.subcategories.flatMap((s) => s.tasks)];
+      const defaultSign: 1 | -1 = NEGATIVE_FINANCE_IDS.has(id) ? -1 : 1;
+      const total = all.reduce((sum, t) => {
+        if (t.amount == null) return sum;
+        // Credits (créances): négatif tant que non réglé, positif quand réglé
+        const sign: number =
+          id === "credits" ? (t.done ? 1 : -1) : ((t.amountSign ?? defaultSign) as number);
+        return sum + t.amount * sign;
+      }, 0);
+      return { id, name: nameFor(c.id, c.name), color: c.color, icon: c.icon, total };
+    }).filter(Boolean) as { id: string; name: string; color: string; icon: string; total: number }[];
+    const grand = rows.reduce((s, r) => s + r.total, 0);
+    return { rows, grand };
+  }, [categories, nameFor]);
+
   const views: { id: View; label: string; icon: any }[] = [
     { id: "overview", label: t("stats.viewOverview", "Vue d'ensemble"), icon: LayoutGrid },
     { id: "distribution", label: t("stats.viewDistribution", "Répartition"), icon: PieIcon },
