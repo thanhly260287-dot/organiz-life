@@ -19,7 +19,8 @@ export function AppHeader({ showBack = false }: { showBack?: boolean }) {
   };
 
   return (
-    <header className="sticky top-0 z-40 glass border-b">
+    <header className="fixed top-0 inset-x-0 z-50 glass border-b backdrop-blur supports-[backdrop-filter]:bg-background/60">
+
       <div className="mx-auto max-w-7xl px-4 sm:px-6 h-16 flex items-center justify-between gap-4">
         <div className="flex items-center gap-3">
           {showBack && (
