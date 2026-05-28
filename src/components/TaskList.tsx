@@ -81,6 +81,7 @@ export function TaskList({
         date: date || undefined,
         time: time || undefined,
         amount: amt,
+        reminders: enableDateTime && time && reminders.length ? [...reminders].sort((a, b) => a - b) : undefined,
       },
       subId
     );
@@ -88,8 +89,10 @@ export function TaskList({
     setDate("");
     setTime("");
     setAmount("");
+    setReminders([]);
     setAdding(false);
   };
+
 
 
 
