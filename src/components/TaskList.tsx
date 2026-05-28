@@ -145,6 +145,7 @@ export function TaskList({
                 enableDateTime={enableDateTime}
                 enableAmount={enableAmount}
                 amountSign={amountSign}
+                lockSign={lockSign}
                 onToggle={() => toggleTask(categoryId, t.id, subId)}
                 onRemove={() => removeTask(categoryId, t.id, subId)}
               />
