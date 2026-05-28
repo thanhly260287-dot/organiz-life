@@ -401,18 +401,18 @@ function SortableTaskRow({
         </div>
         {((enableDateTime && (t.date || t.time)) || t.notes || t.reminders?.length) && (
           <div className="mt-1 flex flex-wrap items-center gap-3 text-[11px] text-muted-foreground">
-            {enableDateTime && t.date && (
+        {((t.date || t.time) || t.notes || t.reminders?.length) && (
+          <div className="mt-1 flex flex-wrap items-center gap-3 text-[11px] text-muted-foreground">
+            {t.date && (
               <span className="inline-flex items-center gap-1">
                 <Calendar className="h-3 w-3" /> {t.date}
               </span>
             )}
-            {enableDateTime && t.time && (
+            {t.time && (
               <span className="inline-flex items-center gap-1">
                 <Clock className="h-3 w-3" /> {t.time}
               </span>
             )}
-            {t.reminders?.length ? (
-              <span className="inline-flex items-center gap-1">
                 <Bell className="h-3 w-3" /> {t.reminders.map((m) => reminderLabel(m)).join(" · ")}
               </span>
             ) : null}
