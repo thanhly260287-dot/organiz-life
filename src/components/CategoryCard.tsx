@@ -17,9 +17,13 @@ export function CategoryCard({ category, index }: { category: Category; index: n
   });
   const showPriority = useStore((s) => s.showCategoryPriority);
   const removeCategory = useStore((s) => s.removeCategory);
+  const updateCategory = useStore((s) => s.updateCategory);
   const progress = getCategoryProgress(category);
   const nameFor = useCategoryName();
   const displayName = nameFor(category.id, category.name);
+
+  const [editing, setEditing] = useState(false);
+  const [editName, setEditName] = useState(displayName);
 
   const handleDelete = (e: React.MouseEvent | React.PointerEvent) => {
     e.preventDefault();
@@ -27,6 +31,21 @@ export function CategoryCard({ category, index }: { category: Category; index: n
     if (confirm(t("dashboard.confirmDeleteCategory", { name: displayName }))) {
       removeCategory(category.id);
     }
+  };
+
+  const startEdit = (e: React.MouseEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    setEditName(displayName);
+    setEditing(true);
+  };
+
+  const submitEdit = () => {
+    const trimmed = editName.trim();
+    if (trimmed && trimmed !== displayName) {
+      updateCategory(category.id, { name: trimmed });
+    }
+    setEditing(false);
   };
 
   const style = {
