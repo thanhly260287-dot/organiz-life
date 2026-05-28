@@ -2,21 +2,28 @@ import { Link } from "@tanstack/react-router";
 import { motion } from "framer-motion";
 import { useSortable } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
+import { Trash2, GripVertical } from "lucide-react";
 import { getCategoryProgress, useStore } from "@/lib/store";
 import type { Category } from "@/lib/categories";
 import { IconRender } from "./IconRender";
 import { useCategoryName } from "@/lib/useCategoryName";
-
-
 
 export function CategoryCard({ category, index }: { category: Category; index: number }) {
   const { attributes, listeners, setNodeRef, transform, transition, isDragging } = useSortable({
     id: category.id,
   });
   const showPriority = useStore((s) => s.showCategoryPriority);
+  const removeCategory = useStore((s) => s.removeCategory);
   const progress = getCategoryProgress(category);
   const nameFor = useCategoryName();
 
+  const handleDelete = (e: React.MouseEvent | React.PointerEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    if (confirm(`Supprimer la catégorie "${category.name}" ? Cette action est irréversible.`)) {
+      removeCategory(category.id);
+    }
+  };
 
   const style = {
     transform: CSS.Transform.toString(transform),
@@ -32,14 +39,15 @@ export function CategoryCard({ category, index }: { category: Category; index: n
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ delay: index * 0.03 }}
-      {...attributes}
-      {...listeners}
+      className="relative group/card"
     >
       <Link
         to="/app/category/$id"
         params={{ id: category.id }}
         className="group relative block overflow-hidden rounded-2xl glass shadow-glass p-5 transition-all hover:shadow-elevated hover:-translate-y-1 select-none"
         draggable={false}
+        {...attributes}
+        {...listeners}
       >
         <div
           aria-hidden
@@ -79,8 +87,27 @@ export function CategoryCard({ category, index }: { category: Category; index: n
               />
             </div>
           </div>
+          <div className="flex flex-col items-center gap-1 shrink-0 -mr-1 -my-1">
+            <span
+              aria-hidden
+              className="p-1.5 rounded-md text-muted-foreground/60"
+              title="Maintenir pour déplacer"
+            >
+              <GripVertical className="h-4 w-4" />
+            </span>
+          </div>
         </div>
       </Link>
+      <button
+        type="button"
+        onClick={handleDelete}
+        onPointerDown={(e) => e.stopPropagation()}
+        onTouchStart={(e) => e.stopPropagation()}
+        aria-label={`Supprimer ${category.name}`}
+        className="absolute top-2 right-2 z-10 p-1.5 rounded-lg bg-background/80 backdrop-blur text-muted-foreground hover:text-destructive hover:bg-destructive/10 opacity-0 group-hover/card:opacity-100 focus:opacity-100 transition-opacity"
+      >
+        <Trash2 className="h-4 w-4" />
+      </button>
     </motion.div>
   );
 }
