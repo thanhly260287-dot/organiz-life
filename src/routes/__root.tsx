@@ -107,9 +107,16 @@ function RootShell({ children }: { children: React.ReactNode }) {
     </html>
   );
 }
-
 function RootComponent() {
   const { queryClient } = Route.useRouteContext();
+  useEffect(() => {
+    hydrateClientLanguage();
+    const onChange = (lng: string) => {
+      try { window.localStorage.setItem(LANG_STORAGE_KEY, lng); } catch {}
+    };
+    i18n.on("languageChanged", onChange);
+    return () => { i18n.off("languageChanged", onChange); };
+  }, []);
   return (
     <QueryClientProvider client={queryClient}>
       <ThemeProvider>
@@ -118,4 +125,6 @@ function RootComponent() {
       </ThemeProvider>
     </QueryClientProvider>
   );
+}
+
 }
