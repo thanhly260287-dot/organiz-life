@@ -7,7 +7,6 @@ import { Plus, Search } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import { useStore, MAIN_VISION_ID } from "@/lib/store";
 import { CategoryCard } from "@/components/CategoryCard";
-import { IconRender } from "@/components/IconRender";
 import { IconPicker } from "@/components/IconPicker";
 import { VisionBoard } from "@/components/VisionBoard";
 
