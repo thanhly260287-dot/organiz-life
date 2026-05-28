@@ -145,6 +145,21 @@ export function CategoryCard({ category, index }: { category: Category; index: n
       </Link>
       <button
         type="button"
+        onClick={(e) => {
+          e.preventDefault();
+          e.stopPropagation();
+          setEditName(displayName);
+          setEditing(true);
+        }}
+        onPointerDown={(e) => e.stopPropagation()}
+        onTouchStart={(e) => e.stopPropagation()}
+        aria-label={t("dashboard.editName", "Modifier le nom")}
+        className="absolute top-2 right-11 z-10 p-1.5 rounded-lg bg-background/80 backdrop-blur text-muted-foreground hover:text-primary hover:bg-primary/10 opacity-60 hover:opacity-100 focus:opacity-100 transition-opacity"
+      >
+        <Pencil className="h-4 w-4" />
+      </button>
+      <button
+        type="button"
         onClick={handleDelete}
         onPointerDown={(e) => e.stopPropagation()}
         onTouchStart={(e) => e.stopPropagation()}
