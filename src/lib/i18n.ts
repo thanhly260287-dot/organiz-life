@@ -737,12 +737,15 @@ const resources = {
 
 i18n.use(initReactI18next).init({
   resources,
-  fallbackLng: "fr",
+  fallbackLng: "en",
   lng: "fr",
   supportedLngs: SUPPORTED_LANGUAGES.map((l) => l.code),
+  load: "languageOnly", // fr-FR / pt-BR / zh-TW → fr / pt / zh
+  nonExplicitSupportedLngs: true,
   interpolation: { escapeValue: false },
   react: { useSuspense: false },
 });
+
 
 export const LANG_STORAGE_KEY = "organiz-lang";
 
