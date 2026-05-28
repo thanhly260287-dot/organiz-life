@@ -420,19 +420,35 @@ export function VisionBoard({
                 {/* Rotation handle (top center) */}
                 <div
                   onPointerDown={(e) => startRotate(e, item)}
-                  className="absolute -top-8 left-1/2 -translate-x-1/2 p-1.5 rounded-full bg-card shadow-elevated cursor-grab"
+                  className="absolute -top-10 left-1/2 -translate-x-1/2 h-9 w-9 flex items-center justify-center rounded-full bg-card shadow-elevated cursor-grab border-2 border-primary touch-none"
                   title="Faire tourner"
                 >
-                  <RotateCw className="h-3.5 w-3.5" />
+                  <RotateCw className="h-4 w-4" />
                 </div>
-                {/* Resize handle (bottom right) */}
+                {/* Corner resize handles */}
                 <div
-                  onPointerDown={(e) => startResize(e, item)}
-                  className="absolute -bottom-2 -right-2 h-4 w-4 rounded-full bg-primary shadow-elevated cursor-nwse-resize"
+                  onPointerDown={(e) => startResize(e, item, "tl")}
+                  className="absolute -top-2.5 -left-2.5 h-6 w-6 rounded-full bg-primary border-2 border-card shadow-elevated cursor-nwse-resize touch-none"
+                  title="Redimensionner"
+                />
+                <div
+                  onPointerDown={(e) => startResize(e, item, "tr")}
+                  className="absolute -top-2.5 -right-2.5 h-6 w-6 rounded-full bg-primary border-2 border-card shadow-elevated cursor-nesw-resize touch-none"
+                  title="Redimensionner"
+                />
+                <div
+                  onPointerDown={(e) => startResize(e, item, "bl")}
+                  className="absolute -bottom-2.5 -left-2.5 h-6 w-6 rounded-full bg-primary border-2 border-card shadow-elevated cursor-nesw-resize touch-none"
+                  title="Redimensionner"
+                />
+                <div
+                  onPointerDown={(e) => startResize(e, item, "br")}
+                  className="absolute -bottom-2.5 -right-2.5 h-6 w-6 rounded-full bg-primary border-2 border-card shadow-elevated cursor-nwse-resize touch-none"
                   title="Redimensionner"
                 />
               </>
             )}
+
           </motion.div>
         ))}
       </div>
