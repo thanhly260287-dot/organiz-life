@@ -11,7 +11,9 @@ import {
 import appCss from "../styles.css?url";
 import { ThemeProvider } from "@/components/ThemeProvider";
 import { Toaster } from "@/components/ui/sonner";
-import "@/lib/i18n";
+import i18n, { hydrateClientLanguage, LANG_STORAGE_KEY } from "@/lib/i18n";
+import { useEffect } from "react";
+
 
 
 function NotFoundComponent() {
