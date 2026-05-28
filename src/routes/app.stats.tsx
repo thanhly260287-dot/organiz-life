@@ -94,6 +94,64 @@ function StatsPage() {
     return days;
   }, [categories]);
 
+  const evolution = useMemo(() => {
+    const DAYS = 30;
+    const today = new Date();
+    const days: { label: string; date: string; created: number; done: number; cumCreated: number; cumDone: number; pct: number }[] = [];
+    for (let i = DAYS - 1; i >= 0; i--) {
+      const d = new Date(today);
+      d.setDate(today.getDate() - i);
+      days.push({
+        label: d.toLocaleDateString(undefined, { day: "2-digit", month: "2-digit" }),
+        date: d.toISOString().slice(0, 10),
+        created: 0,
+        done: 0,
+        cumCreated: 0,
+        cumDone: 0,
+        pct: 0,
+      });
+    }
+    const map = new Map(days.map((d) => [d.date, d]));
+    let baseCreated = 0;
+    let baseDone = 0;
+    const firstDay = days[0].date;
+    categories.forEach((c) => {
+      const all = [...c.tasks, ...c.subcategories.flatMap((s) => s.tasks)];
+      all.forEach((t) => {
+        if (t.createdAt) {
+          const k = new Date(t.createdAt).toISOString().slice(0, 10);
+          if (k < firstDay) baseCreated++;
+          else {
+            const e = map.get(k);
+            if (e) e.created++;
+          }
+        }
+        if (t.done) {
+          const k = t.date ?? (t.createdAt ? new Date(t.createdAt).toISOString().slice(0, 10) : undefined);
+          if (k) {
+            if (k < firstDay) baseDone++;
+            else {
+              const e = map.get(k);
+              if (e) e.done++;
+            }
+          } else {
+            baseDone++;
+          }
+        }
+      });
+    });
+    let cc = baseCreated;
+    let cd = baseDone;
+    days.forEach((d) => {
+      cc += d.created;
+      cd += d.done;
+      d.cumCreated = cc;
+      d.cumDone = cd;
+      d.pct = cc === 0 ? 0 : Math.round((cd / cc) * 100);
+    });
+    return days;
+  }, [categories]);
+
   const finance = useMemo(() => {
     const rows = FINANCE_SUMMARY_IDS.map((id) => {
       const c = categories.find((cat) => cat.id === id);
