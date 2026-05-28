@@ -2,7 +2,7 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 import { motion } from "framer-motion";
 import { useStore, getCategoryProgress } from "@/lib/store";
 import { TaskList } from "@/components/TaskList";
-import { VisionBoard } from "@/components/VisionBoard";
+
 import { IconRender } from "@/components/IconRender";
 import { ArrowLeft, Trash2, CalendarClock } from "lucide-react";
 import { FINANCE_CATEGORY_IDS, NEGATIVE_FINANCE_IDS } from "@/lib/categories";
@@ -104,10 +104,6 @@ function CategoryPage() {
           amountSign={NEGATIVE_FINANCE_IDS.has(category.id) ? -1 : 1}
         />
 
-      </section>
-
-      <section className="space-y-4">
-        <VisionBoard categoryId={category.id} items={category.vision} />
       </section>
     </main>
   );
