@@ -1,6 +1,6 @@
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, Link } from "@tanstack/react-router";
 import { useMemo, useState } from "react";
-import { Printer } from "lucide-react";
+import { Printer, ArrowLeft } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import { useStore, MAIN_VISION_ID } from "@/lib/store";
 import { useCategoryName } from "@/lib/useCategoryName";
