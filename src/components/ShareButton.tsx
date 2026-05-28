@@ -11,6 +11,13 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog";
 
+function SnapchatIcon({ className }: { className?: string }) {
+  return (
+    <svg viewBox="0 0 24 24" fill="currentColor" className={className}>
+      <path d="M12 2C8.5 2 6 4.5 6 7.5c0 1.2.4 2.3 1.1 3.1-.3.4-.8.7-1.3.7-.2 0-.3.1-.3.3 0 .2.1.3.3.3.5 0 1 .2 1.4.5-.2.5-.7.8-1.2.8-.2 0-.3.1-.3.3 0 .2.1.3.3.3.6 0 1.1.3 1.4.8-.2.4-.6.7-1.1.7-.2 0-.3.1-.3.3 0 .2.1.3.3.3.5 0 .9.2 1.2.6.2.3.4.6.5 1 0 .2.2.3.4.3.2 0 .3-.1.3-.3 0-.3.2-.5.5-.5s.5.2.5.5c0 .2.1.3.3.3.2 0 .3-.1.3-.3 0-.3.2-.6.4-.8.3-.3.7-.5 1.2-.5.2 0 .3-.1.3-.3 0-.2-.1-.3-.3-.3-.5 0-.9-.3-1.1-.7.3-.5.8-.8 1.4-.8.2 0 .3-.1.3-.3 0-.2-.1-.3-.3-.3-.5 0-1-.3-1.2-.8.4-.3.9-.5 1.4-.5.2 0 .3-.1.3-.3 0-.2-.1-.3-.3-.3-.5 0-1-.3-1.3-.7.7-.8 1.1-1.9 1.1-3.1 0-3-2.5-5.5-5-5.5z" />
+    </svg>
+  );
+}
 
 interface ShareOption {
   id: string;
@@ -82,6 +89,13 @@ export function ShareButton() {
       icon: <MessageCircle className="h-4 w-4" />,
       action: () => window.open(`https://wa.me/?text=${encodedText}%20${encodedUrl}`, "_blank"),
       color: "text-green-500",
+    },
+    {
+      id: "snapchat",
+      label: "Snapchat",
+      icon: <SnapchatIcon className="h-4 w-4" />,
+      action: handleCopyLink,
+      color: "text-yellow-400",
     },
     {
       id: "sms",
@@ -158,7 +172,7 @@ export function ShareButton() {
               key={opt.id}
               onClick={() => {
                 opt.action();
-                if (opt.id !== "native" && opt.id !== "copy" && opt.id !== "instagram") {
+                if (opt.id !== "native" && opt.id !== "copy" && opt.id !== "instagram" && opt.id !== "snapchat") {
                   setOpen(false);
                 }
               }}
