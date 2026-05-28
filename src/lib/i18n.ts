@@ -832,13 +832,14 @@ export function hydrateClientLanguage() {
     const nav = window.navigator?.language;
     const codes = new Set(SUPPORTED_LANGUAGES.map((l) => l.code));
     const pick = (c?: string | null) => {
+    const codes = new Set<string>(SUPPORTED_LANGUAGES.map((l) => l.code));
+    const pick = (c?: string | null): string | null => {
       if (!c) return null;
       if (codes.has(c)) return c;
       const base = c.split("-")[0];
       return codes.has(base) ? base : null;
     };
-    const target = pick(stored) ?? pick(nav);
-    if (target && target !== i18n.language) i18n.changeLanguage(target);
+
   } catch {}
 }
 
