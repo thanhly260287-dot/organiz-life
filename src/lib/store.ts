@@ -451,5 +451,23 @@ export const getCategoryProgress = (c: Category) => {
   const all = [...c.tasks, ...c.subcategories.flatMap((s) => s.tasks)];
   if (all.length === 0) return { done: 0, total: 0, pct: 0 };
   const done = all.filter((t) => t.done).length;
-  return { done, total: all.length, pct: Math.round((done / all.length) * 100) };
+};
+
+export const isFinanceCategory = (id: string) => FINANCE_CATEGORY_IDS.has(id);
+
+export const getCategoryFinanceTotal = (c: Category): number | null => {
+  if (!FINANCE_CATEGORY_IDS.has(c.id)) return null;
+  const all = [...c.tasks, ...c.subcategories.flatMap((s) => s.tasks)];
+  const defaultSign: 1 | -1 = NEGATIVE_FINANCE_IDS.has(c.id) ? -1 : 1;
+  let any = false;
+  const total = all.reduce((sum, t) => {
+    if (t.amount == null) return sum;
+    any = true;
+    const sign: number =
+      c.id === "credits" ? (t.done ? 1 : -1) : ((t.amountSign ?? defaultSign) as number);
+    return sum + t.amount * sign;
+  }, 0);
+  return any ? total : null;
+};
+
 };
