@@ -105,6 +105,7 @@ function CategoryPage() {
           requireTime={category.id === "rdv"}
           enableAmount={FINANCE_CATEGORY_IDS.has(category.id)}
           amountSign={NEGATIVE_FINANCE_IDS.has(category.id) ? -1 : 1}
+          lockSign={FORCED_SIGN_IDS.has(category.id)}
         />
       </section>
     </main>
