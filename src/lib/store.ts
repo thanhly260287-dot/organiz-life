@@ -248,7 +248,7 @@ export const useStore = create<AppState>()(
     }),
     {
       name: "organiz-life-v1",
-      version: 9,
+      version: 10,
       migrate: (persisted: any) => {
         if (persisted?.categories) {
           // Rename "Sport et physique" → "Sport"
@@ -329,6 +329,30 @@ export const useStore = create<AppState>()(
               vision: [],
               enableDateTime: false,
             });
+          }
+          // Add ACT categories if missing
+          const ACT_CATS = [
+            { id: "desires", name: "Ce que je désire dans ma vie", icon: "Heart", color: "#9B51E0" },
+            { id: "rejections", name: "Ce que je ne veux plus dans ma vie", icon: "Ban", color: "#56CCF2" },
+            { id: "accept", name: "Ce que je veux bien accepter", icon: "CheckCircle2", color: "#9B51E0" },
+            { id: "no-accept", name: "Ce que je n'accepterai plus jamais", icon: "ShieldOff", color: "#56CCF2" },
+          ];
+          for (const act of ACT_CATS) {
+            if (!persisted.categories.find((c: any) => c.id === act.id)) {
+              const miscIdx = persisted.categories.findIndex((c: any) => c.id === "misc");
+              const insertAt = miscIdx >= 0 ? miscIdx + 1 : persisted.categories.length;
+              persisted.categories.splice(insertAt, 0, {
+                id: act.id,
+                name: act.name,
+                icon: act.icon,
+                color: act.color,
+                priority: 0,
+                tasks: [],
+                subcategories: [],
+                vision: [],
+                enableDateTime: false,
+              });
+            }
           }
           // Snap colors to brand palette (skip the hidden main vision)
 
