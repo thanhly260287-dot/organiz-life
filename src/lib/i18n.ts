@@ -814,20 +814,24 @@ const resources = {
   },
 };
 
-i18n
-  .use(LanguageDetector)
-  .use(initReactI18next)
-  .init({
-    resources,
-    fallbackLng: "fr",
-    supportedLngs: SUPPORTED_LANGUAGES.map((l) => l.code),
-    interpolation: { escapeValue: false },
-    detection: {
-      order: ["localStorage", "navigator"],
-      caches: ["localStorage"],
-      lookupLocalStorage: "organiz-lang",
-    },
-  });
+const isBrowser = typeof window !== "undefined";
+
+const chain = isBrowser ? i18n.use(LanguageDetector).use(initReactI18next) : i18n.use(initReactI18next);
+
+chain.init({
+  resources,
+  fallbackLng: "fr",
+  lng: isBrowser ? undefined : "fr",
+  supportedLngs: SUPPORTED_LANGUAGES.map((l) => l.code),
+  interpolation: { escapeValue: false },
+  detection: {
+    order: ["localStorage", "navigator"],
+    caches: ["localStorage"],
+    lookupLocalStorage: "organiz-lang",
+  },
+  react: { useSuspense: false },
+});
+
 
 export const RTL_LANGS = new Set(["ar", "he", "fa", "ur"]);
 
