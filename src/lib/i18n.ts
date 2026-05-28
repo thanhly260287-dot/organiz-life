@@ -799,7 +799,7 @@ i18n
     },
   });
 
-export const RTL_LANGS = new Set(["ar"]);
+export const RTL_LANGS = new Set(["ar", "he", "fa", "ur"]);
 
 export function applyLangSideEffects(lng: string) {
   if (typeof document === "undefined") return;
