@@ -37,6 +37,7 @@ export function TaskList({
   enableAmount?: boolean;
   amountSign?: 1 | -1;
 }) {
+  const { t: tr } = useTranslation();
   const [adding, setAdding] = useState(false);
   const [title, setTitle] = useState("");
   const [date, setDate] = useState("");
