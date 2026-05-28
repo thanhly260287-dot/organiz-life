@@ -57,7 +57,7 @@ export function CategoryCard({ category, index }: { category: Category; index: n
   const style = {
     transform: CSS.Transform.toString(transform),
     transition,
-    opacity: isDragging ? 0.15 : 1,
+    opacity: isDragging ? 0.05 : 1,
     touchAction: "manipulation" as const,
   };
 
