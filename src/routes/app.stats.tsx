@@ -106,8 +106,26 @@ function StatsPage() {
       return { id, name: nameFor(c.id, c.name), color: c.color, icon: c.icon, total };
     }).filter(Boolean) as { id: string; name: string; color: string; icon: string; total: number }[];
     const grand = rows.reduce((s, r) => s + r.total, 0);
-    return { rows, grand };
-  }, [categories, nameFor]);
+    const selectedTotal = rows.reduce((s, r) => {
+      const mode = financeSel[r.id]; // undefined = include natural, 0 = excluded, 1 = +abs, -1 = -abs
+      if (mode === 0) return s;
+      if (mode === 1) return s + Math.abs(r.total);
+      if (mode === -1) return s - Math.abs(r.total);
+      return s + r.total;
+    }, 0);
+    return { rows, grand, selectedTotal };
+  }, [categories, nameFor, financeSel]);
+
+  const cycleFinanceSel = (id: string) =>
+    setFinanceSel((prev) => {
+      const cur = prev[id]; // undefined → 1 → -1 → 0 → undefined
+      const next: 1 | -1 | 0 | undefined =
+        cur === undefined ? 1 : cur === 1 ? -1 : cur === -1 ? 0 : undefined;
+      const copy = { ...prev };
+      if (next === undefined) delete copy[id];
+      else copy[id] = next;
+      return copy;
+    });
 
   const views: { id: View; label: string; icon: any }[] = [
     { id: "overview", label: t("stats.viewOverview", "Vue d'ensemble"), icon: LayoutGrid },
