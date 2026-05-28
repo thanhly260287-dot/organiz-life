@@ -1,7 +1,7 @@
 import { createFileRoute, useNavigate, Link } from "@tanstack/react-router";
 import { useEffect, useState, type FormEvent } from "react";
 import { motion } from "framer-motion";
-import { Mail, Lock, Phone, Loader2, Eye, EyeOff } from "lucide-react";
+import { Mail, Lock, Loader2, Eye, EyeOff } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { lovable } from "@/integrations/lovable/index";
 import { toast } from "sonner";
@@ -13,7 +13,7 @@ export const Route = createFileRoute("/login")({
   component: LoginPage,
 });
 
-type Method = "email" | "phone" | "google" | "apple";
+type Method = "email" | "google" | "apple";
 
 function LoginPage() {
   const { t } = useTranslation();
@@ -27,16 +27,6 @@ function LoginPage() {
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
   const [rememberMe, setRememberMe] = useState(false);
-
-  // phone
-  const [phone, setPhone] = useState("");
-  const [otpSent, setOtpSent] = useState(false);
-  const [otpCode, setOtpCode] = useState("");
-
-  // optional SMS verification after email signup
-  const [signupPhone, setSignupPhone] = useState("");
-  const [verifyPhoneStep, setVerifyPhoneStep] = useState(false);
-  const [verifyOtp, setVerifyOtp] = useState("");
 
 
   // Load saved email on mount
@@ -72,16 +62,6 @@ function LoginPage() {
         });
         if (error) throw error;
         toast.success(t("login.accountCreated"));
-        // If user entered a phone, offer SMS verification step
-        if (signupPhone.trim()) {
-          const { error: phErr } = await supabase.auth.updateUser({ phone: signupPhone.trim() });
-          if (phErr) {
-            toast.error(phErr.message);
-          } else {
-            setVerifyPhoneStep(true);
-            toast.success(t("login.sendingSms"));
-          }
-        }
       } else {
         const { error } = await supabase.auth.signInWithPassword({ email, password });
         if (error) throw error;
@@ -94,54 +74,6 @@ function LoginPage() {
 
     } catch (err: any) {
       toast.error(err?.message ?? t("login.loginError"));
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  const handlePhoneSend = async (e: FormEvent) => {
-    e.preventDefault();
-    setLoading(true);
-    try {
-      const { error } = await supabase.auth.signInWithOtp({ phone });
-      if (error) throw error;
-      setOtpSent(true);
-      toast.success(t("login.codeSent"));
-    } catch (err: any) {
-      toast.error(err?.message ?? t("login.codeSendError"));
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  const handlePhoneVerify = async (e: FormEvent) => {
-    e.preventDefault();
-    setLoading(true);
-    try {
-      const { error } = await supabase.auth.verifyOtp({ phone, token: otpCode, type: "sms" });
-      if (error) throw error;
-    } catch (err: any) {
-      toast.error(err?.message ?? t("login.codeInvalid"));
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  const handleVerifySignupPhone = async (e: FormEvent) => {
-    e.preventDefault();
-    setLoading(true);
-    try {
-      const { error } = await supabase.auth.verifyOtp({
-        phone: signupPhone.trim(),
-        token: verifyOtp,
-        type: "phone_change",
-      });
-      if (error) throw error;
-      toast.success(t("login.phoneVerified"));
-      setVerifyPhoneStep(false);
-      navigate({ to: "/app" });
-    } catch (err: any) {
-      toast.error(err?.message ?? t("login.codeInvalid"));
     } finally {
       setLoading(false);
     }
@@ -178,10 +110,9 @@ function LoginPage() {
         </div>
 
         {/* Method selector */}
-        <div className="grid grid-cols-4 gap-2">
+        <div className="grid grid-cols-3 gap-2">
           {([
             { id: "email", label: t("login.email"), icon: Mail },
-            { id: "phone", label: "SMS", icon: Phone },
             { id: "google", label: "Google", icon: null },
             { id: "apple", label: "Apple", icon: null },
           ] as const).map((m) => (
