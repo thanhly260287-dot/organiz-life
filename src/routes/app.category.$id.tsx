@@ -105,10 +105,6 @@ function CategoryPage() {
         />
 
       </section>
-
-      <section className="space-y-4">
-        <VisionBoard categoryId={category.id} items={category.vision} />
-      </section>
     </main>
   );
 }
