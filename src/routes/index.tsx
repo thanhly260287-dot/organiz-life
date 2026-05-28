@@ -115,7 +115,7 @@ function Landing() {
 
       <footer className="border-t">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 py-8 flex flex-wrap items-center justify-between gap-4 text-sm text-muted-foreground">
-          <Logo size={28} />
+          <Link to="/app"><Logo size={28} /></Link>
           <p>© {new Date().getFullYear()} Organiz-Life. {t("landing.copyright")}</p>
         </div>
       </footer>
