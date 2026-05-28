@@ -152,7 +152,7 @@ export function TaskList({
             onChange={(e) => setTitle(e.target.value)}
             onKeyDown={(e) => e.key === "Enter" && submit()}
             placeholder={tr("tasks.newTask")}
-            className="w-full bg-transparent outline-none text-sm placeholder:text-muted-foreground"
+            className="w-full bg-transparent outline-none text-lg placeholder:text-muted-foreground"
           />
           <div className="flex flex-wrap gap-2">
             {enableDateTime && (
