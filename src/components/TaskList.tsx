@@ -100,7 +100,11 @@ export function TaskList({
 
 
   const total = enableAmount
-    ? tasks.reduce((sum, t) => sum + (t.amount ?? 0) * ((t.amountSign ?? amountSign) as number), 0)
+    ? tasks.reduce(
+        (sum, t) =>
+          sum + (t.amount ?? 0) * ((lockSign ? amountSign : (t.amountSign ?? amountSign)) as number),
+        0
+      )
     : 0;
 
   return (
@@ -120,10 +124,9 @@ export function TaskList({
         <div className="glass rounded-xl shadow-glass px-4 py-2 flex items-center justify-between">
           <span className="text-xs text-muted-foreground uppercase tracking-wide">{tr("tasks.total")}</span>
           <span
-            className={`text-base font-display font-bold ${total < 0 ? "text-destructive" : ""}`}
-            style={{ color: total >= 0 ? accent : undefined }}
+            className={`text-base font-display font-bold ${total < 0 ? "text-red-500" : "text-green-500"}`}
           >
-            {total.toLocaleString(tr("common.year") ? "fr-FR" : "fr-FR", { style: "currency", currency: "EUR" })}
+            {total.toLocaleString("fr-FR", { style: "currency", currency: "EUR" })}
           </span>
         </div>
       )}
