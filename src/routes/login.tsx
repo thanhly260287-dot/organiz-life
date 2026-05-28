@@ -255,6 +255,17 @@ function LoginPage() {
                 />
                 <span className="text-muted-foreground">{t("login.rememberMe")}</span>
               </label>
+            {mode === "signup" && (
+              <div className="relative">
+                <Phone className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+                <input
+                  type="tel"
+                  value={signupPhone}
+                  onChange={(e) => setSignupPhone(e.target.value)}
+                  placeholder={t("login.phoneOptional")}
+                  className="w-full rounded-xl border bg-background pl-10 pr-3 py-2.5 text-sm focus:border-primary outline-none"
+                />
+              </div>
             )}
             <button
               type="submit"
