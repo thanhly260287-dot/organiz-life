@@ -175,32 +175,30 @@ export function TaskList({
             className="w-full bg-transparent outline-none text-lg placeholder:text-muted-foreground"
           />
           <div className="flex flex-wrap gap-2">
-            {enableDateTime && (
-              <>
-                <div className="flex flex-col">
-                  <input
-                    type="date"
-                    value={date}
-                    onChange={(e) => setDate(e.target.value)}
-                    className={`text-xs bg-muted rounded-md px-2 py-1 outline-none ${requireDate && !date ? "ring-1 ring-destructive" : ""}`}
-                  />
-                  {requireDate && <span className="text-[10px] text-muted-foreground mt-0.5">{tr("tasks.dateRequired")}</span>}
-                </div>
-                <div className="flex flex-col">
-                  <input
-                    type="time"
-                    value={time}
-                    onChange={(e) => setTime(e.target.value)}
-                    className={`text-xs bg-muted rounded-md px-2 py-1 outline-none ${requireTime && !time ? "ring-1 ring-destructive" : ""}`}
-                  />
-                  {requireTime ? (
-                    <span className="text-[10px] text-muted-foreground mt-0.5">{tr("tasks.timeRequired")}</span>
-                  ) : (
-                    <span className="text-[10px] text-muted-foreground mt-0.5">{tr("tasks.timeOptional")}</span>
-                  )}
-                </div>
-              </>
-            )}
+            <>
+              <div className="flex flex-col">
+                <input
+                  type="date"
+                  value={date}
+                  onChange={(e) => setDate(e.target.value)}
+                  className={`text-xs bg-muted rounded-md px-2 py-1 outline-none ${requireDate && !date ? "ring-1 ring-destructive" : ""}`}
+                />
+                {requireDate && <span className="text-[10px] text-muted-foreground mt-0.5">{tr("tasks.dateRequired")}</span>}
+              </div>
+              <div className="flex flex-col">
+                <input
+                  type="time"
+                  value={time}
+                  onChange={(e) => setTime(e.target.value)}
+                  className={`text-xs bg-muted rounded-md px-2 py-1 outline-none ${requireTime && !time ? "ring-1 ring-destructive" : ""}`}
+                />
+                {requireTime ? (
+                  <span className="text-[10px] text-muted-foreground mt-0.5">{tr("tasks.timeRequired")}</span>
+                ) : (
+                  <span className="text-[10px] text-muted-foreground mt-0.5">{tr("tasks.timeOptional")}</span>
+                )}
+              </div>
+            </>
             {enableAmount && (
               <div className="flex items-center gap-2 ml-auto">
                 <input
