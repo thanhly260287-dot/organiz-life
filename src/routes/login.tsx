@@ -33,6 +33,12 @@ function LoginPage() {
   const [otpSent, setOtpSent] = useState(false);
   const [otpCode, setOtpCode] = useState("");
 
+  // optional SMS verification after email signup
+  const [signupPhone, setSignupPhone] = useState("");
+  const [verifyPhoneStep, setVerifyPhoneStep] = useState(false);
+  const [verifyOtp, setVerifyOtp] = useState("");
+
+
   // Load saved email on mount
   useEffect(() => {
     const savedEmail = localStorage.getItem("ol_remember_email");
