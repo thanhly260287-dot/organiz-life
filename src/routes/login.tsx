@@ -115,10 +115,10 @@ function LoginPage() {
         <div className="flex flex-col items-center gap-3">
           <Link to="/"><Logo size={48} /></Link>
           <h1 className="font-display font-bold text-2xl text-center">
-            {mode === "signin" ? "Bon retour" : "Crée ton compte"}
+            {mode === "signin" ? t("login.welcomeBack") : t("login.createAccount")}
           </h1>
           <p className="text-sm text-muted-foreground text-center">
-            Choisis ta méthode de connexion préférée
+            {t("login.choose")}
           </p>
         </div>
 
