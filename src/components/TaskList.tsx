@@ -400,28 +400,32 @@ function SortableTaskRow({
         )}
       </div>
       {enableAmount && t.amount != null && (() => {
-        const sign = (t.amountSign ?? amountSign) as 1 | -1;
+        const sign = (lockSign ? amountSign : (t.amountSign ?? amountSign)) as 1 | -1;
+        const posColor = "#22c55e"; // green-500
+        const negColor = "hsl(var(--destructive))";
         return (
           <div className="shrink-0 flex items-center gap-1.5">
-            <button
-              onPointerDown={(e) => e.stopPropagation()}
-              onClick={(e) => {
-                e.stopPropagation();
-                updateTask(categoryId, t.id, { amountSign: (sign === 1 ? -1 : 1) as 1 | -1 }, subId);
-              }}
-              className="h-5 w-5 rounded-full border-2 flex items-center justify-center transition-all"
-              style={{
-                borderColor: sign > 0 ? accent : "hsl(var(--destructive))",
-                background: sign > 0 ? accent : "hsl(var(--destructive))",
-                color: "white",
-              }}
-              aria-label="toggle sign"
-            >
-              {sign > 0 ? <PlusSign className="h-3 w-3" /> : <MinusSign className="h-3 w-3" />}
-            </button>
+            {!lockSign && (
+              <button
+                onPointerDown={(e) => e.stopPropagation()}
+                onClick={(e) => {
+                  e.stopPropagation();
+                  updateTask(categoryId, t.id, { amountSign: (sign === 1 ? -1 : 1) as 1 | -1 }, subId);
+                }}
+                className="h-5 w-5 rounded-full border-2 flex items-center justify-center transition-all"
+                style={{
+                  borderColor: sign > 0 ? posColor : negColor,
+                  background: sign > 0 ? posColor : negColor,
+                  color: "white",
+                }}
+                aria-label="toggle sign"
+              >
+                {sign > 0 ? <PlusSign className="h-3 w-3" /> : <MinusSign className="h-3 w-3" />}
+              </button>
+            )}
             <span
-              className={`text-sm font-display font-semibold tabular-nums ${sign < 0 ? "text-destructive" : ""}`}
-              style={{ color: sign > 0 ? accent : undefined }}
+              className="text-sm font-display font-semibold tabular-nums"
+              style={{ color: sign > 0 ? posColor : negColor }}
             >
               {(t.amount * sign).toLocaleString("fr-FR", { style: "currency", currency: "EUR" })}
             </span>
