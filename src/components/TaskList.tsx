@@ -71,15 +71,18 @@ export function TaskList({
   };
 
   const canSubmit =
-    !!title.trim() && (!enableDateTime || ((!requireDate || !!date) && (!requireTime || !!time)));
+    (!!title.trim() || (enableAmount && !!amount)) &&
+    (!enableDateTime || ((!requireDate || !!date) && (!requireTime || !!time)));
 
   const submit = () => {
     if (!canSubmit) return;
     const amt = amount ? Math.abs(parseFloat(amount)) : undefined;
+    const finalTitle = title.trim() || (amt != null ? amt.toLocaleString("fr-FR", { style: "currency", currency: "EUR" }) : "");
+    if (!finalTitle) return;
     addTask(
       categoryId,
       {
-        title: title.trim(),
+        title: finalTitle,
         date: date || undefined,
         time: time || undefined,
         amount: amt,
@@ -95,6 +98,7 @@ export function TaskList({
     setReminders([]);
     setAdding(false);
   };
+
 
 
 
