@@ -1,7 +1,7 @@
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, Link } from "@tanstack/react-router";
 import { useStore } from "@/lib/store";
 import { motion } from "framer-motion";
-import { Moon, Sun, Hash, Globe, Search, Check } from "lucide-react";
+import { Moon, Sun, Hash, Globe, Search, Check, ArrowLeft } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import { useMemo, useState } from "react";
 import { SUPPORTED_LANGUAGES } from "@/lib/i18n";
@@ -34,6 +34,13 @@ function Settings() {
 
   return (
     <main className="mx-auto max-w-2xl px-4 sm:px-6 py-8 space-y-6">
+      <Link
+        to="/app"
+        className="inline-flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground"
+      >
+        <ArrowLeft className="h-4 w-4" /> {t("header.back")}
+      </Link>
+
       <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }}>
         <h1 className="font-display font-bold text-3xl">{t("settings.title")}</h1>
         <p className="text-sm text-muted-foreground mt-1">{t("settings.subtitle")}</p>

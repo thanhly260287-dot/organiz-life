@@ -1,6 +1,6 @@
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, Link } from "@tanstack/react-router";
 import { useMemo, useState } from "react";
-import { Printer } from "lucide-react";
+import { Printer, ArrowLeft } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import { useStore, MAIN_VISION_ID } from "@/lib/store";
 import { useCategoryName } from "@/lib/useCategoryName";
@@ -63,6 +63,13 @@ function PrintPage() {
 
   return (
     <main className="mx-auto max-w-5xl px-4 sm:px-6 py-6 space-y-6">
+      <Link
+        to="/app"
+        className="inline-flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground"
+      >
+        <ArrowLeft className="h-4 w-4" /> {t("header.back")}
+      </Link>
+
       {/* Dynamic page size for print */}
       <style>{`
         @page { size: ${pageW}mm ${pageH}mm; margin: 10mm; }

@@ -1,7 +1,7 @@
 import { createFileRoute, useNavigate, Link } from "@tanstack/react-router";
 import { useEffect, useState, type FormEvent } from "react";
 import { motion } from "framer-motion";
-import { Mail, Lock, Loader2, Eye, EyeOff } from "lucide-react";
+import { Mail, Lock, Loader2, Eye, EyeOff, ArrowLeft } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { lovable } from "@/integrations/lovable/index";
 import { toast } from "sonner";
@@ -97,9 +97,16 @@ function LoginPage() {
       <motion.div
         initial={{ opacity: 0, y: 10 }}
         animate={{ opacity: 1, y: 0 }}
-        className="w-full max-w-md glass rounded-3xl shadow-elevated p-8 space-y-6"
+        className="w-full max-w-md glass rounded-3xl shadow-elevated p-8 space-y-6 relative"
       >
-        <div className="flex flex-col items-center gap-3">
+        <Link
+          to="/"
+          className="absolute top-4 left-4 inline-flex items-center gap-1.5 text-xs text-muted-foreground hover:text-foreground transition-colors"
+        >
+          <ArrowLeft className="h-3.5 w-3.5" /> {t("header.back")}
+        </Link>
+
+        <div className="flex flex-col items-center gap-3 pt-2">
           <Link to="/"><Logo size={48} /></Link>
           <h1 className="font-display font-bold text-2xl text-center">
             {mode === "signin" ? t("login.welcomeBack") : t("login.createAccount")}
