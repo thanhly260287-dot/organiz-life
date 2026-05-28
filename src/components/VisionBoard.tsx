@@ -383,10 +383,51 @@ export function VisionBoard({
               rotate: item.rotation,
               zIndex: item.zIndex ?? 0,
               cursor: "grab",
+              touchAction: "none",
             }}
             onClick={(e) => {
               e.stopPropagation();
               setSelected(item.id);
+            }}
+            onTouchStart={(e) => {
+              if (e.touches.length === 2) {
+                e.stopPropagation();
+                const [a, b] = [e.touches[0], e.touches[1]];
+                const dx = b.clientX - a.clientX;
+                const dy = b.clientY - a.clientY;
+                pinchRef.current.set(item.id, {
+                  dist: Math.hypot(dx, dy),
+                  w: item.width,
+                  h: item.height,
+                  x: item.x,
+                  y: item.y,
+                  rot: item.rotation,
+                  angle: (Math.atan2(dy, dx) * 180) / Math.PI,
+                });
+                setSelected(item.id);
+              }
+            }}
+            onTouchMove={(e) => {
+              const start = pinchRef.current.get(item.id);
+              if (e.touches.length === 2 && start) {
+                e.preventDefault();
+                e.stopPropagation();
+                const [a, b] = [e.touches[0], e.touches[1]];
+                const dx = b.clientX - a.clientX;
+                const dy = b.clientY - a.clientY;
+                const dist = Math.hypot(dx, dy);
+                const scale = dist / start.dist;
+                const newW = Math.max(40, start.w * scale);
+                const newH = Math.max(30, start.h * scale);
+                const newX = start.x - (newW - start.w) / 2;
+                const newY = start.y - (newH - start.h) / 2;
+                const angle = (Math.atan2(dy, dx) * 180) / Math.PI;
+                const rotation = Math.round(start.rot + (angle - start.angle));
+                updateItem(categoryId, item.id, { width: newW, height: newH, x: newX, y: newY, rotation }, subId);
+              }
+            }}
+            onTouchEnd={(e) => {
+              if (e.touches.length < 2) pinchRef.current.delete(item.id);
             }}
             className={`group ${selected === item.id ? "ring-2 ring-primary rounded-xl" : ""}`}
           >
