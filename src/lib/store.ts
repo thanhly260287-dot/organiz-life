@@ -1,6 +1,7 @@
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
-import { type Category, type Task, type Subcategory, type VisionItem, DEFAULT_CATEGORIES, DATETIME_DEFAULT_IDS } from "./categories";
+import { type Category, type Task, type Subcategory, type VisionItem, DEFAULT_CATEGORIES, DATETIME_DEFAULT_IDS, FINANCE_CATEGORY_IDS, NEGATIVE_FINANCE_IDS } from "./categories";
+
 
 const uid = () => Math.random().toString(36).slice(2, 11);
 
