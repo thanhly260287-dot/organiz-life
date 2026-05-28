@@ -272,6 +272,7 @@ function SortableTaskRow({
   enableDateTime,
   enableAmount,
   amountSign,
+  lockSign,
   onToggle,
   onRemove,
 }: {
@@ -284,6 +285,7 @@ function SortableTaskRow({
   enableDateTime: boolean;
   enableAmount: boolean;
   amountSign: 1 | -1;
+  lockSign: boolean;
   onToggle: () => void;
   onRemove: () => void;
 }) {
