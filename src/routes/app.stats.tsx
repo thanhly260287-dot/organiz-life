@@ -22,7 +22,11 @@ type View = "overview" | "distribution" | "ranking" | "activity";
 function StatsPage() {
   const { t } = useTranslation();
   const nameFor = useCategoryName();
-  const categories = useStore((s) => s.categories.filter((c) => c.id !== MAIN_VISION_ID));
+  const allCategories = useStore((s) => s.categories);
+  const categories = useMemo(
+    () => allCategories.filter((c) => c.id !== MAIN_VISION_ID),
+    [allCategories]
+  );
   const [view, setView] = useState<View>("overview");
   // Per-row selection in the Bilan financier: undefined = included with natural sign,
   // +1 = forced added, -1 = forced subtracted, 0 = excluded. Click cycles through.
