@@ -749,6 +749,7 @@ function StatsPage() {
                   <span className="text-muted-foreground text-sm font-normal">
                     {t("stats.evolutionHint", "progression cumulée sur 30 jours")}
                   </span>
+                </h2>
                 <div className="flex flex-wrap gap-2">
                   <button
                     type="button"
