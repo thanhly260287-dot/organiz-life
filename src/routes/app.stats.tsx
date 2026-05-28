@@ -701,6 +701,104 @@ function StatsPage() {
               </div>
             </section>
           )}
+
+          {view === "evolution" && (
+            <section className="glass rounded-3xl shadow-elevated p-6 sm:p-8 space-y-6">
+              <div>
+                <h2 className="font-display font-semibold text-xl">
+                  {t("stats.viewEvolution", "Évolution")} —{" "}
+                  <span className="text-muted-foreground text-sm font-normal">
+                    {t("stats.evolutionHint", "progression cumulée sur 30 jours")}
+                  </span>
+                </h2>
+              </div>
+
+              <div className="h-72">
+                <ResponsiveContainer width="100%" height="100%">
+                  <AreaChart data={evolution} margin={{ left: 0, right: 8, top: 8, bottom: 8 }}>
+                    <defs>
+                      <linearGradient id="evoCreated" x1="0" y1="0" x2="0" y2="1">
+                        <stop offset="0%" stopColor="#56CCF2" stopOpacity={0.5} />
+                        <stop offset="100%" stopColor="#56CCF2" stopOpacity={0} />
+                      </linearGradient>
+                      <linearGradient id="evoDone" x1="0" y1="0" x2="0" y2="1">
+                        <stop offset="0%" stopColor="#9B51E0" stopOpacity={0.6} />
+                        <stop offset="100%" stopColor="#9B51E0" stopOpacity={0} />
+                      </linearGradient>
+                    </defs>
+                    <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--border))" />
+                    <XAxis dataKey="label" stroke="hsl(var(--muted-foreground))" fontSize={11} />
+                    <YAxis stroke="hsl(var(--muted-foreground))" fontSize={11} allowDecimals={false} />
+                    <Tooltip
+                      contentStyle={{
+                        background: "hsl(var(--card))",
+                        border: "1px solid hsl(var(--border))",
+                        borderRadius: 12,
+                      }}
+                    />
+                    <Legend wrapperStyle={{ fontSize: 12 }} />
+                    <Area
+                      type="monotone"
+                      dataKey="cumCreated"
+                      name={t("stats.cumCreated", "Total créées")}
+                      stroke="#56CCF2"
+                      strokeWidth={2}
+                      fill="url(#evoCreated)"
+                    />
+                    <Area
+                      type="monotone"
+                      dataKey="cumDone"
+                      name={t("stats.cumDone", "Total terminées")}
+                      stroke="#9B51E0"
+                      strokeWidth={2}
+                      fill="url(#evoDone)"
+                    />
+                  </AreaChart>
+                </ResponsiveContainer>
+              </div>
+
+              <div>
+                <h3 className="text-sm font-semibold mb-2">
+                  {t("stats.evolutionPct", "Taux de complétion (%)")}
+                </h3>
+                <div className="h-56">
+                  <ResponsiveContainer width="100%" height="100%">
+                    <AreaChart data={evolution} margin={{ left: 0, right: 8, top: 8, bottom: 8 }}>
+                      <defs>
+                        <linearGradient id="evoPct" x1="0" y1="0" x2="0" y2="1">
+                          <stop offset="0%" stopColor="hsl(var(--primary))" stopOpacity={0.6} />
+                          <stop offset="100%" stopColor="hsl(var(--primary))" stopOpacity={0} />
+                        </linearGradient>
+                      </defs>
+                      <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--border))" />
+                      <XAxis dataKey="label" stroke="hsl(var(--muted-foreground))" fontSize={11} />
+                      <YAxis
+                        stroke="hsl(var(--muted-foreground))"
+                        fontSize={11}
+                        domain={[0, 100]}
+                        tickFormatter={(v) => `${v}%`}
+                      />
+                      <Tooltip
+                        contentStyle={{
+                          background: "hsl(var(--card))",
+                          border: "1px solid hsl(var(--border))",
+                          borderRadius: 12,
+                        }}
+                        formatter={(v: any) => [`${v}%`, t("stats.lifeProgress")]}
+                      />
+                      <Area
+                        type="monotone"
+                        dataKey="pct"
+                        stroke="hsl(var(--primary))"
+                        strokeWidth={2}
+                        fill="url(#evoPct)"
+                      />
+                    </AreaChart>
+                  </ResponsiveContainer>
+                </div>
+              </div>
+            </section>
+          )}
         </motion.div>
       </AnimatePresence>
     </main>
