@@ -42,6 +42,7 @@ export function VisionBoard({
   const boardRef = useRef<HTMLDivElement>(null);
   const fileRef = useRef<HTMLInputElement>(null);
   const pinchRef = useRef<Map<string, { dist: number; w: number; h: number; x: number; y: number; rot: number; angle: number }>>(new Map());
+  const dragPointerRef = useRef<Map<string, { offsetX: number; offsetY: number }>>(new Map());
   const [selected, setSelected] = useState<string | null>(null);
   const addItem = useStore((s) => s.addVisionItem);
   const updateItem = useStore((s) => s.updateVisionItem);
@@ -107,10 +108,29 @@ export function VisionBoard({
     a.click();
   };
 
-  const onDrag = (id: string, dx: number, dy: number) => {
+  const clamp = (value: number, min: number, max: number) => Math.min(Math.max(value, min), max);
+
+  const onDragEnd = (id: string, pointX: number, pointY: number) => {
     const it = items.find((i) => i.id === id);
-    if (!it) return;
-    updateItem(categoryId, id, { x: it.x + dx, y: it.y + dy }, subId);
+    const boardRect = boardRef.current?.getBoundingClientRect();
+    if (!it || !boardRect) return;
+
+    const pointerOffset = dragPointerRef.current.get(id);
+    const fallbackOffsetX = it.width / 2;
+    const fallbackOffsetY = it.height / 2;
+    const nextX = clamp(
+      pointX - boardRect.left - (pointerOffset?.offsetX ?? fallbackOffsetX),
+      0,
+      Math.max(0, boardRect.width - it.width)
+    );
+    const nextY = clamp(
+      pointY - boardRect.top - (pointerOffset?.offsetY ?? fallbackOffsetY),
+      0,
+      Math.max(0, boardRect.height - it.height)
+    );
+
+    updateItem(categoryId, id, { x: nextX, y: nextY }, subId);
+    dragPointerRef.current.delete(id);
   };
 
   const startResize = (
@@ -372,7 +392,15 @@ export function VisionBoard({
             data-vb-item
             drag={selected === item.id}
             dragMomentum={false}
-            onDragEnd={(_, info) => onDrag(item.id, info.offset.x, info.offset.y)}
+            dragElastic={0}
+            onPointerDown={(e) => {
+              const rect = e.currentTarget.getBoundingClientRect();
+              dragPointerRef.current.set(item.id, {
+                offsetX: e.clientX - rect.left,
+                offsetY: e.clientY - rect.top,
+              });
+            }}
+            onDragEnd={(_, info) => onDragEnd(item.id, info.point.x, info.point.y)}
             initial={false}
             style={{
               position: "absolute",
