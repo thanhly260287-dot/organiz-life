@@ -1,5 +1,6 @@
 import { Link, useRouter, useNavigate } from "@tanstack/react-router";
 import { Logo } from "./Logo";
+import { ShareButton } from "./ShareButton";
 import { useStore } from "@/lib/store";
 import { Moon, Sun, Settings, ArrowLeft, BarChart3, Printer, LogOut } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
