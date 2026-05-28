@@ -1,9 +1,11 @@
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Plus, Check, Trash2, Calendar, Clock } from "lucide-react";
+import { Plus, Check, Trash2, Calendar, Clock, Bell } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import { useStore } from "@/lib/store";
+import { REMINDER_OPTIONS, reminderLabel } from "@/lib/useReminders";
 import type { Task } from "@/lib/categories";
+
 import {
   DndContext,
   closestCenter,
@@ -43,6 +45,8 @@ export function TaskList({
   const [date, setDate] = useState("");
   const [time, setTime] = useState("");
   const [amount, setAmount] = useState<string>("");
+  const [reminders, setReminders] = useState<number[]>([]);
+
   const showPriority = useStore((s) => s.taskPriorityCategories.includes(categoryId));
   const toggleTaskPriorityFor = useStore((s) => s.toggleTaskPriorityFor);
   const addTask = useStore((s) => s.addTask);
@@ -77,6 +81,7 @@ export function TaskList({
         date: date || undefined,
         time: time || undefined,
         amount: amt,
+        reminders: enableDateTime && time && reminders.length ? [...reminders].sort((a, b) => a - b) : undefined,
       },
       subId
     );
@@ -84,8 +89,10 @@ export function TaskList({
     setDate("");
     setTime("");
     setAmount("");
+    setReminders([]);
     setAdding(false);
   };
+
 
 
 
@@ -208,6 +215,31 @@ export function TaskList({
               </button>
             </div>
           </div>
+          {enableDateTime && time && (
+            <div className="flex flex-wrap items-center gap-1.5 pt-1">
+              <Bell className="h-3 w-3 text-muted-foreground" />
+              <span className="text-[10px] text-muted-foreground mr-1">Rappel :</span>
+              {REMINDER_OPTIONS.map((m) => {
+                const active = reminders.includes(m);
+                return (
+                  <button
+                    key={m}
+                    type="button"
+                    onClick={() =>
+                      setReminders((r) => (r.includes(m) ? r.filter((x) => x !== m) : [...r, m]))
+                    }
+                    className={`text-[11px] px-2 py-0.5 rounded-full border transition-colors ${
+                      active
+                        ? "bg-primary text-primary-foreground border-primary"
+                        : "border-border hover:bg-muted"
+                    }`}
+                  >
+                    {reminderLabel(m)} avant
+                  </button>
+                );
+              })}
+            </div>
+          )}
         </motion.div>
       ) : (
         <button
@@ -288,7 +320,7 @@ function SortableTaskRow({
             {t.title}
           </span>
         </div>
-        {((enableDateTime && (t.date || t.time)) || t.notes) && (
+        {((enableDateTime && (t.date || t.time)) || t.notes || t.reminders?.length) && (
           <div className="mt-1 flex flex-wrap items-center gap-3 text-[11px] text-muted-foreground">
             {enableDateTime && t.date && (
               <span className="inline-flex items-center gap-1">
@@ -300,6 +332,11 @@ function SortableTaskRow({
                 <Clock className="h-3 w-3" /> {t.time}
               </span>
             )}
+            {t.reminders?.length ? (
+              <span className="inline-flex items-center gap-1">
+                <Bell className="h-3 w-3" /> {t.reminders.map((m) => reminderLabel(m)).join(" · ")}
+              </span>
+            ) : null}
             {t.notes && <span className="truncate">{t.notes}</span>}
           </div>
         )}
