@@ -29,10 +29,12 @@ export function ShareButton() {
   const encodedUrl = encodeURIComponent(appUrl);
   const encodedTitle = encodeURIComponent(shareTitle);
 
+  const canNativeShare = typeof window !== "undefined" && "share" in navigator && typeof (navigator as any).share === "function";
+
   const handleNativeShare = useCallback(async () => {
-    if (navigator.share) {
+    if (canNativeShare) {
       try {
-        await navigator.share({
+        await (navigator as any).share({
           title: shareTitle,
           text: shareText,
           url: appUrl,
@@ -41,7 +43,7 @@ export function ShareButton() {
         // User cancelled or share failed
       }
     }
-  }, [shareTitle, shareText, appUrl]);
+  }, [shareTitle, shareText, appUrl, canNativeShare]);
 
   const handleCopyLink = useCallback(async () => {
     try {
