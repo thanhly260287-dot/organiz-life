@@ -320,7 +320,7 @@ function SortableTaskRow({
             {t.title}
           </span>
         </div>
-        {((enableDateTime && (t.date || t.time)) || t.notes) && (
+        {((enableDateTime && (t.date || t.time)) || t.notes || t.reminders?.length) && (
           <div className="mt-1 flex flex-wrap items-center gap-3 text-[11px] text-muted-foreground">
             {enableDateTime && t.date && (
               <span className="inline-flex items-center gap-1">
@@ -332,6 +332,11 @@ function SortableTaskRow({
                 <Clock className="h-3 w-3" /> {t.time}
               </span>
             )}
+            {t.reminders?.length ? (
+              <span className="inline-flex items-center gap-1">
+                <Bell className="h-3 w-3" /> {t.reminders.map((m) => reminderLabel(m)).join(" · ")}
+              </span>
+            ) : null}
             {t.notes && <span className="truncate">{t.notes}</span>}
           </div>
         )}
