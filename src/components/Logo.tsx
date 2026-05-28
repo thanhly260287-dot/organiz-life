@@ -27,7 +27,7 @@ export function Logo({ size = 36, showText = true, className = "" }: LogoProps) 
         {/* étoile / potentiel */}
         <path
           d="M24 6 L25.8 12.2 L32 12.2 L27 16.2 L28.8 22.4 L24 18.4 L19.2 22.4 L21 16.2 L16 12.2 L22.2 12.2 Z"
-          fill="#FFD700"
+          fill="white"
           opacity="0.95"
         />
 
