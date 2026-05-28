@@ -111,14 +111,12 @@ export function CategoryCard({ category, index }: { category: Category; index: n
                   placeholder={t("dashboard.newName")}
                 />
               ) : (
-                <button
-                  onClick={startEdit}
-                  className="group/name flex items-center gap-1.5 font-display font-semibold text-base truncate"
-                  title={t("dashboard.editName", "Modifier le nom")}
-                >
-                  <span className="truncate">{displayName}</span>
-                  <Pencil className="h-3.5 w-3.5 text-muted-foreground opacity-0 group-hover/name:opacity-100 transition-opacity shrink-0" />
-                </button>
+              <span
+                className="group/name flex items-center gap-1.5 font-display font-semibold text-base truncate"
+                title={t("dashboard.editName", "Modifier le nom")}
+              >
+                <span className="truncate">{displayName}</span>
+              </span>
               )}
             </div>
             <p className="mt-1 text-xs text-muted-foreground">
@@ -145,6 +143,21 @@ export function CategoryCard({ category, index }: { category: Category; index: n
           </div>
         </div>
       </Link>
+      <button
+        type="button"
+        onClick={(e) => {
+          e.preventDefault();
+          e.stopPropagation();
+          setEditName(displayName);
+          setEditing(true);
+        }}
+        onPointerDown={(e) => e.stopPropagation()}
+        onTouchStart={(e) => e.stopPropagation()}
+        aria-label={t("dashboard.editName", "Modifier le nom")}
+        className="absolute top-2 right-11 z-10 p-1.5 rounded-lg bg-background/80 backdrop-blur text-muted-foreground hover:text-primary hover:bg-primary/10 opacity-60 hover:opacity-100 focus:opacity-100 transition-opacity"
+      >
+        <Pencil className="h-4 w-4" />
+      </button>
       <button
         type="button"
         onClick={handleDelete}
