@@ -104,7 +104,7 @@ export function CategoryCard({ category, index }: { category: Category; index: n
         onPointerDown={(e) => e.stopPropagation()}
         onTouchStart={(e) => e.stopPropagation()}
         aria-label={`Supprimer ${category.name}`}
-        className="absolute top-2 right-2 z-10 p-1.5 rounded-lg bg-background/80 backdrop-blur text-muted-foreground hover:text-destructive hover:bg-destructive/10 opacity-0 group-hover/card:opacity-100 focus:opacity-100 transition-opacity"
+        className="absolute top-2 right-2 z-10 p-1.5 rounded-lg bg-background/80 backdrop-blur text-muted-foreground hover:text-destructive hover:bg-destructive/10 opacity-60 hover:opacity-100 focus:opacity-100 transition-opacity"
       >
         <Trash2 className="h-4 w-4" />
       </button>
