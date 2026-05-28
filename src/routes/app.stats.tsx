@@ -24,6 +24,9 @@ function StatsPage() {
   const nameFor = useCategoryName();
   const categories = useStore((s) => s.categories.filter((c) => c.id !== MAIN_VISION_ID));
   const [view, setView] = useState<View>("overview");
+  // Per-row selection in the Bilan financier: undefined = included with natural sign,
+  // +1 = forced added, -1 = forced subtracted, 0 = excluded. Click cycles through.
+  const [financeSel, setFinanceSel] = useState<Record<string, 1 | -1 | 0>>({});
 
   const stats = useMemo(() => {
     let done = 0;
