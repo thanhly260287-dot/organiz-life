@@ -5,8 +5,10 @@ import { RemindersRunner } from "@/lib/useReminders";
 
 export const Route = createFileRoute("/app")({
   beforeLoad: async () => {
-    const { data, error } = await supabase.auth.getUser();
-    if (error || !data.user) {
+    // Skip auth check during SSR — session lives in localStorage (client only)
+    if (typeof window === "undefined") return;
+    const { data } = await supabase.auth.getSession();
+    if (!data.session) {
       throw redirect({ to: "/login" });
     }
   },
