@@ -550,6 +550,33 @@ export function VisionBoard({
           </motion.div>
         ))}
       </div>
+
+      {/* Dialog: reset vision board */}
+      <AlertDialog open={resetOpen} onOpenChange={setResetOpen}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Réinitialiser le Vision Board</AlertDialogTitle>
+            <AlertDialogDescription>
+              {items.length === 1
+                ? "1 élément va être supprimé du Vision Board. Cette action est irréversible et l'élément ne pourra pas être récupéré."
+                : `${items.length} éléments vont être supprimés du Vision Board. Cette action est irréversible et aucun élément ne pourra être récupéré.`}
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel onClick={() => setResetOpen(false)}>Annuler</AlertDialogCancel>
+            <AlertDialogAction
+              onClick={() => {
+                clearItems(categoryId, subId);
+                setSelected(null);
+                setResetOpen(false);
+              }}
+              className="bg-amber-500 hover:bg-amber-600 text-white"
+            >
+              Confirmer
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
     </div>
   );
 }
