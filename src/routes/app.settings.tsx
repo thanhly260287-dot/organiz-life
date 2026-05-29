@@ -1,7 +1,7 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useStore } from "@/lib/store";
 import { motion } from "framer-motion";
-import { Moon, Sun, Hash, Globe, Search, Check, ArrowLeft, Wallet } from "lucide-react";
+import { Moon, Sun, Hash, Globe, Search, Check, ArrowLeft, Wallet, AlertTriangle } from "lucide-react";
 
 import { useTranslation } from "react-i18next";
 import { useMemo, useState } from "react";
