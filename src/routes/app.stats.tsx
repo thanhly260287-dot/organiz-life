@@ -36,7 +36,6 @@ function getStorageJSON<T>(key: string, fallback: T): T {
   }
 }
 
-function StatsPage() {
 
 function StatsPage() {
   const { t } = useTranslation();
