@@ -147,6 +147,8 @@ export const useStore = create<AppState>()(
               };
             }
             return { ...c, tasks: map(c.tasks) };
+          }),
+        })),
       removeTask: (categoryId, taskId, subId) =>
         set((s) => ({
           categories: s.categories.map((c) => {
