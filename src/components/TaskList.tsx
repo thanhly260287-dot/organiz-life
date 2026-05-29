@@ -136,9 +136,10 @@ export function TaskList({
       )}
       <DndContext sensors={sensors} collisionDetection={closestCenter} onDragEnd={onDragEnd}>
         <SortableContext items={tasks.map((t) => t.id)} strategy={verticalListSortingStrategy}>
-          <AnimatePresence initial={false}>
-            {tasks.map((t, i) => (
-            <SortableTaskRow
+          {tasks.length > 40 ? (
+            // Mode performance : pas d'AnimatePresence/layout au-delà de 40 tâches
+            tasks.map((t, i) => (
+              <SortableTaskRow
                 key={t.id}
                 task={t}
                 index={i}
@@ -150,13 +151,35 @@ export function TaskList({
                 enableAmount={enableAmount}
                 amountSign={amountSign}
                 lockSign={lockSign}
+                disableAnim
                 onToggle={() => toggleTask(categoryId, t.id, subId)}
                 onRemove={() => removeTask(categoryId, t.id, subId)}
               />
-            ))}
-          </AnimatePresence>
+            ))
+          ) : (
+            <AnimatePresence initial={false}>
+              {tasks.map((t, i) => (
+                <SortableTaskRow
+                  key={t.id}
+                  task={t}
+                  index={i}
+                  categoryId={categoryId}
+                  subId={subId}
+                  accent={accent}
+                  showPriority={showPriority}
+                  enableDateTime={enableDateTime}
+                  enableAmount={enableAmount}
+                  amountSign={amountSign}
+                  lockSign={lockSign}
+                  onToggle={() => toggleTask(categoryId, t.id, subId)}
+                  onRemove={() => removeTask(categoryId, t.id, subId)}
+                />
+              ))}
+            </AnimatePresence>
+          )}
         </SortableContext>
       </DndContext>
+
 
 
 
@@ -284,6 +307,7 @@ export function TaskList({
 }
 
 function SortableTaskRow({
+
   task: t,
   index,
   categoryId,
@@ -294,6 +318,7 @@ function SortableTaskRow({
   enableAmount,
   amountSign,
   lockSign,
+  disableAnim,
   onToggle,
   onRemove,
 }: {
@@ -307,9 +332,11 @@ function SortableTaskRow({
   enableAmount: boolean;
   amountSign: 1 | -1;
   lockSign: boolean;
+  disableAnim?: boolean;
   onToggle: () => void;
   onRemove: () => void;
 }) {
+
   const { t: tr } = useTranslation();
   const { attributes, listeners, setNodeRef, transform, transition, isDragging } = useSortable({ id: t.id });
   const updateTask = useStore((s) => s.updateTask);
@@ -347,12 +374,17 @@ function SortableTaskRow({
     <motion.div
       ref={setNodeRef}
       style={style}
-      layout
-      initial={{ opacity: 0, x: -10 }}
-      animate={{ opacity: 1, x: 0 }}
-      exit={{ opacity: 0, x: 10 }}
+      {...(disableAnim
+        ? {}
+        : {
+            layout: true,
+            initial: { opacity: 0, x: -10 },
+            animate: { opacity: 1, x: 0 },
+            exit: { opacity: 0, x: 10 },
+          })}
       className={`group flex items-center gap-3 rounded-xl glass shadow-glass p-3 select-none ${isDragging ? "cursor-grabbing" : ""}`}
       {...attributes}
+
       {...listeners}
     >
 
