@@ -134,6 +134,65 @@ function CategoryPage() {
           lockSign={FORCED_SIGN_IDS.has(category.id)}
         />
       </section>
+
+      {/* Dialog: clear all tasks */}
+      <AlertDialog open={clearOpen} onOpenChange={setClearOpen}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>{t("category.clearTasksTitle", { defaultValue: "Effacer toutes les tâches" })}</AlertDialogTitle>
+            <AlertDialogDescription>
+              {t("category.confirmClearTasks", {
+                name: displayName,
+                count:
+                  category.tasks.length +
+                  category.subcategories.reduce((acc, sc) => acc + sc.tasks.length, 0),
+                defaultValue: `Supprimer les ${category.tasks.length + category.subcategories.reduce((acc, sc) => acc + sc.tasks.length, 0)} tâche(s) de « ${displayName} » ? Cette action est irréversible.`,
+              })}
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel onClick={() => setClearOpen(false)}>
+              {t("common.cancel", { defaultValue: "Annuler" })}
+            </AlertDialogCancel>
+            <AlertDialogAction
+              onClick={() => {
+                clearCategoryTasks(category.id);
+                setClearOpen(false);
+              }}
+              className="bg-amber-500 hover:bg-amber-600 text-white"
+            >
+              {t("common.confirm", { defaultValue: "Confirmer" })}
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
+
+      {/* Dialog: delete category */}
+      <AlertDialog open={deleteOpen} onOpenChange={setDeleteOpen}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>{t("category.deleteTitle", { defaultValue: "Supprimer la catégorie" })}</AlertDialogTitle>
+            <AlertDialogDescription>
+              {t("category.confirmDelete", { name: displayName })}
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel onClick={() => setDeleteOpen(false)}>
+              {t("common.cancel", { defaultValue: "Annuler" })}
+            </AlertDialogCancel>
+            <AlertDialogAction
+              onClick={() => {
+                removeCategory(category.id);
+                setDeleteOpen(false);
+                window.history.back();
+              }}
+              className="bg-destructive hover:bg-destructive/90 text-destructive-foreground"
+            >
+              {t("common.delete", { defaultValue: "Supprimer" })}
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
     </main>
   );
 }
