@@ -1164,6 +1164,21 @@ function StatsPage() {
                 </div>
               </div>
 
+              {evoCompare && (
+                <div className="flex flex-wrap items-center gap-3 text-xs rounded-xl border border-border bg-card/40 px-3 py-2">
+                  <span className="text-muted-foreground font-medium">{t("stats.legendLabel", "Légende comparaison")} :</span>
+                  <span className="inline-flex items-center gap-1.5">
+                    <span className="h-2.5 w-2.5 rounded-full bg-green-500" />
+                    {evoNegBad ? t("stats.legendRiseGood", "Hausse = bon") : t("stats.legendDropGood", "Baisse = bon")}
+                  </span>
+                  <span className="inline-flex items-center gap-1.5">
+                    <span className="h-2.5 w-2.5 rounded-full bg-red-500" />
+                    {evoNegBad ? t("stats.legendDropBad", "Baisse = mauvais") : t("stats.legendRiseBad", "Hausse = mauvais")}
+                  </span>
+                </div>
+              )}
+
+              {evoCompare && compareTotals && (
               {evoCompare && compareTotals && (
                 <div className="flex flex-wrap gap-2 text-xs">
                   {(evoStatus === "all" || evoStatus === "created") && (
