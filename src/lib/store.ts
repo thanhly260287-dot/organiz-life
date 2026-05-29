@@ -40,6 +40,7 @@ interface AppState {
   addVisionItem: (categoryId: string, item: Omit<VisionItem, "id">, subId?: string) => void;
   updateVisionItem: (categoryId: string, itemId: string, patch: Partial<VisionItem>, subId?: string) => void;
   removeVisionItem: (categoryId: string, itemId: string, subId?: string) => void;
+  clearVisionItems: (categoryId: string, subId?: string) => void;
 }
 
 
