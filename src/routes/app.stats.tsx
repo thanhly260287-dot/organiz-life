@@ -1,5 +1,5 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { useMemo, useState } from "react";
+import { useMemo, useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { ArrowLeft, TrendingUp, CheckCircle2, Layers, PieChart as PieIcon, BarChart3, CalendarDays, LayoutGrid, LineChart as LineIcon, Download, FileText, Eye, EyeOff } from "lucide-react";
 import { useTranslation } from "react-i18next";
@@ -18,6 +18,24 @@ export const Route = createFileRoute("/app/stats")({
 });
 
 type View = "overview" | "distribution" | "ranking" | "activity" | "evolution";
+
+function getStorageNum(key: string, fallback: number) {
+  try {
+    const v = localStorage.getItem(key);
+    return v ? Number(v) : fallback;
+  } catch {
+    return fallback;
+  }
+}
+function getStorageJSON<T>(key: string, fallback: T): T {
+  try {
+    const v = localStorage.getItem(key);
+    return v ? JSON.parse(v) : fallback;
+  } catch {
+    return fallback;
+  }
+}
+
 
 function StatsPage() {
   const { t } = useTranslation();
@@ -98,15 +116,21 @@ function StatsPage() {
     w.document.write(html);
     w.document.close();
   };
-  const [evoCats, setEvoCats] = useState<string[]>(["all"]);
+  const [evoCats, setEvoCats] = useState<string[]>(getStorageJSON("stats:evoCats", ["all"]));
   const evoAll = evoCats.includes("all");
-  const [evoDays, setEvoDays] = useState<number>(30);
-  const [evoStatus, setEvoStatus] = useState<"all" | "created" | "done">("all");
-  const [evoShowValues, setEvoShowValues] = useState(false);
-  const [evoShowTrend, setEvoShowTrend] = useState(false);
+  const [evoDays, setEvoDays] = useState<number>(getStorageNum("stats:evoDays", 30));
+  const [evoStatus, setEvoStatus] = useState<"all" | "created" | "done">(getStorageJSON("stats:evoStatus", "all"));
+  const [evoShowValues, setEvoShowValues] = useState(getStorageJSON("stats:evoShowValues", false));
+  const [evoShowTrend, setEvoShowTrend] = useState(getStorageJSON("stats:evoShowTrend", false));
   // Per-row selection in the Bilan financier: undefined = included with natural sign,
   // +1 = forced added, -1 = forced subtracted, 0 = excluded. Click cycles through.
   const [financeSel, setFinanceSel] = useState<Record<string, 1 | -1 | 0>>({});
+
+  useEffect(() => { localStorage.setItem("stats:evoDays", String(evoDays)); }, [evoDays]);
+  useEffect(() => { localStorage.setItem("stats:evoCats", JSON.stringify(evoCats)); }, [evoCats]);
+  useEffect(() => { localStorage.setItem("stats:evoStatus", JSON.stringify(evoStatus)); }, [evoStatus]);
+  useEffect(() => { localStorage.setItem("stats:evoShowValues", JSON.stringify(evoShowValues)); }, [evoShowValues]);
+  useEffect(() => { localStorage.setItem("stats:evoShowTrend", JSON.stringify(evoShowTrend)); }, [evoShowTrend]);
 
 
   const stats = useMemo(() => {
