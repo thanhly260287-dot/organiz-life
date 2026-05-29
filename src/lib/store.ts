@@ -29,6 +29,8 @@ interface AppState {
   addTask: (categoryId: string, task: Partial<Task> & { title: string }, subId?: string) => void;
   updateTask: (categoryId: string, taskId: string, patch: Partial<Task>, subId?: string) => void;
   removeTask: (categoryId: string, taskId: string, subId?: string) => void;
+  clearCategoryTasks: (categoryId: string) => void;
+  resetAllData: () => void;
   toggleTask: (categoryId: string, taskId: string, subId?: string) => void;
   reorderTasks: (categoryId: string, ids: string[], subId?: string) => void;
 
@@ -162,6 +164,27 @@ export const useStore = create<AppState>()(
             return { ...c, tasks: c.tasks.filter((t) => t.id !== taskId) };
           }),
         })),
+      clearCategoryTasks: (categoryId) =>
+        set((s) => ({
+          categories: s.categories.map((c) =>
+            c.id === categoryId
+              ? {
+                  ...c,
+                  tasks: [],
+                  subcategories: c.subcategories.map((sc) => ({ ...sc, tasks: [] })),
+                }
+              : c
+          ),
+        })),
+      resetAllData: () =>
+        set({
+          categories: seedCategories(),
+          theme: "dark",
+          textSize: "md",
+          showCategoryPriority: false,
+          showCategoryTotal: true,
+          taskPriorityCategories: [],
+        }),
       toggleTask: (categoryId, taskId, subId) =>
         set((s) => ({
           categories: s.categories.map((c) => {

@@ -1,7 +1,7 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useStore } from "@/lib/store";
 import { motion } from "framer-motion";
-import { Moon, Sun, Hash, Globe, Search, Check, ArrowLeft, Wallet } from "lucide-react";
+import { Moon, Sun, Hash, Globe, Search, Check, ArrowLeft, Wallet, AlertTriangle } from "lucide-react";
 
 import { useTranslation } from "react-i18next";
 import { useMemo, useState } from "react";
@@ -21,6 +21,7 @@ function Settings() {
   const togglePriority = useStore((s) => s.toggleCategoryPriority);
   const showTotal = useStore((s) => s.showCategoryTotal);
   const toggleTotal = useStore((s) => s.toggleCategoryTotal);
+  const resetAllData = useStore((s) => s.resetAllData);
   const [langQuery, setLangQuery] = useState("");
 
 
@@ -194,6 +195,41 @@ function Settings() {
           </div>
         </button>
 
+      </section>
+      <section className="rounded-2xl border border-destructive/30 bg-destructive/5 p-6 space-y-4">
+        <h2 className="font-display font-semibold flex items-center gap-2 text-destructive">
+          <AlertTriangle className="h-4 w-4" />
+          {t("settings.dangerZone", { defaultValue: "Zone sensible" })}
+        </h2>
+        <p className="text-xs text-muted-foreground">
+          {t("settings.resetAllDesc", {
+            defaultValue:
+              "Supprime toutes tes tâches, sous-catégories, vision boards et préférences. Cette action est irréversible.",
+          })}
+        </p>
+        <button
+          onClick={() => {
+            const msg = t("settings.resetAllConfirm", {
+              defaultValue:
+                "Tout réinitialiser ? Toutes les tâches, catégories personnalisées, vision boards et préférences seront effacées définitivement.",
+            });
+            if (!confirm(msg)) return;
+            const msg2 = t("settings.resetAllConfirm2", {
+              defaultValue: "Es-tu vraiment sûr·e ? Cette action est définitive.",
+            });
+            if (!confirm(msg2)) return;
+            resetAllData();
+            try {
+              ["stats:evoDays", "stats:evoCats", "stats:evoStatus", "stats:evoShowValues", "stats:evoShowTrend", "stats:evoCompare", "stats:evoNegBad"].forEach(
+                (k) => window.localStorage.removeItem(k)
+              );
+            } catch {}
+          }}
+          className="w-full inline-flex items-center justify-center gap-2 rounded-xl bg-destructive text-destructive-foreground px-4 py-2.5 text-sm font-medium hover:opacity-90 transition-opacity"
+        >
+          <AlertTriangle className="h-4 w-4" />
+          {t("settings.resetAll", { defaultValue: "Tout réinitialiser" })}
+        </button>
       </section>
 
       <p className="text-xs text-muted-foreground text-center pt-4">
