@@ -307,6 +307,21 @@ function Settings() {
         </AlertDialogContent>
       </AlertDialog>
 
+      <section className="glass rounded-2xl shadow-glass p-6 space-y-4">
+        <h2 className="font-display font-semibold flex items-center gap-2">
+          <Shield className="h-4 w-4" /> Légal
+        </h2>
+        <p className="text-xs text-muted-foreground">
+          Politique de confidentialité requise pour l'App Store, Google Play et le web.
+        </p>
+        <Link
+          to="/privacy"
+          className="w-full inline-flex items-center justify-center gap-2 rounded-xl border border-border px-4 py-2.5 text-sm font-medium hover:bg-muted transition-colors"
+        >
+          <Shield className="h-4 w-4" /> Privacy Policy
+        </Link>
+      </section>
+
       <p className="text-xs text-muted-foreground text-center pt-4">
         {t("settings.localStorage")}
       </p>
