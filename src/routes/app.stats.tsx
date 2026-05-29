@@ -1289,21 +1289,12 @@ function StatsPage() {
                             borderRadius: 12,
                           }}
                           formatter={(v: any) => [`${v}%`, t("stats.lifeProgress")]}
-              {/* Tableau récapitulatif */}
-              <div className="glass rounded-2xl shadow-glass overflow-hidden">
-                <div className="px-4 py-3 border-b border-border/60 flex items-center justify-between gap-2">
-                  <h3 className="text-sm font-semibold">
-                    {t("stats.evolutionTableTitle", "Récapitulatif quotidien")}
-                  </h3>
-                  <button
-                    type="button"
-                    onClick={exportEvolutionTableCSV}
-                    className="inline-flex items-center gap-1.5 px-2.5 py-1 text-xs font-medium rounded-lg border bg-card/60 border-border hover:bg-card text-foreground transition-all"
-                    title="Exporter le tableau en CSV"
-                  >
-                    <Download className="h-3.5 w-3.5" /> CSV
-                  </button>
-                </div>
+                        />
+                        <Area
+                          type="monotone"
+                          dataKey="pct"
+                          stroke="hsl(var(--primary))"
+                          strokeWidth={2}
                           fill="url(#evoPct)"
                         >
                           {evoShowValues && (
