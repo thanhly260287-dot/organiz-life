@@ -236,7 +236,7 @@ function Settings() {
             <AlertDialogDescription>
               {t("settings.resetAllConfirm", {
                 defaultValue:
-                  "Tout réinitialiser ? Toutes les tâches, catégories personnalisées, vision boards et préférences seront effacées définitivement.",
+                  "Toutes tes tâches, sous-catégories, catégories personnalisées, vision boards, paramètres d'affichage et préférences linguistiques seront effacées définitivement. Aucune donnée ne pourra être récupérée après cette action.",
               })}
             </AlertDialogDescription>
           </AlertDialogHeader>
