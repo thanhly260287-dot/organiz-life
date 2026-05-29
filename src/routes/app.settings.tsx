@@ -264,7 +264,8 @@ function Settings() {
             <AlertDialogTitle>{t("settings.resetAll", { defaultValue: "Tout réinitialiser" })}</AlertDialogTitle>
             <AlertDialogDescription>
               {t("settings.resetAllConfirm2", {
-                defaultValue: "Es-tu vraiment sûr·e ? Cette action est définitive.",
+                defaultValue:
+                  "Confirme que tu veux supprimer définitivement toutes tes données : tâches, sous-catégories, catégories personnalisées, vision boards, paramètres d'affichage et préférences linguistiques. Cette action est irréversible.",
               })}
             </AlertDialogDescription>
           </AlertDialogHeader>
