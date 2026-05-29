@@ -217,9 +217,15 @@ function StatsPage() {
       let countNeg = 0;
       all.forEach((t) => {
         if (t.amount == null) return;
-        const sign: number =
-          id === "credits" ? (t.done ? 1 : -1) : ((t.amountSign ?? defaultSign) as number);
-        const v = t.amount * sign;
+        let v: number;
+        if (id === "credits") {
+          // Créance tracée (done) → soustraite du total négatif (contribution = 0)
+          if (t.done) return;
+          v = -t.amount;
+        } else {
+          const sign = (t.amountSign ?? defaultSign) as number;
+          v = t.amount * sign;
+        }
         total += v;
         if (v >= 0) {
           pos += v;
