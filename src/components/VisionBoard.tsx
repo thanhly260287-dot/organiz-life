@@ -14,10 +14,21 @@ import {
   AlignRight,
   ArrowUp,
   ArrowDown,
+  Eraser,
 } from "lucide-react";
 import { useStore } from "@/lib/store";
 import type { VisionItem } from "@/lib/categories";
 import { toPng } from "html-to-image";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from "@/components/ui/alert-dialog";
 
 const FONT_FAMILIES = [
   { label: "Sans", value: "ui-sans-serif, system-ui, sans-serif" },
