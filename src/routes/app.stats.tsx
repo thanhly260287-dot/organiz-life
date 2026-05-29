@@ -1362,11 +1362,22 @@ function StatsPage() {
                                 {d.cumCreated}
                               </td>
                             )}
+                            {evoCompare && (evoStatus === "all" || evoStatus === "created") && (
+                              <td className="px-3 py-2 text-right tabular-nums text-muted-foreground/60">
+                                {previousEvolution?.[i]?.cumCreated ?? "—"}
+                              </td>
+                            )}
                             {(evoStatus === "all" || evoStatus === "done") && (
                               <td className="px-3 py-2 text-right tabular-nums text-muted-foreground">
                                 {d.cumDone}
                               </td>
                             )}
+                            {evoCompare && (evoStatus === "all" || evoStatus === "done") && (
+                              <td className="px-3 py-2 text-right tabular-nums text-muted-foreground/60">
+                                {previousEvolution?.[i]?.cumDone ?? "—"}
+                              </td>
+                            )}
+
                             {evoStatus === "all" && (
                               <td className="px-3 py-2 text-right tabular-nums">
                                 <span
