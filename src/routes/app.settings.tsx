@@ -1,7 +1,7 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useStore } from "@/lib/store";
 import { motion } from "framer-motion";
-import { Moon, Sun, Hash, Globe, Search, Check, ArrowLeft, Wallet, AlertTriangle, Smartphone, Shield } from "lucide-react";
+import { Moon, Sun, Hash, Globe, Search, Check, ArrowLeft, Wallet, AlertTriangle, Smartphone, Shield, FileText } from "lucide-react";
 
 import { useTranslation } from "react-i18next";
 import { useMemo, useState } from "react";
@@ -314,12 +314,20 @@ function Settings() {
         <p className="text-xs text-muted-foreground">
           Politique de confidentialité requise pour l'App Store, Google Play et le web.
         </p>
-        <Link
-          to="/privacy"
-          className="w-full inline-flex items-center justify-center gap-2 rounded-xl border border-border px-4 py-2.5 text-sm font-medium hover:bg-muted transition-colors"
-        >
-          <Shield className="h-4 w-4" /> Privacy Policy
-        </Link>
+        <div className="grid sm:grid-cols-2 gap-3">
+          <Link
+            to="/privacy"
+            className="w-full inline-flex items-center justify-center gap-2 rounded-xl border border-border px-4 py-2.5 text-sm font-medium hover:bg-muted transition-colors"
+          >
+            <Shield className="h-4 w-4" /> Privacy Policy
+          </Link>
+          <Link
+            to="/terms"
+            className="w-full inline-flex items-center justify-center gap-2 rounded-xl border border-border px-4 py-2.5 text-sm font-medium hover:bg-muted transition-colors"
+          >
+            <FileText className="h-4 w-4" /> CGU
+          </Link>
+        </div>
       </section>
 
       <p className="text-xs text-muted-foreground text-center pt-4">
