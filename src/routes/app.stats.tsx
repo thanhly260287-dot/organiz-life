@@ -36,6 +36,23 @@ function getStorageJSON<T>(key: string, fallback: T): T {
   }
 }
 
+function getStorageNum(key: string, fallback: number) {
+  try {
+    const v = localStorage.getItem(key);
+    return v ? Number(v) : fallback;
+  } catch {
+    return fallback;
+  }
+}
+function getStorageJSON<T>(key: string, fallback: T): T {
+  try {
+    const v = localStorage.getItem(key);
+    return v ? JSON.parse(v) : fallback;
+  } catch {
+    return fallback;
+  }
+}
+
 function StatsPage() {
   const { t } = useTranslation();
   const nameFor = useCategoryName();
@@ -131,7 +148,7 @@ function StatsPage() {
   useEffect(() => { localStorage.setItem("stats:evoShowValues", JSON.stringify(evoShowValues)); }, [evoShowValues]);
   useEffect(() => { localStorage.setItem("stats:evoShowTrend", JSON.stringify(evoShowTrend)); }, [evoShowTrend]);
 
-  const stats = useMemo(() => {
+
   const stats = useMemo(() => {
     let done = 0;
     let total = 0;
