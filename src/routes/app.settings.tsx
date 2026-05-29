@@ -312,7 +312,7 @@ function Settings() {
           <Shield className="h-4 w-4" /> Légal
         </h2>
         <p className="text-xs text-muted-foreground">
-          Politique de confidentialité requise pour l'App Store, Google Play et le web.
+          Politique de confidentialité et Conditions Générales d'Utilisation, requises pour l'App Store, Google Play et le web.
         </p>
         <div className="grid sm:grid-cols-2 gap-3">
           <Link
