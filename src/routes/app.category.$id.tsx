@@ -1,12 +1,23 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { motion } from "framer-motion";
 import { useTranslation } from "react-i18next";
+import { useState } from "react";
 import { useStore, getCategoryProgress } from "@/lib/store";
 import { TaskList } from "@/components/TaskList";
 import { IconRender } from "@/components/IconRender";
 import { ArrowLeft, Trash2, CalendarClock, Eraser } from "lucide-react";
 import { FINANCE_CATEGORY_IDS, NEGATIVE_FINANCE_IDS, FORCED_SIGN_IDS } from "@/lib/categories";
 import { useCategoryName } from "@/lib/useCategoryName";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from "@/components/ui/alert-dialog";
 
 export const Route = createFileRoute("/app/category/$id")({
   component: CategoryPage,
