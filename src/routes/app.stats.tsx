@@ -406,9 +406,6 @@ function StatsPage() {
   }, [filteredEvolution, evoDays, previousEvolution, evoStatus]);
 
 
-      };
-    });
-  }, [filteredEvolution, evoDays]);
 
 
   const finance = useMemo(() => {
