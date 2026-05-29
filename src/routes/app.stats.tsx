@@ -840,6 +840,25 @@ function StatsPage() {
                   </span>
                 </h2>
                 <div className="flex flex-col gap-2">
+                  {/* Boutons d'export */}
+                  <div className="flex gap-1 justify-end">
+                    <button
+                      type="button"
+                      onClick={exportEvolutionCSV}
+                      className="inline-flex items-center gap-1.5 px-2.5 py-1 text-xs font-medium rounded-lg border bg-card/60 border-border hover:bg-card text-foreground transition-all"
+                      title="Exporter en CSV"
+                    >
+                      <Download className="h-3.5 w-3.5" /> CSV
+                    </button>
+                    <button
+                      type="button"
+                      onClick={exportEvolutionPDF}
+                      className="inline-flex items-center gap-1.5 px-2.5 py-1 text-xs font-medium rounded-lg border bg-card/60 border-border hover:bg-card text-foreground transition-all"
+                      title="Exporter en PDF"
+                    >
+                      <FileText className="h-3.5 w-3.5" /> PDF
+                    </button>
+                  </div>
                   {/* Sélecteur de période */}
                   <div className="flex gap-1">
                     {[7, 30, 90].map((n) => (
