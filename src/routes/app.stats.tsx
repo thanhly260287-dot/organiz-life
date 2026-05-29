@@ -1061,13 +1061,16 @@ function StatsPage() {
                           : "bg-card/60 border-border hover:bg-card text-foreground"
                       }`}
                       title={evoCompare ? "Masquer la période précédente" : "Comparer avec la période précédente"}
+                    >
+                      <BarChart3 className="h-3.5 w-3.5" />
+                      {t("stats.compare", "Comparer")}
                     </button>
                     {evoCompare && (
                       <button
                         type="button"
                         onClick={() => setEvoNegBad((v) => !v)}
                         className={`inline-flex items-center gap-1.5 px-2.5 py-1 text-xs font-medium rounded-lg border transition-all bg-card/60 border-border hover:bg-card text-foreground`}
-                        title={evoNegBad ? "Actuellement : – en rouge (baisse = négatif). Cliquer pour inverser." : "Actuellement : – en vert (baisse = positif). Cliquer pour inverser."}
+                        title={evoNegBad ? "Actuellement : baisse = rouge. Cliquer pour inverser." : "Actuellement : baisse = vert. Cliquer pour inverser."}
                       >
                         <span className={evoNegBad ? "text-red-500" : "text-green-500"}>−</span>
                         <span>=</span>
@@ -1076,9 +1079,6 @@ function StatsPage() {
                     )}
                   </div>
 
-                      {t("stats.compare", "Comparer")}
-                    </button>
-                  </div>
 
                   <div className="flex gap-1">
                     {[7, 30, 90].map((n) => (
