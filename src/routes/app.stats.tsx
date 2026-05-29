@@ -1,7 +1,7 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useMemo, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { ArrowLeft, TrendingUp, CheckCircle2, Layers, PieChart as PieIcon, BarChart3, CalendarDays, LayoutGrid, LineChart as LineIcon, Download, FileText } from "lucide-react";
+import { ArrowLeft, TrendingUp, CheckCircle2, Layers, PieChart as PieIcon, BarChart3, CalendarDays, LayoutGrid, LineChart as LineIcon, Download, FileText, Eye, EyeOff } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import { useStore, getCategoryProgress, MAIN_VISION_ID } from "@/lib/store";
 import { NEGATIVE_FINANCE_IDS } from "@/lib/categories";
@@ -11,7 +11,7 @@ const fmtEUR = (n: number) =>
   n.toLocaleString("fr-FR", { style: "currency", currency: "EUR" });
 import { IconRender } from "@/components/IconRender";
 import { useCategoryName } from "@/lib/useCategoryName";
-import { PieChart, Pie, Cell, ResponsiveContainer, Tooltip, BarChart, Bar, XAxis, YAxis, CartesianGrid, AreaChart, Area, Legend } from "recharts";
+import { PieChart, Pie, Cell, ResponsiveContainer, Tooltip, BarChart, Bar, XAxis, YAxis, CartesianGrid, AreaChart, Area, Legend, LabelList } from "recharts";
 
 export const Route = createFileRoute("/app/stats")({
   component: StatsPage,
@@ -102,6 +102,7 @@ function StatsPage() {
   const evoAll = evoCats.includes("all");
   const [evoDays, setEvoDays] = useState<number>(30);
   const [evoStatus, setEvoStatus] = useState<"all" | "created" | "done">("all");
+  const [evoShowValues, setEvoShowValues] = useState(false);
   // Per-row selection in the Bilan financier: undefined = included with natural sign,
   // +1 = forced added, -1 = forced subtracted, 0 = excluded. Click cycles through.
   const [financeSel, setFinanceSel] = useState<Record<string, 1 | -1 | 0>>({});
@@ -840,7 +841,7 @@ function StatsPage() {
                   </span>
                 </h2>
                 <div className="flex flex-col gap-2">
-                  {/* Boutons d'export */}
+                  {/* Boutons d'export + valeurs */}
                   <div className="flex gap-1 justify-end">
                     <button
                       type="button"
@@ -857,6 +858,19 @@ function StatsPage() {
                       title="Exporter en PDF"
                     >
                       <FileText className="h-3.5 w-3.5" /> PDF
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => setEvoShowValues((v) => !v)}
+                      className={`inline-flex items-center gap-1.5 px-2.5 py-1 text-xs font-medium rounded-lg border transition-all ${
+                        evoShowValues
+                          ? "bg-gradient-brand text-white border-transparent shadow-sm"
+                          : "bg-card/60 border-border hover:bg-card text-foreground"
+                      }`}
+                      title={evoShowValues ? "Masquer les valeurs sur le graphe" : "Afficher les valeurs sur le graphe"}
+                    >
+                      {evoShowValues ? <Eye className="h-3.5 w-3.5" /> : <EyeOff className="h-3.5 w-3.5" />}
+                      {evoShowValues ? t("stats.valuesOn", "Valeurs") : t("stats.valuesOff", "Valeurs")}
                     </button>
                   </div>
                   {/* Sélecteur de période */}
@@ -946,7 +960,7 @@ function StatsPage() {
 
               <div className="h-72">
                 <ResponsiveContainer width="100%" height="100%">
-                  <AreaChart data={filteredEvolution} margin={{ left: 0, right: 8, top: 8, bottom: 8 }}>
+                  <AreaChart data={filteredEvolution} margin={{ left: 0, right: 8, top: evoShowValues ? 24 : 8, bottom: 8 }}>
                     <defs>
                       <linearGradient id="evoCreated" x1="0" y1="0" x2="0" y2="1">
                         <stop offset="0%" stopColor="#56CCF2" stopOpacity={0.5} />
@@ -976,7 +990,16 @@ function StatsPage() {
                         stroke="#56CCF2"
                         strokeWidth={2}
                         fill="url(#evoCreated)"
-                      />
+                      >
+                        {evoShowValues && (
+                          <LabelList
+                            dataKey="cumCreated"
+                            position="top"
+                            formatter={(v: number) => (v > 0 ? String(v) : "")}
+                            style={{ fill: "#56CCF2", fontSize: 10, fontWeight: 600 }}
+                          />
+                        )}
+                      </Area>
                     )}
                     {(evoStatus === "all" || evoStatus === "done") && (
                       <Area
@@ -986,7 +1009,16 @@ function StatsPage() {
                         stroke="#9B51E0"
                         strokeWidth={2}
                         fill="url(#evoDone)"
-                      />
+                      >
+                        {evoShowValues && (
+                          <LabelList
+                            dataKey="cumDone"
+                            position="top"
+                            formatter={(v: number) => (v > 0 ? String(v) : "")}
+                            style={{ fill: "#9B51E0", fontSize: 10, fontWeight: 600 }}
+                          />
+                        )}
+                      </Area>
                     )}
                   </AreaChart>
                 </ResponsiveContainer>
@@ -999,7 +1031,7 @@ function StatsPage() {
                   </h3>
                   <div className="h-56">
                     <ResponsiveContainer width="100%" height="100%">
-                      <AreaChart data={filteredEvolution} margin={{ left: 0, right: 8, top: 8, bottom: 8 }}>
+                      <AreaChart data={filteredEvolution} margin={{ left: 0, right: 8, top: evoShowValues ? 24 : 8, bottom: 8 }}>
                         <defs>
                           <linearGradient id="evoPct" x1="0" y1="0" x2="0" y2="1">
                             <stop offset="0%" stopColor="hsl(var(--primary))" stopOpacity={0.6} />
@@ -1028,7 +1060,16 @@ function StatsPage() {
                           stroke="hsl(var(--primary))"
                           strokeWidth={2}
                           fill="url(#evoPct)"
-                        />
+                        >
+                          {evoShowValues && (
+                            <LabelList
+                              dataKey="pct"
+                              position="top"
+                              formatter={(v: number) => `${v}%`}
+                              style={{ fill: "hsl(var(--primary))", fontSize: 10, fontWeight: 600 }}
+                            />
+                          )}
+                        </Area>
                       </AreaChart>
                     </ResponsiveContainer>
                   </div>
