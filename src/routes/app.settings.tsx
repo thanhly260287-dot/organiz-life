@@ -33,6 +33,8 @@ function Settings() {
   const toggleTotal = useStore((s) => s.toggleCategoryTotal);
   const resetAllData = useStore((s) => s.resetAllData);
   const [langQuery, setLangQuery] = useState("");
+  const [resetOpen, setResetOpen] = useState(false);
+  const [resetConfirmOpen, setResetConfirmOpen] = useState(false);
 
 
   const filteredLangs = useMemo(() => {
