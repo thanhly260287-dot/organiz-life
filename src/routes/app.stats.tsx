@@ -199,7 +199,6 @@ function StatsPage() {
       cumDone: evoStatus === "done" ? d.cumDone : 0,
       created: evoStatus === "created" ? d.created : 0,
       pct: 0,
-      pct: evoStatus === "all" ? d.pct : 0,
     }));
   }, [evolution, evoStatus]);
 
