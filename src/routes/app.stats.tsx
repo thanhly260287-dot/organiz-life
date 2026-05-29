@@ -201,7 +201,6 @@ function StatsPage() {
       pct: evoStatus === "all" ? d.pct : 0,
     }));
   }, [evolution, evoStatus]);
-  }, [taskDatesByCategory, evoCats, evoDays]);
 
 
 
