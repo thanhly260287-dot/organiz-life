@@ -305,11 +305,12 @@ export function TaskList({
     </div>
   );
 }
+  amountSign: 1 | -1;
+  lockSign: boolean;
+  disableAnim?: boolean;
+  onToggle: () => void;
+  onRemove: () => void;
 
-function SortableTaskRow({
-  task: t,
-  index,
-  categoryId,
   subId,
   accent,
   showPriority,
