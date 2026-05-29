@@ -136,9 +136,10 @@ export function TaskList({
       )}
       <DndContext sensors={sensors} collisionDetection={closestCenter} onDragEnd={onDragEnd}>
         <SortableContext items={tasks.map((t) => t.id)} strategy={verticalListSortingStrategy}>
-          <AnimatePresence initial={false}>
-            {tasks.map((t, i) => (
-            <SortableTaskRow
+          {tasks.length > 40 ? (
+            // Mode performance : pas d'AnimatePresence/layout au-delà de 40 tâches
+            tasks.map((t, i) => (
+              <SortableTaskRow
                 key={t.id}
                 task={t}
                 index={i}
@@ -150,13 +151,35 @@ export function TaskList({
                 enableAmount={enableAmount}
                 amountSign={amountSign}
                 lockSign={lockSign}
+                disableAnim
                 onToggle={() => toggleTask(categoryId, t.id, subId)}
                 onRemove={() => removeTask(categoryId, t.id, subId)}
               />
-            ))}
-          </AnimatePresence>
+            ))
+          ) : (
+            <AnimatePresence initial={false}>
+              {tasks.map((t, i) => (
+                <SortableTaskRow
+                  key={t.id}
+                  task={t}
+                  index={i}
+                  categoryId={categoryId}
+                  subId={subId}
+                  accent={accent}
+                  showPriority={showPriority}
+                  enableDateTime={enableDateTime}
+                  enableAmount={enableAmount}
+                  amountSign={amountSign}
+                  lockSign={lockSign}
+                  onToggle={() => toggleTask(categoryId, t.id, subId)}
+                  onRemove={() => removeTask(categoryId, t.id, subId)}
+                />
+              ))}
+            </AnimatePresence>
+          )}
         </SortableContext>
       </DndContext>
+
 
 
 
