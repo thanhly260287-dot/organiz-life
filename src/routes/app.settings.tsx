@@ -1,7 +1,7 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useStore } from "@/lib/store";
 import { motion } from "framer-motion";
-import { Moon, Sun, Hash, Globe, Search, Check, ArrowLeft, Wallet, AlertTriangle } from "lucide-react";
+import { Moon, Sun, Hash, Globe, Search, Check, ArrowLeft, Wallet, AlertTriangle, Smartphone } from "lucide-react";
 
 import { useTranslation } from "react-i18next";
 import { useMemo, useState } from "react";
@@ -208,6 +208,22 @@ function Settings() {
         </button>
 
       </section>
+
+      <section className="glass rounded-2xl shadow-glass p-6 space-y-4">
+        <h2 className="font-display font-semibold flex items-center gap-2">
+          <Smartphone className="h-4 w-4" /> Prévisualisation app native
+        </h2>
+        <p className="text-xs text-muted-foreground">
+          Vérifie le rendu de l'app sur iOS et Android avant la publication sur l'App Store et Google Play.
+        </p>
+        <Link
+          to="/app/preview"
+          className="w-full inline-flex items-center justify-center gap-2 rounded-xl bg-gradient-brand text-white px-4 py-2.5 text-sm font-medium hover:opacity-90 transition-opacity"
+        >
+          <Smartphone className="h-4 w-4" /> Ouvrir l'aperçu iOS / Android
+        </Link>
+      </section>
+
       <section className="rounded-2xl border border-destructive/30 bg-destructive/5 p-6 space-y-4">
         <h2 className="font-display font-semibold flex items-center gap-2 text-destructive">
           <AlertTriangle className="h-4 w-4" />
