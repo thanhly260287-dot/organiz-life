@@ -465,8 +465,12 @@ export const getCategoryFinanceTotal = (c: Category): number | null => {
   const total = all.reduce((sum, t) => {
     if (t.amount == null) return sum;
     any = true;
-    const sign: number =
-      c.id === "credits" ? (t.done ? 1 : -1) : ((t.amountSign ?? defaultSign) as number);
+    // Créances: once "tracée" (done), the amount is settled and removed
+    // from the negative créance total (contribution = 0).
+    if (c.id === "credits") {
+      return sum + (t.done ? 0 : -t.amount);
+    }
+    const sign = (t.amountSign ?? defaultSign) as number;
     return sum + t.amount * sign;
   }, 0);
   return any ? total : null;
