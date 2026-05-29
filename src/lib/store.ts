@@ -183,8 +183,6 @@ export const useStore = create<AppState>()(
           showCategoryTotal: true,
           taskPriorityCategories: [],
         }),
-          }),
-        })),
       toggleTask: (categoryId, taskId, subId) =>
         set((s) => ({
           categories: s.categories.map((c) => {
