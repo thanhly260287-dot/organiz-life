@@ -28,6 +28,76 @@ function StatsPage() {
     [allCategories]
   );
   const [view, setView] = useState<View>("overview");
+
+  const exportEvolutionCSV = () => {
+    const showCreated = evoStatus === "all" || evoStatus === "created";
+    const showDone = evoStatus === "all" || evoStatus === "done";
+    const showPct = evoStatus === "all";
+    const headers = ["Date"];
+    if (showCreated) headers.push("Créées", "Total créées");
+    if (showDone) headers.push("Terminées", "Total terminées");
+    if (showPct) headers.push("Taux %");
+    const rows = filteredEvolution.map((d) => {
+      const r: (string | number)[] = [d.label];
+      if (showCreated) r.push(d.created, d.cumCreated);
+      if (showDone) r.push(d.done, d.cumDone);
+      if (showPct) r.push(d.pct);
+      return r;
+    });
+    const csv = [headers, ...rows]
+      .map((r) => r.map((v) => `"${String(v).replace(/"/g, '""')}"`).join(","))
+      .join("\n");
+    const blob = new Blob(["\uFEFF" + csv], { type: "text/csv;charset=utf-8;" });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = `evolution-${evoDays}j-${evoStatus}.csv`;
+    a.click();
+    URL.revokeObjectURL(url);
+  };
+
+  const exportEvolutionPDF = () => {
+    const showCreated = evoStatus === "all" || evoStatus === "created";
+    const showDone = evoStatus === "all" || evoStatus === "done";
+    const showPct = evoStatus === "all";
+    const headers: string[] = ["Date"];
+    if (showCreated) headers.push("Créées", "Total créées");
+    if (showDone) headers.push("Terminées", "Total terminées");
+    if (showPct) headers.push("Taux %");
+    const rowsHtml = filteredEvolution
+      .map((d) => {
+        const cells: (string | number)[] = [d.label];
+        if (showCreated) cells.push(d.created, d.cumCreated);
+        if (showDone) cells.push(d.done, d.cumDone);
+        if (showPct) cells.push(d.pct + "%");
+        return `<tr>${cells.map((c) => `<td>${c}</td>`).join("")}</tr>`;
+      })
+      .join("");
+    const title = `Évolution — ${evoDays} jours (${
+      evoStatus === "all" ? "toutes" : evoStatus === "created" ? "créées" : "terminées"
+    })`;
+    const html = `<!doctype html><html><head><meta charset="utf-8"><title>${title}</title>
+<style>
+  body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;padding:24px;color:#111}
+  h1{font-size:18px;margin:0 0 16px}
+  table{border-collapse:collapse;width:100%;font-size:12px}
+  th,td{border:1px solid #ddd;padding:6px 8px;text-align:right}
+  th:first-child,td:first-child{text-align:left}
+  thead{background:#f3f4f6}
+  tr:nth-child(even) td{background:#fafafa}
+  @media print{body{padding:0}}
+</style></head><body>
+<h1>${title}</h1>
+<table><thead><tr>${headers.map((h) => `<th>${h}</th>`).join("")}</tr></thead>
+<tbody>${rowsHtml}</tbody></table>
+<script>window.onload=()=>{setTimeout(()=>{window.print();},250);};</script>
+</body></html>`;
+    const w = window.open("", "_blank");
+    if (!w) return;
+    w.document.open();
+    w.document.write(html);
+    w.document.close();
+  };
   const [evoCats, setEvoCats] = useState<string[]>(["all"]);
   const evoAll = evoCats.includes("all");
   const [evoDays, setEvoDays] = useState<number>(30);
