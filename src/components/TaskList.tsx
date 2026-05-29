@@ -304,13 +304,11 @@ export function TaskList({
       )}
     </div>
   );
-}
-  amountSign: 1 | -1;
-  lockSign: boolean;
-  disableAnim?: boolean;
-  onToggle: () => void;
-  onRemove: () => void;
 
+function SortableTaskRow({
+  task: t,
+  index,
+  categoryId,
   subId,
   accent,
   showPriority,
@@ -318,6 +316,7 @@ export function TaskList({
   enableAmount,
   amountSign,
   lockSign,
+  disableAnim,
   onToggle,
   onRemove,
 }: {
@@ -331,9 +330,11 @@ export function TaskList({
   enableAmount: boolean;
   amountSign: 1 | -1;
   lockSign: boolean;
+  disableAnim?: boolean;
   onToggle: () => void;
   onRemove: () => void;
 }) {
+
   const { t: tr } = useTranslation();
   const { attributes, listeners, setNodeRef, transform, transition, isDragging } = useSortable({ id: t.id });
   const updateTask = useStore((s) => s.updateTask);
