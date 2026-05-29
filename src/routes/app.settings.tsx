@@ -21,6 +21,7 @@ function Settings() {
   const togglePriority = useStore((s) => s.toggleCategoryPriority);
   const showTotal = useStore((s) => s.showCategoryTotal);
   const toggleTotal = useStore((s) => s.toggleCategoryTotal);
+  const resetAllData = useStore((s) => s.resetAllData);
   const [langQuery, setLangQuery] = useState("");
 
 
