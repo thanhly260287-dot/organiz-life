@@ -1222,6 +1222,13 @@ function StatsPage() {
                     {evoShowTrend && (evoStatus === "all" || evoStatus === "done") && (
                       <Line type="monotone" dataKey="maDone" name={t("stats.maDone", "Tendance terminées")} stroke="#9B51E0" strokeWidth={2} strokeDasharray="6 4" dot={false} />
                     )}
+                    {evoCompare && (evoStatus === "all" || evoStatus === "created") && (
+                      <Line type="monotone" dataKey="prevCumCreated" name={t("stats.prevCreated", "Créées (préc.)")} stroke="#56CCF2" strokeOpacity={0.7} strokeWidth={1.5} strokeDasharray="2 3" dot={false} />
+                    )}
+                    {evoCompare && (evoStatus === "all" || evoStatus === "done") && (
+                      <Line type="monotone" dataKey="prevCumDone" name={t("stats.prevDone", "Terminées (préc.)")} stroke="#9B51E0" strokeOpacity={0.7} strokeWidth={1.5} strokeDasharray="2 3" dot={false} />
+                    )}
+
                   </AreaChart>
                 </ResponsiveContainer>
               </div>
