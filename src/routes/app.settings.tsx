@@ -216,7 +216,7 @@ function Settings() {
         <p className="text-xs text-muted-foreground">
           {t("settings.resetAllDesc", {
             defaultValue:
-              "Supprime toutes tes tâches, sous-catégories, vision boards et préférences. Cette action est irréversible.",
+              "Supprime définitivement toutes tes tâches, sous-catégories, catégories personnalisées, vision boards, paramètres d'affichage et préférences linguistiques. Aucune donnée ne pourra être récupérée.",
           })}
         </p>
         <button
