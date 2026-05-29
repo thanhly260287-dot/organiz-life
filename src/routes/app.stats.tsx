@@ -11,7 +11,7 @@ const fmtEUR = (n: number) =>
   n.toLocaleString("fr-FR", { style: "currency", currency: "EUR" });
 import { IconRender } from "@/components/IconRender";
 import { useCategoryName } from "@/lib/useCategoryName";
-import { PieChart, Pie, Cell, ResponsiveContainer, Tooltip, BarChart, Bar, XAxis, YAxis, CartesianGrid, AreaChart, Area, Legend, LabelList } from "recharts";
+import { PieChart, Pie, Cell, ResponsiveContainer, Tooltip, BarChart, Bar, XAxis, YAxis, CartesianGrid, AreaChart, Area, Legend, LabelList, Line } from "recharts";
 
 export const Route = createFileRoute("/app/stats")({
   component: StatsPage,
@@ -267,13 +267,26 @@ function StatsPage() {
     if (evoStatus === "all") return evolution;
     return evolution.map((d) => ({
       ...d,
-      cumCreated: evoStatus === "created" ? d.cumCreated : 0,
-      cumDone: evoStatus === "done" ? d.cumDone : 0,
-      created: evoStatus === "created" ? d.created : 0,
-      pct: 0,
-    }));
-  }, [evolution, evoStatus]);
-
+  // Données avec moyenne mobile
+  const chartData = useMemo(() => {
+    const window = evoDays <= 7 ? 3 : evoDays <= 30 ? 7 : 14;
+    return filteredEvolution.map((d, i, arr) => {
+      let sumCreated = 0, sumDone = 0, sumPct = 0, count = 0;
+      const start = Math.max(0, i - window + 1);
+      for (let j = start; j <= i; j++) {
+        sumCreated += arr[j].cumCreated;
+        sumDone += arr[j].cumDone;
+        sumPct += arr[j].pct;
+        count++;
+      }
+      return {
+        ...d,
+        maCreated: Math.round(sumCreated / count),
+        maDone: Math.round(sumDone / count),
+        maPct: Math.round(sumPct / count),
+      };
+    });
+  }, [filteredEvolution, evoDays]);
 
 
   const finance = useMemo(() => {
