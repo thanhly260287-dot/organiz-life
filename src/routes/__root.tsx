@@ -11,6 +11,7 @@ import {
 import appCss from "../styles.css?url";
 import { ThemeProvider } from "@/components/ThemeProvider";
 import { Toaster } from "@/components/ui/sonner";
+import { CookieBanner } from "@/components/CookieBanner";
 import i18n, { hydrateClientLanguage, LANG_STORAGE_KEY } from "@/lib/i18n";
 import { useEffect } from "react";
 
@@ -129,6 +130,7 @@ function RootComponent() {
     <QueryClientProvider client={queryClient}>
       <ThemeProvider>
         <Outlet />
+        <CookieBanner />
         <Toaster />
       </ThemeProvider>
     </QueryClientProvider>
