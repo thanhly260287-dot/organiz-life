@@ -55,9 +55,11 @@ export function VisionBoard({
   const pinchRef = useRef<Map<string, { dist: number; w: number; h: number; x: number; y: number; rot: number; angle: number }>>(new Map());
   const dragPointerRef = useRef<Map<string, { offsetX: number; offsetY: number }>>(new Map());
   const [selected, setSelected] = useState<string | null>(null);
+  const [resetOpen, setResetOpen] = useState(false);
   const addItem = useStore((s) => s.addVisionItem);
   const updateItem = useStore((s) => s.updateVisionItem);
   const removeItem = useStore((s) => s.removeVisionItem);
+  const clearItems = useStore((s) => s.clearVisionItems);
 
   const maxZ = items.reduce((m, i) => Math.max(m, i.zIndex ?? 0), 0);
   const minZ = items.reduce((m, i) => Math.min(m, i.zIndex ?? 0), 0);
