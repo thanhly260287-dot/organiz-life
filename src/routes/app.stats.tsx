@@ -1023,7 +1023,6 @@ function StatsPage() {
                   </AreaChart>
                 </ResponsiveContainer>
               </div>
-              </div>
 
               {evoStatus === "all" && (
                 <div>
