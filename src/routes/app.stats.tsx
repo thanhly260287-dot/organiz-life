@@ -98,12 +98,12 @@ function StatsPage() {
   body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;padding:24px;color:#111}
   h1{font-size:18px;margin:0 0 16px}
   table{border-collapse:collapse;width:100%;font-size:12px}
-  th,td{border:1px solid #ddd;padding:6px 8px;text-align:right}
-  th:first-child,td:first-child{text-align:left}
-  thead{background:#f3f4f6}
-  tr:nth-child(even) td{background:#fafafa}
-  @media print{body{padding:0}}
-</style></head><body>
+  const [evoCats, setEvoCats] = useState<string[]>(getStorageJSON("stats:evoCats", ["all"]));
+  const evoAll = evoCats.includes("all");
+  const [evoDays, setEvoDays] = useState<number>(getStorageNum("stats:evoDays", 30));
+  const [evoStatus, setEvoStatus] = useState<"all" | "created" | "done">(getStorageJSON("stats:evoStatus", "all"));
+  const [evoShowValues, setEvoShowValues] = useState(getStorageJSON("stats:evoShowValues", false));
+  const [evoShowTrend, setEvoShowTrend] = useState(getStorageJSON("stats:evoShowTrend", false));
 <h1>${title}</h1>
 <table><thead><tr>${headers.map((h) => `<th>${h}</th>`).join("")}</tr></thead>
 <tbody>${rowsHtml}</tbody></table>
