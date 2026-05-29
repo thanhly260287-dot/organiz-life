@@ -31,6 +31,7 @@ function StatsPage() {
   const [evoCats, setEvoCats] = useState<string[]>(["all"]);
   const evoAll = evoCats.includes("all");
   const [evoDays, setEvoDays] = useState<number>(30);
+  const [evoStatus, setEvoStatus] = useState<"all" | "created" | "done">("all");
   // Per-row selection in the Bilan financier: undefined = included with natural sign,
   // +1 = forced added, -1 = forced subtracted, 0 = excluded. Click cycles through.
   const [financeSel, setFinanceSel] = useState<Record<string, 1 | -1 | 0>>({});
@@ -188,6 +189,18 @@ function StatsPage() {
     }
     return days;
   }, [taskDatesByCategory, evoCats, evoDays]);
+
+  // Données filtrées selon le statut pour l'affichage
+  const filteredEvolution = useMemo(() => {
+    if (evoStatus === "all") return evolution;
+    return evolution.map((d) => ({
+      ...d,
+      cumCreated: evoStatus === "created" ? d.cumCreated : 0,
+      cumDone: evoStatus === "done" ? d.cumDone : 0,
+      created: evoStatus === "created" ? d.created : 0,
+      pct: 0,
+    }));
+  }, [evolution, evoStatus]);
 
 
 
@@ -768,6 +781,27 @@ function StatsPage() {
                       </button>
                     ))}
                   </div>
+                  {/* Filtre statut */}
+                  <div className="flex gap-1">
+                    {[
+                      { key: "all", label: t("stats.filterAll", "Toutes") },
+                      { key: "created", label: t("stats.filterCreated", "Créées") },
+                      { key: "done", label: t("stats.filterDone", "Terminées") },
+                    ].map((opt) => (
+                      <button
+                        key={opt.key}
+                        type="button"
+                        onClick={() => setEvoStatus(opt.key as "all" | "created" | "done")}
+                        className={`px-2.5 py-1 text-xs font-medium rounded-lg transition-all border ${
+                          evoStatus === opt.key
+                            ? "bg-gradient-brand text-white border-transparent shadow-sm"
+                            : "bg-card/60 border-border hover:bg-card text-foreground"
+                        }`}
+                      >
+                        {opt.label}
+                      </button>
+                    ))}
+                  </div>
                   {/* Filtre catégories */}
                   <div className="flex flex-wrap gap-2">
                     <button
@@ -817,7 +851,7 @@ function StatsPage() {
 
               <div className="h-72">
                 <ResponsiveContainer width="100%" height="100%">
-                  <AreaChart data={evolution} margin={{ left: 0, right: 8, top: 8, bottom: 8 }}>
+                  <AreaChart data={filteredEvolution} margin={{ left: 0, right: 8, top: 8, bottom: 8 }}>
                     <defs>
                       <linearGradient id="evoCreated" x1="0" y1="0" x2="0" y2="1">
                         <stop offset="0%" stopColor="#56CCF2" stopOpacity={0.5} />
@@ -839,66 +873,72 @@ function StatsPage() {
                       }}
                     />
                     <Legend wrapperStyle={{ fontSize: 12 }} />
-                    <Area
-                      type="monotone"
-                      dataKey="cumCreated"
-                      name={t("stats.cumCreated", "Total créées")}
-                      stroke="#56CCF2"
-                      strokeWidth={2}
-                      fill="url(#evoCreated)"
-                    />
-                    <Area
-                      type="monotone"
-                      dataKey="cumDone"
-                      name={t("stats.cumDone", "Total terminées")}
-                      stroke="#9B51E0"
-                      strokeWidth={2}
-                      fill="url(#evoDone)"
-                    />
+                    {(evoStatus === "all" || evoStatus === "created") && (
+                      <Area
+                        type="monotone"
+                        dataKey="cumCreated"
+                        name={t("stats.cumCreated", "Total créées")}
+                        stroke="#56CCF2"
+                        strokeWidth={2}
+                        fill="url(#evoCreated)"
+                      />
+                    )}
+                    {(evoStatus === "all" || evoStatus === "done") && (
+                      <Area
+                        type="monotone"
+                        dataKey="cumDone"
+                        name={t("stats.cumDone", "Total terminées")}
+                        stroke="#9B51E0"
+                        strokeWidth={2}
+                        fill="url(#evoDone)"
+                      />
+                    )}
                   </AreaChart>
                 </ResponsiveContainer>
               </div>
 
-              <div>
-                <h3 className="text-sm font-semibold mb-2">
-                  {t("stats.evolutionPct", "Taux de complétion (%)")}
-                </h3>
-                <div className="h-56">
-                  <ResponsiveContainer width="100%" height="100%">
-                    <AreaChart data={evolution} margin={{ left: 0, right: 8, top: 8, bottom: 8 }}>
-                      <defs>
-                        <linearGradient id="evoPct" x1="0" y1="0" x2="0" y2="1">
-                          <stop offset="0%" stopColor="hsl(var(--primary))" stopOpacity={0.6} />
-                          <stop offset="100%" stopColor="hsl(var(--primary))" stopOpacity={0} />
-                        </linearGradient>
-                      </defs>
-                      <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--border))" />
-                      <XAxis dataKey="label" stroke="hsl(var(--muted-foreground))" fontSize={11} />
-                      <YAxis
-                        stroke="hsl(var(--muted-foreground))"
-                        fontSize={11}
-                        domain={[0, 100]}
-                        tickFormatter={(v) => `${v}%`}
-                      />
-                      <Tooltip
-                        contentStyle={{
-                          background: "hsl(var(--card))",
-                          border: "1px solid hsl(var(--border))",
-                          borderRadius: 12,
-                        }}
-                        formatter={(v: any) => [`${v}%`, t("stats.lifeProgress")]}
-                      />
-                      <Area
-                        type="monotone"
-                        dataKey="pct"
-                        stroke="hsl(var(--primary))"
-                        strokeWidth={2}
-                        fill="url(#evoPct)"
-                      />
-                    </AreaChart>
-                  </ResponsiveContainer>
+              {evoStatus === "all" && (
+                <div>
+                  <h3 className="text-sm font-semibold mb-2">
+                    {t("stats.evolutionPct", "Taux de complétion (%)")}
+                  </h3>
+                  <div className="h-56">
+                    <ResponsiveContainer width="100%" height="100%">
+                      <AreaChart data={filteredEvolution} margin={{ left: 0, right: 8, top: 8, bottom: 8 }}>
+                        <defs>
+                          <linearGradient id="evoPct" x1="0" y1="0" x2="0" y2="1">
+                            <stop offset="0%" stopColor="hsl(var(--primary))" stopOpacity={0.6} />
+                            <stop offset="100%" stopColor="hsl(var(--primary))" stopOpacity={0} />
+                          </linearGradient>
+                        </defs>
+                        <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--border))" />
+                        <XAxis dataKey="label" stroke="hsl(var(--muted-foreground))" fontSize={11} />
+                        <YAxis
+                          stroke="hsl(var(--muted-foreground))"
+                          fontSize={11}
+                          domain={[0, 100]}
+                          tickFormatter={(v) => `${v}%`}
+                        />
+                        <Tooltip
+                          contentStyle={{
+                            background: "hsl(var(--card))",
+                            border: "1px solid hsl(var(--border))",
+                            borderRadius: 12,
+                          }}
+                          formatter={(v: any) => [`${v}%`, t("stats.lifeProgress")]}
+                        />
+                        <Area
+                          type="monotone"
+                          dataKey="pct"
+                          stroke="hsl(var(--primary))"
+                          strokeWidth={2}
+                          fill="url(#evoPct)"
+                        />
+                      </AreaChart>
+                    </ResponsiveContainer>
+                  </div>
                 </div>
-              </div>
+              )}
 
               {/* Tableau récapitulatif */}
               <div className="glass rounded-2xl shadow-glass overflow-hidden">
@@ -914,16 +954,26 @@ function StatsPage() {
                         <th className="px-3 py-2 text-left font-medium sticky left-0 bg-card/50 backdrop-blur-sm z-10">
                           {t("stats.date", "Date")}
                         </th>
-                        <th className="px-3 py-2 text-right font-medium">{t("stats.created", "Créées")}</th>
-                        <th className="px-3 py-2 text-right font-medium">{t("stats.done", "Terminées")}</th>
-                        <th className="px-3 py-2 text-right font-medium">{t("stats.cumCreated", "Total créées")}</th>
-                        <th className="px-3 py-2 text-right font-medium">{t("stats.cumDone", "Total terminées")}</th>
-                        <th className="px-3 py-2 text-right font-medium">{t("stats.evolutionPctShort", "Taux %")}</th>
+                        {(evoStatus === "all" || evoStatus === "created") && (
+                          <th className="px-3 py-2 text-right font-medium">{t("stats.created", "Créées")}</th>
+                        )}
+                        {(evoStatus === "all" || evoStatus === "done") && (
+                          <th className="px-3 py-2 text-right font-medium">{t("stats.done", "Terminées")}</th>
+                        )}
+                        {(evoStatus === "all" || evoStatus === "created") && (
+                          <th className="px-3 py-2 text-right font-medium">{t("stats.cumCreated", "Total créées")}</th>
+                        )}
+                        {(evoStatus === "all" || evoStatus === "done") && (
+                          <th className="px-3 py-2 text-right font-medium">{t("stats.cumDone", "Total terminées")}</th>
+                        )}
+                        {evoStatus === "all" && (
+                          <th className="px-3 py-2 text-right font-medium">{t("stats.evolutionPctShort", "Taux %")}</th>
+                        )}
                       </tr>
                     </thead>
                     <tbody>
-                      {evolution.map((d, i) => {
-                        const isLast = i === evolution.length - 1;
+                      {filteredEvolution.map((d, i) => {
+                        const isLast = i === filteredEvolution.length - 1;
                         return (
                           <tr
                             key={d.date}
@@ -934,41 +984,51 @@ function StatsPage() {
                             <td className="px-3 py-2 font-medium sticky left-0 bg-background/80 backdrop-blur-sm z-10">
                               {d.label}
                             </td>
-                            <td className="px-3 py-2 text-right tabular-nums">
-                              {d.created > 0 ? (
-                                <span className="text-[#56CCF2] font-medium">+{d.created}</span>
-                              ) : (
-                                <span className="text-muted-foreground">—</span>
-                              )}
-                            </td>
-                            <td className="px-3 py-2 text-right tabular-nums">
-                              {d.done > 0 ? (
-                                <span className="text-[#9B51E0] font-medium">+{d.done}</span>
-                              ) : (
-                                <span className="text-muted-foreground">—</span>
-                              )}
-                            </td>
-                            <td className="px-3 py-2 text-right tabular-nums text-muted-foreground">
-                              {d.cumCreated}
-                            </td>
-                            <td className="px-3 py-2 text-right tabular-nums text-muted-foreground">
-                              {d.cumDone}
-                            </td>
-                            <td className="px-3 py-2 text-right tabular-nums">
-                              <span
-                                className={`inline-flex items-center justify-end font-medium ${
-                                  d.pct >= 80
-                                    ? "text-green-500"
-                                    : d.pct >= 50
-                                      ? "text-yellow-500"
-                                      : d.pct > 0
-                                        ? "text-orange-400"
-                                        : "text-muted-foreground"
-                                }`}
-                              >
-                                {d.pct}%
-                              </span>
-                            </td>
+                            {(evoStatus === "all" || evoStatus === "created") && (
+                              <td className="px-3 py-2 text-right tabular-nums">
+                                {d.created > 0 ? (
+                                  <span className="text-[#56CCF2] font-medium">+{d.created}</span>
+                                ) : (
+                                  <span className="text-muted-foreground">—</span>
+                                )}
+                              </td>
+                            )}
+                            {(evoStatus === "all" || evoStatus === "done") && (
+                              <td className="px-3 py-2 text-right tabular-nums">
+                                {d.done > 0 ? (
+                                  <span className="text-[#9B51E0] font-medium">+{d.done}</span>
+                                ) : (
+                                  <span className="text-muted-foreground">—</span>
+                                )}
+                              </td>
+                            )}
+                            {(evoStatus === "all" || evoStatus === "created") && (
+                              <td className="px-3 py-2 text-right tabular-nums text-muted-foreground">
+                                {d.cumCreated}
+                              </td>
+                            )}
+                            {(evoStatus === "all" || evoStatus === "done") && (
+                              <td className="px-3 py-2 text-right tabular-nums text-muted-foreground">
+                                {d.cumDone}
+                              </td>
+                            )}
+                            {evoStatus === "all" && (
+                              <td className="px-3 py-2 text-right tabular-nums">
+                                <span
+                                  className={`inline-flex items-center justify-end font-medium ${
+                                    d.pct >= 80
+                                      ? "text-green-500"
+                                      : d.pct >= 50
+                                        ? "text-yellow-500"
+                                        : d.pct > 0
+                                          ? "text-orange-400"
+                                          : "text-muted-foreground"
+                                  }`}
+                                >
+                                  {d.pct}%
+                                </span>
+                              </td>
+                            )}
                           </tr>
                         );
                       })}
