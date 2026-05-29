@@ -781,6 +781,29 @@ function StatsPage() {
                       </button>
                     ))}
                   </div>
+                  {/* Filtre statut */}
+                  <div className="flex gap-1">
+                    {[
+                      { key: "all", label: t("stats.filterAll", "Toutes") },
+                      { key: "created", label: t("stats.filterCreated", "Créées") },
+                      { key: "done", label: t("stats.filterDone", "Terminées") },
+                    ].map((opt) => (
+                      <button
+                        key={opt.key}
+                        type="button"
+                        onClick={() => setEvoStatus(opt.key as "all" | "created" | "done")}
+                        className={`px-2.5 py-1 text-xs font-medium rounded-lg transition-all border ${
+                          evoStatus === opt.key
+                            ? "bg-gradient-brand text-white border-transparent shadow-sm"
+                            : "bg-card/60 border-border hover:bg-card text-foreground"
+                        }`}
+                      >
+                        {opt.label}
+                      </button>
+                    ))}
+                  </div>
+                  {/* Filtre catégories */}
+                  <div className="flex flex-wrap gap-2">
                   {/* Filtre catégories */}
                   <div className="flex flex-wrap gap-2">
                     <button
