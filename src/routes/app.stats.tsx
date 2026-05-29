@@ -1061,8 +1061,21 @@ function StatsPage() {
                           : "bg-card/60 border-border hover:bg-card text-foreground"
                       }`}
                       title={evoCompare ? "Masquer la période précédente" : "Comparer avec la période précédente"}
-                    >
-                      <BarChart3 className="h-3.5 w-3.5" />
+                    </button>
+                    {evoCompare && (
+                      <button
+                        type="button"
+                        onClick={() => setEvoNegBad((v) => !v)}
+                        className={`inline-flex items-center gap-1.5 px-2.5 py-1 text-xs font-medium rounded-lg border transition-all bg-card/60 border-border hover:bg-card text-foreground`}
+                        title={evoNegBad ? "Actuellement : – en rouge (baisse = négatif). Cliquer pour inverser." : "Actuellement : – en vert (baisse = positif). Cliquer pour inverser."}
+                      >
+                        <span className={evoNegBad ? "text-red-500" : "text-green-500"}>−</span>
+                        <span>=</span>
+                        <span className={evoNegBad ? "text-red-500" : "text-green-500"}>{evoNegBad ? "mauvais" : "bon"}</span>
+                      </button>
+                    )}
+                  </div>
+
                       {t("stats.compare", "Comparer")}
                     </button>
                   </div>
@@ -1157,9 +1170,10 @@ function StatsPage() {
                     <div className="inline-flex items-center gap-2 rounded-xl border border-border bg-card/60 px-3 py-2">
                       <span className="h-2 w-2 rounded-full" style={{ background: "#56CCF2" }} />
                       <span className="text-muted-foreground">{t("stats.created", "Créées")}</span>
-                      <span className="font-semibold tabular-nums">{compareTotals.curCreated}</span>
-                      <span className="text-muted-foreground">vs</span>
-                      <span className="tabular-nums">{compareTotals.prevCreated}</span>
+                      <span className={`font-medium tabular-nums ${compareTotals.deltaCreated === 0 ? "text-muted-foreground" : (compareTotals.deltaCreated > 0) === evoNegBad ? "text-green-500" : "text-red-500"}`}>
+                        {compareTotals.deltaCreated >= 0 ? "+" : ""}{compareTotals.deltaCreated} ({compareTotals.pctCreated >= 0 ? "+" : ""}{compareTotals.pctCreated}%)
+                      </span>
+
                       <span className={`font-medium tabular-nums ${compareTotals.deltaCreated > 0 ? "text-green-500" : compareTotals.deltaCreated < 0 ? "text-red-500" : "text-muted-foreground"}`}>
                         {compareTotals.deltaCreated >= 0 ? "+" : ""}{compareTotals.deltaCreated} ({compareTotals.pctCreated >= 0 ? "+" : ""}{compareTotals.pctCreated}%)
                       </span>
@@ -1169,9 +1183,10 @@ function StatsPage() {
                     <div className="inline-flex items-center gap-2 rounded-xl border border-border bg-card/60 px-3 py-2">
                       <span className="h-2 w-2 rounded-full" style={{ background: "#9B51E0" }} />
                       <span className="text-muted-foreground">{t("stats.done", "Terminées")}</span>
-                      <span className="font-semibold tabular-nums">{compareTotals.curDone}</span>
-                      <span className="text-muted-foreground">vs</span>
-                      <span className="tabular-nums">{compareTotals.prevDone}</span>
+                      <span className={`font-medium tabular-nums ${compareTotals.deltaDone === 0 ? "text-muted-foreground" : (compareTotals.deltaDone > 0) === evoNegBad ? "text-green-500" : "text-red-500"}`}>
+                        {compareTotals.deltaDone >= 0 ? "+" : ""}{compareTotals.deltaDone} ({compareTotals.pctDone >= 0 ? "+" : ""}{compareTotals.pctDone}%)
+                      </span>
+
                       <span className={`font-medium tabular-nums ${compareTotals.deltaDone > 0 ? "text-green-500" : compareTotals.deltaDone < 0 ? "text-red-500" : "text-muted-foreground"}`}>
                         {compareTotals.deltaDone >= 0 ? "+" : ""}{compareTotals.deltaDone} ({compareTotals.pctDone >= 0 ? "+" : ""}{compareTotals.pctDone}%)
                       </span>
