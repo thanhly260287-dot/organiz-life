@@ -40,6 +40,7 @@ interface AppState {
   addVisionItem: (categoryId: string, item: Omit<VisionItem, "id">, subId?: string) => void;
   updateVisionItem: (categoryId: string, itemId: string, patch: Partial<VisionItem>, subId?: string) => void;
   removeVisionItem: (categoryId: string, itemId: string, subId?: string) => void;
+  clearVisionItems: (categoryId: string, subId?: string) => void;
 }
 
 
@@ -276,6 +277,21 @@ export const useStore = create<AppState>()(
               };
             }
             return { ...c, vision: c.vision.filter((v) => v.id !== itemId) };
+          }),
+        })),
+      clearVisionItems: (categoryId, subId) =>
+        set((s) => ({
+          categories: s.categories.map((c) => {
+            if (c.id !== categoryId) return c;
+            if (subId) {
+              return {
+                ...c,
+                subcategories: c.subcategories.map((sc) =>
+                  sc.id === subId ? { ...sc, vision: [] } : sc
+                ),
+              };
+            }
+            return { ...c, vision: [] };
           }),
         })),
     }),

@@ -14,10 +14,21 @@ import {
   AlignRight,
   ArrowUp,
   ArrowDown,
+  Eraser,
 } from "lucide-react";
 import { useStore } from "@/lib/store";
 import type { VisionItem } from "@/lib/categories";
 import { toPng } from "html-to-image";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from "@/components/ui/alert-dialog";
 
 const FONT_FAMILIES = [
   { label: "Sans", value: "ui-sans-serif, system-ui, sans-serif" },
@@ -44,9 +55,11 @@ export function VisionBoard({
   const pinchRef = useRef<Map<string, { dist: number; w: number; h: number; x: number; y: number; rot: number; angle: number }>>(new Map());
   const dragPointerRef = useRef<Map<string, { offsetX: number; offsetY: number }>>(new Map());
   const [selected, setSelected] = useState<string | null>(null);
+  const [resetOpen, setResetOpen] = useState(false);
   const addItem = useStore((s) => s.addVisionItem);
   const updateItem = useStore((s) => s.updateVisionItem);
   const removeItem = useStore((s) => s.removeVisionItem);
+  const clearItems = useStore((s) => s.clearVisionItems);
 
   const maxZ = items.reduce((m, i) => Math.max(m, i.zIndex ?? 0), 0);
   const minZ = items.reduce((m, i) => Math.min(m, i.zIndex ?? 0), 0);
@@ -229,6 +242,14 @@ export function VisionBoard({
           >
             <Download className="h-3.5 w-3.5" /> Exporter
           </button>
+          {items.length > 0 && (
+            <button
+              onClick={() => setResetOpen(true)}
+              className="inline-flex items-center gap-1.5 text-xs px-3 py-2 rounded-lg glass shadow-glass hover:bg-amber-500/20 text-amber-500 transition-colors"
+            >
+              <Eraser className="h-3.5 w-3.5" /> Réinitialiser
+            </button>
+          )}
         </div>
       </div>
 
@@ -529,6 +550,33 @@ export function VisionBoard({
           </motion.div>
         ))}
       </div>
+
+      {/* Dialog: reset vision board */}
+      <AlertDialog open={resetOpen} onOpenChange={setResetOpen}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Réinitialiser le Vision Board</AlertDialogTitle>
+            <AlertDialogDescription>
+              {items.length === 1
+                ? "1 élément va être supprimé du Vision Board. Cette action est irréversible et l'élément ne pourra pas être récupéré."
+                : `${items.length} éléments vont être supprimés du Vision Board. Cette action est irréversible et aucun élément ne pourra être récupéré.`}
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel onClick={() => setResetOpen(false)}>Annuler</AlertDialogCancel>
+            <AlertDialogAction
+              onClick={() => {
+                clearItems(categoryId, subId);
+                setSelected(null);
+                setResetOpen(false);
+              }}
+              className="bg-amber-500 hover:bg-amber-600 text-white"
+            >
+              Confirmer
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
     </div>
   );
 }
