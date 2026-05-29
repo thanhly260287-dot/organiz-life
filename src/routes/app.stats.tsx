@@ -122,6 +122,7 @@ function StatsPage() {
   const [evoStatus, setEvoStatus] = useState<"all" | "created" | "done">(getStorageJSON("stats:evoStatus", "all"));
   const [evoShowValues, setEvoShowValues] = useState(getStorageJSON("stats:evoShowValues", false));
   const [evoShowTrend, setEvoShowTrend] = useState(getStorageJSON("stats:evoShowTrend", false));
+  const [evoCompare, setEvoCompare] = useState<boolean>(getStorageJSON("stats:evoCompare", false));
   // Per-row selection in the Bilan financier: undefined = included with natural sign,
   // +1 = forced added, -1 = forced subtracted, 0 = excluded. Click cycles through.
   const [financeSel, setFinanceSel] = useState<Record<string, 1 | -1 | 0>>({});
@@ -131,6 +132,8 @@ function StatsPage() {
   useEffect(() => { localStorage.setItem("stats:evoStatus", JSON.stringify(evoStatus)); }, [evoStatus]);
   useEffect(() => { localStorage.setItem("stats:evoShowValues", JSON.stringify(evoShowValues)); }, [evoShowValues]);
   useEffect(() => { localStorage.setItem("stats:evoShowTrend", JSON.stringify(evoShowTrend)); }, [evoShowTrend]);
+  useEffect(() => { localStorage.setItem("stats:evoCompare", JSON.stringify(evoCompare)); }, [evoCompare]);
+
 
 
   const stats = useMemo(() => {
@@ -284,9 +287,10 @@ function StatsPage() {
       d.pct = cc === 0 ? 0 : Math.round((cd / cc) * 100);
     }
     return days;
-  }, [taskDatesByCategory, evoCats, evoDays]);
+  }, [taskDatesByCategory, evoCats, evoDays, evoAll]);
 
   // Données filtrées selon le statut pour l'affichage
+
   const filteredEvolution = useMemo(() => {
     if (evoStatus === "all") return evolution;
     return evolution.map((d) => ({
@@ -298,7 +302,86 @@ function StatsPage() {
     }));
   }, [evolution, evoStatus]);
 
-  // Données avec moyenne mobile
+  // Période précédente (même longueur, juste avant la période en cours)
+  const previousEvolution = useMemo(() => {
+    if (!evoCompare) return null;
+    const DAYS = evoDays;
+    const today = new Date();
+    const days: { label: string; date: string; created: number; done: number; cumCreated: number; cumDone: number; pct: number }[] = new Array(DAYS);
+    for (let i = 0; i < DAYS; i++) {
+      const d = new Date(today);
+      d.setDate(today.getDate() - (2 * DAYS - 1 - i));
+      days[i] = {
+        label: d.toLocaleDateString(undefined, { day: "2-digit", month: "2-digit" }),
+        date: d.toISOString().slice(0, 10),
+        created: 0,
+        done: 0,
+        cumCreated: 0,
+        cumDone: 0,
+        pct: 0,
+      };
+    }
+    const firstDay = days[0].date;
+    const lastDay = days[DAYS - 1].date;
+    const indexByDate: Record<string, number> = {};
+    for (let i = 0; i < DAYS; i++) indexByDate[days[i].date] = i;
+    let baseCreated = 0;
+    let baseDone = 0;
+    const ids = evoAll ? null : new Set(evoCats);
+    taskDatesByCategory.forEach((buckets, catId) => {
+      if (ids !== null && !ids.has(catId)) return;
+      const { created, done } = buckets;
+      for (let i = 0; i < created.length; i++) {
+        const k = created[i];
+        if (k < firstDay) baseCreated++;
+        else if (k <= lastDay) {
+          const idx = indexByDate[k];
+          if (idx !== undefined) days[idx].created++;
+        }
+      }
+      for (let i = 0; i < done.length; i++) {
+        const k = done[i];
+        if (k === null) { baseDone++; continue; }
+        if (k < firstDay) baseDone++;
+        else if (k <= lastDay) {
+          const idx = indexByDate[k];
+          if (idx !== undefined) days[idx].done++;
+        }
+      }
+    });
+    let cc = baseCreated;
+    let cd = baseDone;
+    for (let i = 0; i < DAYS; i++) {
+      const d = days[i];
+      cc += d.created;
+      cd += d.done;
+      d.cumCreated = cc;
+      d.cumDone = cd;
+      d.pct = cc === 0 ? 0 : Math.round((cd / cc) * 100);
+    }
+    return days;
+  }, [taskDatesByCategory, evoCats, evoDays, evoCompare, evoAll]);
+
+  // Totaux comparés (delta période)
+  const compareTotals = useMemo(() => {
+    if (!previousEvolution) return null;
+    const last = evolution[evolution.length - 1];
+    const prevLast = previousEvolution[previousEvolution.length - 1];
+    const first = evolution[0];
+    const prevFirst = previousEvolution[0];
+    const curCreated = last.cumCreated - (first.cumCreated - first.created);
+    const curDone = last.cumDone - (first.cumDone - first.done);
+    const prevCreated = prevLast.cumCreated - (prevFirst.cumCreated - prevFirst.created);
+    const prevDone = prevLast.cumDone - (prevFirst.cumDone - prevFirst.done);
+    const pctDelta = (cur: number, prev: number) =>
+      prev === 0 ? (cur > 0 ? 100 : 0) : Math.round(((cur - prev) / prev) * 100);
+    return {
+      curCreated, prevCreated, deltaCreated: curCreated - prevCreated, pctCreated: pctDelta(curCreated, prevCreated),
+      curDone, prevDone, deltaDone: curDone - prevDone, pctDone: pctDelta(curDone, prevDone),
+    };
+  }, [previousEvolution, evolution]);
+
+  // Données avec moyenne mobile + alignement période précédente
   const chartData = useMemo(() => {
     const window = evoDays <= 7 ? 3 : evoDays <= 30 ? 7 : 14;
     return filteredEvolution.map((d, i, arr) => {
@@ -310,14 +393,23 @@ function StatsPage() {
         sumPct += arr[j].pct;
         count++;
       }
+      const prev = previousEvolution ? previousEvolution[i] : null;
+      const prevVisibleCreated = prev && (evoStatus === "all" || evoStatus === "created") ? prev.cumCreated : undefined;
+      const prevVisibleDone = prev && (evoStatus === "all" || evoStatus === "done") ? prev.cumDone : undefined;
       return {
         ...d,
         maCreated: Math.round(sumCreated / count),
         maDone: Math.round(sumDone / count),
         maPct: Math.round(sumPct / count),
+        prevLabel: prev?.label,
+        prevCumCreated: prevVisibleCreated,
+        prevCumDone: prevVisibleDone,
+        prevPct: prev && evoStatus === "all" ? prev.pct : undefined,
       };
     });
-  }, [filteredEvolution, evoDays]);
+  }, [filteredEvolution, evoDays, previousEvolution, evoStatus]);
+
+
 
 
   const finance = useMemo(() => {
@@ -930,8 +1022,21 @@ function StatsPage() {
                       <TrendingUp className="h-3.5 w-3.5" />
                       {evoShowTrend ? t("stats.trendOn", "Tendance") : t("stats.trendOff", "Tendance")}
                     </button>
+                    <button
+                      type="button"
+                      onClick={() => setEvoCompare((v) => !v)}
+                      className={`inline-flex items-center gap-1.5 px-2.5 py-1 text-xs font-medium rounded-lg border transition-all ${
+                        evoCompare
+                          ? "bg-gradient-brand text-white border-transparent shadow-sm"
+                          : "bg-card/60 border-border hover:bg-card text-foreground"
+                      }`}
+                      title={evoCompare ? "Masquer la période précédente" : "Comparer avec la période précédente"}
+                    >
+                      <BarChart3 className="h-3.5 w-3.5" />
+                      {t("stats.compare", "Comparer")}
+                    </button>
                   </div>
-                  {/* Sélecteur de période */}
+
                   <div className="flex gap-1">
                     {[7, 30, 90].map((n) => (
                       <button
@@ -1016,7 +1121,40 @@ function StatsPage() {
                 </div>
               </div>
 
+              {evoCompare && compareTotals && (
+                <div className="flex flex-wrap gap-2 text-xs">
+                  {(evoStatus === "all" || evoStatus === "created") && (
+                    <div className="inline-flex items-center gap-2 rounded-xl border border-border bg-card/60 px-3 py-2">
+                      <span className="h-2 w-2 rounded-full" style={{ background: "#56CCF2" }} />
+                      <span className="text-muted-foreground">{t("stats.created", "Créées")}</span>
+                      <span className="font-semibold tabular-nums">{compareTotals.curCreated}</span>
+                      <span className="text-muted-foreground">vs</span>
+                      <span className="tabular-nums">{compareTotals.prevCreated}</span>
+                      <span className={`font-medium tabular-nums ${compareTotals.deltaCreated > 0 ? "text-green-500" : compareTotals.deltaCreated < 0 ? "text-red-500" : "text-muted-foreground"}`}>
+                        {compareTotals.deltaCreated >= 0 ? "+" : ""}{compareTotals.deltaCreated} ({compareTotals.pctCreated >= 0 ? "+" : ""}{compareTotals.pctCreated}%)
+                      </span>
+                    </div>
+                  )}
+                  {(evoStatus === "all" || evoStatus === "done") && (
+                    <div className="inline-flex items-center gap-2 rounded-xl border border-border bg-card/60 px-3 py-2">
+                      <span className="h-2 w-2 rounded-full" style={{ background: "#9B51E0" }} />
+                      <span className="text-muted-foreground">{t("stats.done", "Terminées")}</span>
+                      <span className="font-semibold tabular-nums">{compareTotals.curDone}</span>
+                      <span className="text-muted-foreground">vs</span>
+                      <span className="tabular-nums">{compareTotals.prevDone}</span>
+                      <span className={`font-medium tabular-nums ${compareTotals.deltaDone > 0 ? "text-green-500" : compareTotals.deltaDone < 0 ? "text-red-500" : "text-muted-foreground"}`}>
+                        {compareTotals.deltaDone >= 0 ? "+" : ""}{compareTotals.deltaDone} ({compareTotals.pctDone >= 0 ? "+" : ""}{compareTotals.pctDone}%)
+                      </span>
+                    </div>
+                  )}
+                  <div className="inline-flex items-center gap-1.5 rounded-xl border border-dashed border-border/60 bg-card/30 px-3 py-2 text-muted-foreground">
+                    {t("stats.compareHint", "Période précédente")} ({evoDays}j)
+                  </div>
+                </div>
+              )}
+
               <div className="h-72">
+
                 <ResponsiveContainer width="100%" height="100%">
                   <AreaChart data={chartData} margin={{ left: 0, right: 8, top: evoShowValues ? 24 : 8, bottom: 8 }}>
                     <defs>
@@ -1084,6 +1222,13 @@ function StatsPage() {
                     {evoShowTrend && (evoStatus === "all" || evoStatus === "done") && (
                       <Line type="monotone" dataKey="maDone" name={t("stats.maDone", "Tendance terminées")} stroke="#9B51E0" strokeWidth={2} strokeDasharray="6 4" dot={false} />
                     )}
+                    {evoCompare && (evoStatus === "all" || evoStatus === "created") && (
+                      <Line type="monotone" dataKey="prevCumCreated" name={t("stats.prevCreated", "Créées (préc.)")} stroke="#56CCF2" strokeOpacity={0.7} strokeWidth={1.5} strokeDasharray="2 3" dot={false} />
+                    )}
+                    {evoCompare && (evoStatus === "all" || evoStatus === "done") && (
+                      <Line type="monotone" dataKey="prevCumDone" name={t("stats.prevDone", "Terminées (préc.)")} stroke="#9B51E0" strokeOpacity={0.7} strokeWidth={1.5} strokeDasharray="2 3" dot={false} />
+                    )}
+
                   </AreaChart>
                 </ResponsiveContainer>
               </div>
@@ -1166,12 +1311,19 @@ function StatsPage() {
                         {(evoStatus === "all" || evoStatus === "created") && (
                           <th className="px-3 py-2 text-right font-medium">{t("stats.cumCreated", "Total créées")}</th>
                         )}
+                        {evoCompare && (evoStatus === "all" || evoStatus === "created") && (
+                          <th className="px-3 py-2 text-right font-medium text-muted-foreground/70">{t("stats.prevCreatedShort", "Créées (préc.)")}</th>
+                        )}
                         {(evoStatus === "all" || evoStatus === "done") && (
                           <th className="px-3 py-2 text-right font-medium">{t("stats.cumDone", "Total terminées")}</th>
+                        )}
+                        {evoCompare && (evoStatus === "all" || evoStatus === "done") && (
+                          <th className="px-3 py-2 text-right font-medium text-muted-foreground/70">{t("stats.prevDoneShort", "Terminées (préc.)")}</th>
                         )}
                         {evoStatus === "all" && (
                           <th className="px-3 py-2 text-right font-medium">{t("stats.evolutionPctShort", "Taux %")}</th>
                         )}
+
                       </tr>
                     </thead>
                     <tbody>
@@ -1210,11 +1362,22 @@ function StatsPage() {
                                 {d.cumCreated}
                               </td>
                             )}
+                            {evoCompare && (evoStatus === "all" || evoStatus === "created") && (
+                              <td className="px-3 py-2 text-right tabular-nums text-muted-foreground/60">
+                                {previousEvolution?.[i]?.cumCreated ?? "—"}
+                              </td>
+                            )}
                             {(evoStatus === "all" || evoStatus === "done") && (
                               <td className="px-3 py-2 text-right tabular-nums text-muted-foreground">
                                 {d.cumDone}
                               </td>
                             )}
+                            {evoCompare && (evoStatus === "all" || evoStatus === "done") && (
+                              <td className="px-3 py-2 text-right tabular-nums text-muted-foreground/60">
+                                {previousEvolution?.[i]?.cumDone ?? "—"}
+                              </td>
+                            )}
+
                             {evoStatus === "all" && (
                               <td className="px-3 py-2 text-right tabular-nums">
                                 <span
