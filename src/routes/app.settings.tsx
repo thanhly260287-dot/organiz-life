@@ -220,29 +220,75 @@ function Settings() {
           })}
         </p>
         <button
-          onClick={() => {
-            const msg = t("settings.resetAllConfirm", {
-              defaultValue:
-                "Tout réinitialiser ? Toutes les tâches, catégories personnalisées, vision boards et préférences seront effacées définitivement.",
-            });
-            if (!confirm(msg)) return;
-            const msg2 = t("settings.resetAllConfirm2", {
-              defaultValue: "Es-tu vraiment sûr·e ? Cette action est définitive.",
-            });
-            if (!confirm(msg2)) return;
-            resetAllData();
-            try {
-              ["stats:evoDays", "stats:evoCats", "stats:evoStatus", "stats:evoShowValues", "stats:evoShowTrend", "stats:evoCompare", "stats:evoNegBad"].forEach(
-                (k) => window.localStorage.removeItem(k)
-              );
-            } catch {}
-          }}
+          onClick={() => setResetOpen(true)}
           className="w-full inline-flex items-center justify-center gap-2 rounded-xl bg-destructive text-destructive-foreground px-4 py-2.5 text-sm font-medium hover:opacity-90 transition-opacity"
         >
           <AlertTriangle className="h-4 w-4" />
           {t("settings.resetAll", { defaultValue: "Tout réinitialiser" })}
         </button>
       </section>
+
+      {/* Reset confirmation step 1 */}
+      <AlertDialog open={resetOpen} onOpenChange={setResetOpen}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>{t("settings.resetAll", { defaultValue: "Tout réinitialiser" })}</AlertDialogTitle>
+            <AlertDialogDescription>
+              {t("settings.resetAllConfirm", {
+                defaultValue:
+                  "Tout réinitialiser ? Toutes les tâches, catégories personnalisées, vision boards et préférences seront effacées définitivement.",
+              })}
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel onClick={() => setResetOpen(false)}>
+              {t("common.cancel", { defaultValue: "Annuler" })}
+            </AlertDialogCancel>
+            <AlertDialogAction
+              onClick={() => {
+                setResetOpen(false);
+                setResetConfirmOpen(true);
+              }}
+              className="bg-destructive hover:bg-destructive/90 text-destructive-foreground"
+            >
+              {t("common.continue", { defaultValue: "Continuer" })}
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
+
+      {/* Reset confirmation step 2 */}
+      <AlertDialog open={resetConfirmOpen} onOpenChange={setResetConfirmOpen}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>{t("settings.resetAll", { defaultValue: "Tout réinitialiser" })}</AlertDialogTitle>
+            <AlertDialogDescription>
+              {t("settings.resetAllConfirm2", {
+                defaultValue: "Es-tu vraiment sûr·e ? Cette action est définitive.",
+              })}
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel onClick={() => setResetConfirmOpen(false)}>
+              {t("common.cancel", { defaultValue: "Annuler" })}
+            </AlertDialogCancel>
+            <AlertDialogAction
+              onClick={() => {
+                resetAllData();
+                setResetConfirmOpen(false);
+                try {
+                  ["stats:evoDays", "stats:evoCats", "stats:evoStatus", "stats:evoShowValues", "stats:evoShowTrend", "stats:evoCompare", "stats:evoNegBad"].forEach(
+                    (k) => window.localStorage.removeItem(k)
+                  );
+                } catch {}
+              }}
+              className="bg-destructive hover:bg-destructive/90 text-destructive-foreground"
+            >
+              {t("common.confirm", { defaultValue: "Confirmer" })}
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
 
       <p className="text-xs text-muted-foreground text-center pt-4">
         {t("settings.localStorage")}
