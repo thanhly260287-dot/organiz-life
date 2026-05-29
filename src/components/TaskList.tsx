@@ -374,12 +374,17 @@ function SortableTaskRow({
     <motion.div
       ref={setNodeRef}
       style={style}
-      layout
-      initial={{ opacity: 0, x: -10 }}
-      animate={{ opacity: 1, x: 0 }}
-      exit={{ opacity: 0, x: 10 }}
+      {...(disableAnim
+        ? {}
+        : {
+            layout: true,
+            initial: { opacity: 0, x: -10 },
+            animate: { opacity: 1, x: 0 },
+            exit: { opacity: 0, x: 10 },
+          })}
       className={`group flex items-center gap-3 rounded-xl glass shadow-glass p-3 select-none ${isDragging ? "cursor-grabbing" : ""}`}
       {...attributes}
+
       {...listeners}
     >
 
