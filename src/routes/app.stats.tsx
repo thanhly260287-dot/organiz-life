@@ -1311,12 +1311,19 @@ function StatsPage() {
                         {(evoStatus === "all" || evoStatus === "created") && (
                           <th className="px-3 py-2 text-right font-medium">{t("stats.cumCreated", "Total créées")}</th>
                         )}
+                        {evoCompare && (evoStatus === "all" || evoStatus === "created") && (
+                          <th className="px-3 py-2 text-right font-medium text-muted-foreground/70">{t("stats.prevCreatedShort", "Créées (préc.)")}</th>
+                        )}
                         {(evoStatus === "all" || evoStatus === "done") && (
                           <th className="px-3 py-2 text-right font-medium">{t("stats.cumDone", "Total terminées")}</th>
+                        )}
+                        {evoCompare && (evoStatus === "all" || evoStatus === "done") && (
+                          <th className="px-3 py-2 text-right font-medium text-muted-foreground/70">{t("stats.prevDoneShort", "Terminées (préc.)")}</th>
                         )}
                         {evoStatus === "all" && (
                           <th className="px-3 py-2 text-right font-medium">{t("stats.evolutionPctShort", "Taux %")}</th>
                         )}
+
                       </tr>
                     </thead>
                     <tbody>
