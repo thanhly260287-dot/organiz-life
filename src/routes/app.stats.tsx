@@ -286,7 +286,11 @@ function StatsPage() {
       d.cumDone = cd;
       d.pct = cc === 0 ? 0 : Math.round((cd / cc) * 100);
     }
+    return days;
+  }, [taskDatesByCategory, evoCats, evoDays, evoAll]);
+
   // Données filtrées selon le statut pour l'affichage
+
   const filteredEvolution = useMemo(() => {
     if (evoStatus === "all") return evolution;
     return evolution.map((d) => ({
