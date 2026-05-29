@@ -960,7 +960,7 @@ function StatsPage() {
 
               <div className="h-72">
                 <ResponsiveContainer width="100%" height="100%">
-                  <AreaChart data={filteredEvolution} margin={{ left: 0, right: 8, top: 8, bottom: 8 }}>
+                  <AreaChart data={filteredEvolution} margin={{ left: 0, right: 8, top: evoShowValues ? 24 : 8, bottom: 8 }}>
                     <defs>
                       <linearGradient id="evoCreated" x1="0" y1="0" x2="0" y2="1">
                         <stop offset="0%" stopColor="#56CCF2" stopOpacity={0.5} />
@@ -990,7 +990,16 @@ function StatsPage() {
                         stroke="#56CCF2"
                         strokeWidth={2}
                         fill="url(#evoCreated)"
-                      />
+                      >
+                        {evoShowValues && (
+                          <LabelList
+                            dataKey="cumCreated"
+                            position="top"
+                            formatter={(v: number) => (v > 0 ? String(v) : "")}
+                            style={{ fill: "#56CCF2", fontSize: 10, fontWeight: 600 }}
+                          />
+                        )}
+                      </Area>
                     )}
                     {(evoStatus === "all" || evoStatus === "done") && (
                       <Area
@@ -1000,10 +1009,20 @@ function StatsPage() {
                         stroke="#9B51E0"
                         strokeWidth={2}
                         fill="url(#evoDone)"
-                      />
+                      >
+                        {evoShowValues && (
+                          <LabelList
+                            dataKey="cumDone"
+                            position="top"
+                            formatter={(v: number) => (v > 0 ? String(v) : "")}
+                            style={{ fill: "#9B51E0", fontSize: 10, fontWeight: 600 }}
+                          />
+                        )}
+                      </Area>
                     )}
                   </AreaChart>
                 </ResponsiveContainer>
+              </div>
               </div>
 
               {evoStatus === "all" && (
