@@ -101,7 +101,12 @@ function StatsPage() {
   const [evoCats, setEvoCats] = useState<string[]>(["all"]);
   const evoAll = evoCats.includes("all");
   const [evoDays, setEvoDays] = useState<number>(30);
+  const [evoStatus, setEvoStatus] = useState<"all" | "created" | "done">("all");
+  const [evoShowValues, setEvoShowValues] = useState(false);
   const [evoShowTrend, setEvoShowTrend] = useState(false);
+  // Per-row selection in the Bilan financier: undefined = included with natural sign,
+  // +1 = forced added, -1 = forced subtracted, 0 = excluded. Click cycles through.
+  const [financeSel, setFinanceSel] = useState<Record<string, 1 | -1 | 0>>({});
 
 
   const stats = useMemo(() => {
