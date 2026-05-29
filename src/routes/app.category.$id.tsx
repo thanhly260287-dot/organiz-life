@@ -89,17 +89,7 @@ function CategoryPage() {
                   category.tasks.length +
                   category.subcategories.reduce((acc, sc) => acc + sc.tasks.length, 0);
                 if (count === 0) return;
-                if (
-                  confirm(
-                    t("category.confirmClearTasks", {
-                      name: displayName,
-                      count,
-                      defaultValue: `Supprimer les ${count} tâche(s) de « ${displayName} » ? Cette action est irréversible.`,
-                    })
-                  )
-                ) {
-                  clearCategoryTasks(category.id);
-                }
+                setClearOpen(true);
               }}
               className="p-2 rounded-lg hover:bg-amber-500/20 text-amber-500 transition-colors"
               aria-label={t("category.clearTasks", { defaultValue: "Effacer toutes les tâches" })}
@@ -108,12 +98,7 @@ function CategoryPage() {
               <Eraser className="h-5 w-5" />
             </button>
             <button
-              onClick={() => {
-                if (confirm(t("category.confirmDelete", { name: displayName }))) {
-                  removeCategory(category.id);
-                  window.history.back();
-                }
-              }}
+              onClick={() => setDeleteOpen(true)}
               className="p-2 rounded-lg hover:bg-destructive/20 text-destructive transition-colors"
               aria-label={t("category.delete")}
             >
