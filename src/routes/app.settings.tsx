@@ -1,7 +1,7 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useStore } from "@/lib/store";
 import { motion } from "framer-motion";
-import { Moon, Sun, Hash, Globe, Search, Check, ArrowLeft, Wallet, AlertTriangle, Smartphone, Shield, FileText } from "lucide-react";
+import { Moon, Sun, Hash, Globe, Search, Check, ArrowLeft, Wallet, AlertTriangle, Smartphone, Shield, FileText, Building2 } from "lucide-react";
 
 import { useTranslation } from "react-i18next";
 import { useMemo, useState } from "react";
@@ -312,9 +312,9 @@ function Settings() {
           <Shield className="h-4 w-4" /> Légal
         </h2>
         <p className="text-xs text-muted-foreground">
-          Politique de confidentialité et Conditions Générales d'Utilisation, requises pour l'App Store, Google Play et le web.
+          Politique de confidentialité, Conditions Générales d'Utilisation et mentions légales, requises pour l'App Store, Google Play et le web.
         </p>
-        <div className="grid sm:grid-cols-2 gap-3">
+        <div className="grid sm:grid-cols-3 gap-3">
           <Link
             to="/privacy"
             className="w-full inline-flex items-center justify-center gap-2 rounded-xl border border-border px-4 py-2.5 text-sm font-medium hover:bg-muted transition-colors"
@@ -326,6 +326,12 @@ function Settings() {
             className="w-full inline-flex items-center justify-center gap-2 rounded-xl border border-border px-4 py-2.5 text-sm font-medium hover:bg-muted transition-colors"
           >
             <FileText className="h-4 w-4" /> CGU
+          </Link>
+          <Link
+            to="/imprint"
+            className="w-full inline-flex items-center justify-center gap-2 rounded-xl border border-border px-4 py-2.5 text-sm font-medium hover:bg-muted transition-colors"
+          >
+            <Building2 className="h-4 w-4" /> Mentions légales
           </Link>
         </div>
       </section>
