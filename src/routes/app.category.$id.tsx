@@ -1,12 +1,23 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { motion } from "framer-motion";
 import { useTranslation } from "react-i18next";
+import { useState } from "react";
 import { useStore, getCategoryProgress } from "@/lib/store";
 import { TaskList } from "@/components/TaskList";
 import { IconRender } from "@/components/IconRender";
 import { ArrowLeft, Trash2, CalendarClock, Eraser } from "lucide-react";
 import { FINANCE_CATEGORY_IDS, NEGATIVE_FINANCE_IDS, FORCED_SIGN_IDS } from "@/lib/categories";
 import { useCategoryName } from "@/lib/useCategoryName";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from "@/components/ui/alert-dialog";
 
 export const Route = createFileRoute("/app/category/$id")({
   component: CategoryPage,
@@ -20,6 +31,9 @@ function CategoryPage() {
   const removeCategory = useStore((s) => s.removeCategory);
   const updateCategory = useStore((s) => s.updateCategory);
   const clearCategoryTasks = useStore((s) => s.clearCategoryTasks);
+
+  const [clearOpen, setClearOpen] = useState(false);
+  const [deleteOpen, setDeleteOpen] = useState(false);
 
   if (!category) {
     return (
@@ -75,17 +89,7 @@ function CategoryPage() {
                   category.tasks.length +
                   category.subcategories.reduce((acc, sc) => acc + sc.tasks.length, 0);
                 if (count === 0) return;
-                if (
-                  confirm(
-                    t("category.confirmClearTasks", {
-                      name: displayName,
-                      count,
-                      defaultValue: `Supprimer les ${count} tâche(s) de « ${displayName} » ? Cette action est irréversible.`,
-                    })
-                  )
-                ) {
-                  clearCategoryTasks(category.id);
-                }
+                setClearOpen(true);
               }}
               className="p-2 rounded-lg hover:bg-amber-500/20 text-amber-500 transition-colors"
               aria-label={t("category.clearTasks", { defaultValue: "Effacer toutes les tâches" })}
@@ -94,12 +98,7 @@ function CategoryPage() {
               <Eraser className="h-5 w-5" />
             </button>
             <button
-              onClick={() => {
-                if (confirm(t("category.confirmDelete", { name: displayName }))) {
-                  removeCategory(category.id);
-                  window.history.back();
-                }
-              }}
+              onClick={() => setDeleteOpen(true)}
               className="p-2 rounded-lg hover:bg-destructive/20 text-destructive transition-colors"
               aria-label={t("category.delete")}
             >
@@ -135,6 +134,65 @@ function CategoryPage() {
           lockSign={FORCED_SIGN_IDS.has(category.id)}
         />
       </section>
+
+      {/* Dialog: clear all tasks */}
+      <AlertDialog open={clearOpen} onOpenChange={setClearOpen}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>{t("category.clearTasksTitle", { defaultValue: "Effacer toutes les tâches" })}</AlertDialogTitle>
+            <AlertDialogDescription>
+              {t("category.confirmClearTasks", {
+                name: displayName,
+                count:
+                  category.tasks.length +
+                  category.subcategories.reduce((acc, sc) => acc + sc.tasks.length, 0),
+                defaultValue: `Supprimer les ${category.tasks.length + category.subcategories.reduce((acc, sc) => acc + sc.tasks.length, 0)} tâche(s) de « ${displayName} » ? Cette action est irréversible.`,
+              })}
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel onClick={() => setClearOpen(false)}>
+              {t("common.cancel", { defaultValue: "Annuler" })}
+            </AlertDialogCancel>
+            <AlertDialogAction
+              onClick={() => {
+                clearCategoryTasks(category.id);
+                setClearOpen(false);
+              }}
+              className="bg-amber-500 hover:bg-amber-600 text-white"
+            >
+              {t("common.confirm", { defaultValue: "Confirmer" })}
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
+
+      {/* Dialog: delete category */}
+      <AlertDialog open={deleteOpen} onOpenChange={setDeleteOpen}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>{t("category.deleteTitle", { defaultValue: "Supprimer la catégorie" })}</AlertDialogTitle>
+            <AlertDialogDescription>
+              {t("category.confirmDelete", { name: displayName })}
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel onClick={() => setDeleteOpen(false)}>
+              {t("common.cancel", { defaultValue: "Annuler" })}
+            </AlertDialogCancel>
+            <AlertDialogAction
+              onClick={() => {
+                removeCategory(category.id);
+                setDeleteOpen(false);
+                window.history.back();
+              }}
+              className="bg-destructive hover:bg-destructive/90 text-destructive-foreground"
+            >
+              {t("common.delete", { defaultValue: "Supprimer" })}
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
     </main>
   );
 }
