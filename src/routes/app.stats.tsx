@@ -1179,7 +1179,6 @@ function StatsPage() {
               )}
 
               {evoCompare && compareTotals && (
-              {evoCompare && compareTotals && (
                 <div className="flex flex-wrap gap-2 text-xs">
                   {(evoStatus === "all" || evoStatus === "created") && (
                     <div className="inline-flex items-center gap-2 rounded-xl border border-border bg-card/60 px-3 py-2">
