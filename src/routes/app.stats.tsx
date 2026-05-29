@@ -267,6 +267,13 @@ function StatsPage() {
     if (evoStatus === "all") return evolution;
     return evolution.map((d) => ({
       ...d,
+      cumCreated: evoStatus === "created" ? d.cumCreated : 0,
+      cumDone: evoStatus === "done" ? d.cumDone : 0,
+      created: evoStatus === "created" ? d.created : 0,
+      pct: 0,
+    }));
+  }, [evolution, evoStatus]);
+
   // Données avec moyenne mobile
   const chartData = useMemo(() => {
     const window = evoDays <= 7 ? 3 : evoDays <= 30 ? 7 : 14;
