@@ -125,7 +125,13 @@ function StatsPage() {
   // +1 = forced added, -1 = forced subtracted, 0 = excluded. Click cycles through.
   const [financeSel, setFinanceSel] = useState<Record<string, 1 | -1 | 0>>({});
 
+  useEffect(() => { localStorage.setItem("stats:evoDays", String(evoDays)); }, [evoDays]);
+  useEffect(() => { localStorage.setItem("stats:evoCats", JSON.stringify(evoCats)); }, [evoCats]);
+  useEffect(() => { localStorage.setItem("stats:evoStatus", JSON.stringify(evoStatus)); }, [evoStatus]);
+  useEffect(() => { localStorage.setItem("stats:evoShowValues", JSON.stringify(evoShowValues)); }, [evoShowValues]);
+  useEffect(() => { localStorage.setItem("stats:evoShowTrend", JSON.stringify(evoShowTrend)); }, [evoShowTrend]);
 
+  const stats = useMemo(() => {
   const stats = useMemo(() => {
     let done = 0;
     let total = 0;
