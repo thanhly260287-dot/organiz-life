@@ -67,6 +67,7 @@ function CategoryPage() {
                 style={{ background: `linear-gradient(90deg, ${category.color}, var(--brand-violet))` }}
               />
             </div>
+          </div>
           <div className="flex items-center gap-1 shrink-0">
             <button
               onClick={() => {
