@@ -841,7 +841,7 @@ function StatsPage() {
                   </span>
                 </h2>
                 <div className="flex flex-col gap-2">
-                  {/* Boutons d'export */}
+                  {/* Boutons d'export + valeurs */}
                   <div className="flex gap-1 justify-end">
                     <button
                       type="button"
@@ -858,6 +858,19 @@ function StatsPage() {
                       title="Exporter en PDF"
                     >
                       <FileText className="h-3.5 w-3.5" /> PDF
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => setEvoShowValues((v) => !v)}
+                      className={`inline-flex items-center gap-1.5 px-2.5 py-1 text-xs font-medium rounded-lg border transition-all ${
+                        evoShowValues
+                          ? "bg-gradient-brand text-white border-transparent shadow-sm"
+                          : "bg-card/60 border-border hover:bg-card text-foreground"
+                      }`}
+                      title={evoShowValues ? "Masquer les valeurs sur le graphe" : "Afficher les valeurs sur le graphe"}
+                    >
+                      {evoShowValues ? <Eye className="h-3.5 w-3.5" /> : <EyeOff className="h-3.5 w-3.5" />}
+                      {evoShowValues ? t("stats.valuesOn", "Valeurs") : t("stats.valuesOff", "Valeurs")}
                     </button>
                   </div>
                   {/* Sélecteur de période */}
