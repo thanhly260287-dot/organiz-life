@@ -116,6 +116,33 @@ function StatsPage() {
     w.document.write(html);
     w.document.close();
   };
+  const exportEvolutionTableCSV = () => {
+    const headers: string[] = [t("stats.date", "Date")];
+    if (evoStatus === "all" || evoStatus === "created") headers.push(t("stats.created", "Créées"), t("stats.cumCreated", "Total créées"));
+    if (evoCompare && (evoStatus === "all" || evoStatus === "created")) headers.push(t("stats.prevCreatedShort", "Créées (préc.)"));
+    if (evoStatus === "all" || evoStatus === "done") headers.push(t("stats.done", "Terminées"), t("stats.cumDone", "Total terminées"));
+    if (evoCompare && (evoStatus === "all" || evoStatus === "done")) headers.push(t("stats.prevDoneShort", "Terminées (préc.)"));
+    if (evoStatus === "all") headers.push(t("stats.evolutionPctShort", "Taux %"));
+    const rows = filteredEvolution.map((d, i) => {
+      const r: (string | number)[] = [d.label];
+      if (evoStatus === "all" || evoStatus === "created") { r.push(d.created, d.cumCreated); }
+      if (evoCompare && (evoStatus === "all" || evoStatus === "created")) { r.push(previousEvolution?.[i]?.cumCreated ?? ""); }
+      if (evoStatus === "all" || evoStatus === "done") { r.push(d.done, d.cumDone); }
+      if (evoCompare && (evoStatus === "all" || evoStatus === "done")) { r.push(previousEvolution?.[i]?.cumDone ?? ""); }
+      if (evoStatus === "all") { r.push(`${d.pct}%`); }
+      return r;
+    });
+    const csv = [headers, ...rows]
+      .map((row) => row.map((v) => `"${String(v).replace(/"/g, '""')}"`).join(","))
+      .join("\n");
+    const blob = new Blob(["\uFEFF" + csv], { type: "text/csv;charset=utf-8;" });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = `evolution-tableau-${evoDays}j-${evoStatus}.csv`;
+    a.click();
+    URL.revokeObjectURL(url);
+  };
   const [evoCats, setEvoCats] = useState<string[]>(getStorageJSON("stats:evoCats", ["all"]));
   const evoAll = evoCats.includes("all");
   const [evoDays, setEvoDays] = useState<number>(getStorageNum("stats:evoDays", 30));
@@ -1290,10 +1317,18 @@ function StatsPage() {
 
               {/* Tableau récapitulatif */}
               <div className="glass rounded-2xl shadow-glass overflow-hidden">
-                <div className="px-4 py-3 border-b border-border/60 flex items-center gap-2">
+                <div className="px-4 py-3 border-b border-border/60 flex items-center justify-between gap-2">
                   <h3 className="text-sm font-semibold">
                     {t("stats.evolutionTableTitle", "Récapitulatif quotidien")}
                   </h3>
+                  <button
+                    type="button"
+                    onClick={exportEvolutionTableCSV}
+                    className="inline-flex items-center gap-1.5 px-2.5 py-1 text-xs font-medium rounded-lg border bg-card/60 border-border hover:bg-card text-foreground transition-all"
+                    title="Exporter le tableau en CSV"
+                  >
+                    <Download className="h-3.5 w-3.5" /> CSV
+                  </button>
                 </div>
                 <div className="overflow-x-auto">
                   <table className="w-full text-sm">
