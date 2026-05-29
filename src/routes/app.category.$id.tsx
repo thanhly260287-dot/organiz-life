@@ -179,7 +179,10 @@ function CategoryPage() {
           <AlertDialogHeader>
             <AlertDialogTitle>{t("category.deleteTitle", { defaultValue: "Supprimer la catégorie" })}</AlertDialogTitle>
             <AlertDialogDescription>
-              {t("category.confirmDelete", { name: displayName })}
+              {t("category.confirmDeleteDetailed", {
+                name: displayName,
+                defaultValue: `La catégorie « ${displayName} » et toutes les tâches qu'elle contient (y compris celles des sous-catégories) vont être supprimées définitivement. Cette action est irréversible et aucune donnée ne pourra être récupérée.`,
+              })}
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
