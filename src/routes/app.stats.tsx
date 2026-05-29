@@ -893,7 +893,19 @@ function StatsPage() {
                       {evoShowValues ? <Eye className="h-3.5 w-3.5" /> : <EyeOff className="h-3.5 w-3.5" />}
                       {evoShowValues ? t("stats.valuesOn", "Valeurs") : t("stats.valuesOff", "Valeurs")}
                     </button>
-                  </div>
+                    <button
+                      type="button"
+                      onClick={() => setEvoShowTrend((v) => !v)}
+                      className={`inline-flex items-center gap-1.5 px-2.5 py-1 text-xs font-medium rounded-lg border transition-all ${
+                        evoShowTrend
+                          ? "bg-gradient-brand text-white border-transparent shadow-sm"
+                          : "bg-card/60 border-border hover:bg-card text-foreground"
+                      }`}
+                      title={evoShowTrend ? "Masquer la ligne de tendance" : "Afficher la ligne de tendance"}
+                    >
+                      <TrendingUp className="h-3.5 w-3.5" />
+                      {evoShowTrend ? t("stats.trendOn", "Tendance") : t("stats.trendOff", "Tendance")}
+                    </button>
                   {/* Sélecteur de période */}
                   <div className="flex gap-1">
                     {[7, 30, 90].map((n) => (
