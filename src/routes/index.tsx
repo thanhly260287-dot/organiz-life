@@ -116,8 +116,10 @@ function Landing() {
       <footer className="border-t">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 py-8 flex flex-wrap items-center justify-between gap-4 text-sm text-muted-foreground">
           <Link to="/app"><Logo size={28} /></Link>
-          <div className="flex items-center gap-4">
+          <div className="flex items-center gap-4 flex-wrap">
             <Link to="/privacy" className="hover:text-foreground transition-colors">Privacy Policy</Link>
+            <span>•</span>
+            <Link to="/terms" className="hover:text-foreground transition-colors">CGU</Link>
             <span>•</span>
             <p>© {new Date().getFullYear()} Organiz-Life. {t("landing.copyright")}</p>
           </div>
