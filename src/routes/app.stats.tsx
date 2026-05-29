@@ -1121,7 +1121,40 @@ function StatsPage() {
                 </div>
               </div>
 
+              {evoCompare && compareTotals && (
+                <div className="flex flex-wrap gap-2 text-xs">
+                  {(evoStatus === "all" || evoStatus === "created") && (
+                    <div className="inline-flex items-center gap-2 rounded-xl border border-border bg-card/60 px-3 py-2">
+                      <span className="h-2 w-2 rounded-full" style={{ background: "#56CCF2" }} />
+                      <span className="text-muted-foreground">{t("stats.created", "Créées")}</span>
+                      <span className="font-semibold tabular-nums">{compareTotals.curCreated}</span>
+                      <span className="text-muted-foreground">vs</span>
+                      <span className="tabular-nums">{compareTotals.prevCreated}</span>
+                      <span className={`font-medium tabular-nums ${compareTotals.deltaCreated > 0 ? "text-green-500" : compareTotals.deltaCreated < 0 ? "text-red-500" : "text-muted-foreground"}`}>
+                        {compareTotals.deltaCreated >= 0 ? "+" : ""}{compareTotals.deltaCreated} ({compareTotals.pctCreated >= 0 ? "+" : ""}{compareTotals.pctCreated}%)
+                      </span>
+                    </div>
+                  )}
+                  {(evoStatus === "all" || evoStatus === "done") && (
+                    <div className="inline-flex items-center gap-2 rounded-xl border border-border bg-card/60 px-3 py-2">
+                      <span className="h-2 w-2 rounded-full" style={{ background: "#9B51E0" }} />
+                      <span className="text-muted-foreground">{t("stats.done", "Terminées")}</span>
+                      <span className="font-semibold tabular-nums">{compareTotals.curDone}</span>
+                      <span className="text-muted-foreground">vs</span>
+                      <span className="tabular-nums">{compareTotals.prevDone}</span>
+                      <span className={`font-medium tabular-nums ${compareTotals.deltaDone > 0 ? "text-green-500" : compareTotals.deltaDone < 0 ? "text-red-500" : "text-muted-foreground"}`}>
+                        {compareTotals.deltaDone >= 0 ? "+" : ""}{compareTotals.deltaDone} ({compareTotals.pctDone >= 0 ? "+" : ""}{compareTotals.pctDone}%)
+                      </span>
+                    </div>
+                  )}
+                  <div className="inline-flex items-center gap-1.5 rounded-xl border border-dashed border-border/60 bg-card/30 px-3 py-2 text-muted-foreground">
+                    {t("stats.compareHint", "Période précédente")} ({evoDays}j)
+                  </div>
+                </div>
+              )}
+
               <div className="h-72">
+
                 <ResponsiveContainer width="100%" height="100%">
                   <AreaChart data={chartData} margin={{ left: 0, right: 8, top: evoShowValues ? 24 : 8, bottom: 8 }}>
                     <defs>
