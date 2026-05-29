@@ -981,20 +981,7 @@ function StatsPage() {
                           }`}
                         >
                           <span
-                            className="h-2 w-2 rounded-full shrink-0"
-                            style={{ background: c.color }}
-                          />
-                          {nameFor(c.id, c.name)}
-                        </button>
-                      );
-                    })}
-                  </div>
-                </div>
-              </div>
-
-              <div className="h-72">
-                <ResponsiveContainer width="100%" height="100%">
-                  <AreaChart data={filteredEvolution} margin={{ left: 0, right: 8, top: evoShowValues ? 24 : 8, bottom: 8 }}>
+                  <AreaChart data={chartData} margin={{ left: 0, right: 8, top: evoShowValues ? 24 : 8, bottom: 8 }}>
                     <defs>
                       <linearGradient id="evoCreated" x1="0" y1="0" x2="0" y2="1">
                         <stop offset="0%" stopColor="#56CCF2" stopOpacity={0.5} />
@@ -1054,18 +1041,24 @@ function StatsPage() {
                         )}
                       </Area>
                     )}
-                  </AreaChart>
-                </ResponsiveContainer>
-              </div>
-
-              {evoStatus === "all" && (
-                <div>
-                  <h3 className="text-sm font-semibold mb-2">
-                    {t("stats.evolutionPct", "Taux de complétion (%)")}
-                  </h3>
-                  <div className="h-56">
-                    <ResponsiveContainer width="100%" height="100%">
-                      <AreaChart data={filteredEvolution} margin={{ left: 0, right: 8, top: evoShowValues ? 24 : 8, bottom: 8 }}>
+                    {evoShowTrend && (evoStatus === "all" || evoStatus === "created") && (
+                      <Line type="monotone" dataKey="maCreated" name={t("stats.maCreated", "Tendance créées")} stroke="#56CCF2" strokeWidth={2} strokeDasharray="6 4" dot={false} />
+                    )}
+                    {evoShowTrend && (evoStatus === "all" || evoStatus === "done") && (
+                      <Line type="monotone" dataKey="maDone" name={t("stats.maDone", "Tendance terminées")} stroke="#9B51E0" strokeWidth={2} strokeDasharray="6 4" dot={false} />
+                    )}
+                        strokeWidth={2}
+                        fill="url(#evoDone)"
+                      >
+                        {evoShowValues && (
+                          <LabelList
+                            dataKey="cumDone"
+                            position="top"
+                            formatter={(v: number) => (v > 0 ? String(v) : "")}
+                            style={{ fill: "#9B51E0", fontSize: 10, fontWeight: 600 }}
+                          />
+                        )}
+                      <AreaChart data={chartData} margin={{ left: 0, right: 8, top: evoShowValues ? 24 : 8, bottom: 8 }}>
                         <defs>
                           <linearGradient id="evoPct" x1="0" y1="0" x2="0" y2="1">
                             <stop offset="0%" stopColor="hsl(var(--primary))" stopOpacity={0.6} />
@@ -1091,6 +1084,22 @@ function StatsPage() {
                         <Area
                           type="monotone"
                           dataKey="pct"
+                          stroke="hsl(var(--primary))"
+                          strokeWidth={2}
+                          fill="url(#evoPct)"
+                        >
+                          {evoShowValues && (
+                            <LabelList
+                              dataKey="pct"
+                              position="top"
+                              formatter={(v: number) => `${v}%`}
+                              style={{ fill: "hsl(var(--primary))", fontSize: 10, fontWeight: 600 }}
+                            />
+                          )}
+                        </Area>
+                        {evoShowTrend && (
+                          <Line type="monotone" dataKey="maPct" name={t("stats.maPct", "Tendance %")} stroke="hsl(var(--primary))" strokeWidth={2} strokeDasharray="6 4" dot={false} />
+                        )}
                           stroke="hsl(var(--primary))"
                           strokeWidth={2}
                           fill="url(#evoPct)"
