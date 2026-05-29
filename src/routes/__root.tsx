@@ -80,6 +80,10 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       { property: "og:image", content: "https://pub-bb2e103a32db4e198524a2e9ed8f35b4.r2.dev/918ff928-ccfc-4db3-84e4-16fa3b152e27/id-preview-2711bc35--97476cbd-bd8c-433b-a3e2-ff45ae165103.lovable.app-1779380244726.png" },
       { name: "twitter:image", content: "https://pub-bb2e103a32db4e198524a2e9ed8f35b4.r2.dev/918ff928-ccfc-4db3-84e4-16fa3b152e27/id-preview-2711bc35--97476cbd-bd8c-433b-a3e2-ff45ae165103.lovable.app-1779380244726.png" },
       { name: "twitter:card", content: "summary_large_image" },
+      { name: "apple-mobile-web-app-capable", content: "yes" },
+      { name: "mobile-web-app-capable", content: "yes" },
+      { name: "apple-mobile-web-app-status-bar-style", content: "black-translucent" },
+      { name: "apple-mobile-web-app-title", content: "Organiz-Life" },
     ],
     links: [
       { rel: "stylesheet", href: appCss },
