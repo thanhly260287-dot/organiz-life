@@ -216,7 +216,7 @@ function Settings() {
         <p className="text-xs text-muted-foreground">
           {t("settings.resetAllDesc", {
             defaultValue:
-              "Supprime toutes tes tâches, sous-catégories, vision boards et préférences. Cette action est irréversible.",
+              "Supprime définitivement toutes tes tâches, sous-catégories, catégories personnalisées, vision boards, paramètres d'affichage et préférences linguistiques. Aucune donnée ne pourra être récupérée.",
           })}
         </p>
         <button
@@ -236,7 +236,7 @@ function Settings() {
             <AlertDialogDescription>
               {t("settings.resetAllConfirm", {
                 defaultValue:
-                  "Tout réinitialiser ? Toutes les tâches, catégories personnalisées, vision boards et préférences seront effacées définitivement.",
+                  "Toutes tes tâches, sous-catégories, catégories personnalisées, vision boards, paramètres d'affichage et préférences linguistiques seront effacées définitivement. Aucune donnée ne pourra être récupérée après cette action.",
               })}
             </AlertDialogDescription>
           </AlertDialogHeader>
@@ -264,7 +264,8 @@ function Settings() {
             <AlertDialogTitle>{t("settings.resetAll", { defaultValue: "Tout réinitialiser" })}</AlertDialogTitle>
             <AlertDialogDescription>
               {t("settings.resetAllConfirm2", {
-                defaultValue: "Es-tu vraiment sûr·e ? Cette action est définitive.",
+                defaultValue:
+                  "Confirme que tu veux supprimer définitivement toutes tes données : tâches, sous-catégories, catégories personnalisées, vision boards, paramètres d'affichage et préférences linguistiques. Cette action est irréversible.",
               })}
             </AlertDialogDescription>
           </AlertDialogHeader>
