@@ -32,6 +32,9 @@ function CategoryPage() {
   const updateCategory = useStore((s) => s.updateCategory);
   const clearCategoryTasks = useStore((s) => s.clearCategoryTasks);
 
+  const [clearOpen, setClearOpen] = useState(false);
+  const [deleteOpen, setDeleteOpen] = useState(false);
+
   if (!category) {
     return (
       <main className="mx-auto max-w-3xl px-4 py-16 text-center">
