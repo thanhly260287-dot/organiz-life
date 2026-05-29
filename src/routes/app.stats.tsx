@@ -31,6 +31,7 @@ function StatsPage() {
   const [evoCats, setEvoCats] = useState<string[]>(["all"]);
   const evoAll = evoCats.includes("all");
   const [evoDays, setEvoDays] = useState<number>(30);
+  const [evoStatus, setEvoStatus] = useState<"all" | "created" | "done">("all");
   // Per-row selection in the Bilan financier: undefined = included with natural sign,
   // +1 = forced added, -1 = forced subtracted, 0 = excluded. Click cycles through.
   const [financeSel, setFinanceSel] = useState<Record<string, 1 | -1 | 0>>({});
@@ -186,7 +187,20 @@ function StatsPage() {
       d.cumDone = cd;
       d.pct = cc === 0 ? 0 : Math.round((cd / cc) * 100);
     }
-    return days;
+  }, [taskDatesByCategory, evoCats, evoDays]);
+
+  // Données filtrées selon le statut pour l'affichage
+  const filteredEvolution = useMemo(() => {
+    if (evoStatus === "all") return evolution;
+    return evolution.map((d) => ({
+      ...d,
+      cumCreated: evoStatus === "created" ? d.cumCreated : 0,
+      cumDone: evoStatus === "done" ? d.cumDone : 0,
+      created: evoStatus === "created" ? d.created : 0,
+      done: evoStatus === "done" ? d.done : 0,
+      pct: evoStatus === "all" ? d.pct : 0,
+    }));
+  }, [evolution, evoStatus]);
   }, [taskDatesByCategory, evoCats, evoDays]);
 
 
