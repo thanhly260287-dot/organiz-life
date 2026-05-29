@@ -147,8 +147,6 @@ export const useStore = create<AppState>()(
               };
             }
             return { ...c, tasks: map(c.tasks) };
-          }),
-        })),
       removeTask: (categoryId, taskId, subId) =>
         set((s) => ({
           categories: s.categories.map((c) => {
@@ -162,6 +160,29 @@ export const useStore = create<AppState>()(
               };
             }
             return { ...c, tasks: c.tasks.filter((t) => t.id !== taskId) };
+          }),
+        })),
+      clearCategoryTasks: (categoryId) =>
+        set((s) => ({
+          categories: s.categories.map((c) =>
+            c.id === categoryId
+              ? {
+                  ...c,
+                  tasks: [],
+                  subcategories: c.subcategories.map((sc) => ({ ...sc, tasks: [] })),
+                }
+              : c
+          ),
+        })),
+      resetAllData: () =>
+        set({
+          categories: seedCategories(),
+          theme: "dark",
+          textSize: "md",
+          showCategoryPriority: false,
+          showCategoryTotal: true,
+          taskPriorityCategories: [],
+        }),
           }),
         })),
       toggleTask: (categoryId, taskId, subId) =>
