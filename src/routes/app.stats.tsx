@@ -286,9 +286,6 @@ function StatsPage() {
       d.cumDone = cd;
       d.pct = cc === 0 ? 0 : Math.round((cd / cc) * 100);
     }
-    return days;
-  }, [taskDatesByCategory, evoCats, evoDays]);
-
   // Données filtrées selon le statut pour l'affichage
   const filteredEvolution = useMemo(() => {
     if (evoStatus === "all") return evolution;
@@ -301,7 +298,86 @@ function StatsPage() {
     }));
   }, [evolution, evoStatus]);
 
-  // Données avec moyenne mobile
+  // Période précédente (même longueur, juste avant la période en cours)
+  const previousEvolution = useMemo(() => {
+    if (!evoCompare) return null;
+    const DAYS = evoDays;
+    const today = new Date();
+    const days: { label: string; date: string; created: number; done: number; cumCreated: number; cumDone: number; pct: number }[] = new Array(DAYS);
+    for (let i = 0; i < DAYS; i++) {
+      const d = new Date(today);
+      d.setDate(today.getDate() - (2 * DAYS - 1 - i));
+      days[i] = {
+        label: d.toLocaleDateString(undefined, { day: "2-digit", month: "2-digit" }),
+        date: d.toISOString().slice(0, 10),
+        created: 0,
+        done: 0,
+        cumCreated: 0,
+        cumDone: 0,
+        pct: 0,
+      };
+    }
+    const firstDay = days[0].date;
+    const lastDay = days[DAYS - 1].date;
+    const indexByDate: Record<string, number> = {};
+    for (let i = 0; i < DAYS; i++) indexByDate[days[i].date] = i;
+    let baseCreated = 0;
+    let baseDone = 0;
+    const ids = evoAll ? null : new Set(evoCats);
+    taskDatesByCategory.forEach((buckets, catId) => {
+      if (ids !== null && !ids.has(catId)) return;
+      const { created, done } = buckets;
+      for (let i = 0; i < created.length; i++) {
+        const k = created[i];
+        if (k < firstDay) baseCreated++;
+        else if (k <= lastDay) {
+          const idx = indexByDate[k];
+          if (idx !== undefined) days[idx].created++;
+        }
+      }
+      for (let i = 0; i < done.length; i++) {
+        const k = done[i];
+        if (k === null) { baseDone++; continue; }
+        if (k < firstDay) baseDone++;
+        else if (k <= lastDay) {
+          const idx = indexByDate[k];
+          if (idx !== undefined) days[idx].done++;
+        }
+      }
+    });
+    let cc = baseCreated;
+    let cd = baseDone;
+    for (let i = 0; i < DAYS; i++) {
+      const d = days[i];
+      cc += d.created;
+      cd += d.done;
+      d.cumCreated = cc;
+      d.cumDone = cd;
+      d.pct = cc === 0 ? 0 : Math.round((cd / cc) * 100);
+    }
+    return days;
+  }, [taskDatesByCategory, evoCats, evoDays, evoCompare, evoAll]);
+
+  // Totaux comparés (delta période)
+  const compareTotals = useMemo(() => {
+    if (!previousEvolution) return null;
+    const last = evolution[evolution.length - 1];
+    const prevLast = previousEvolution[previousEvolution.length - 1];
+    const first = evolution[0];
+    const prevFirst = previousEvolution[0];
+    const curCreated = last.cumCreated - (first.cumCreated - first.created);
+    const curDone = last.cumDone - (first.cumDone - first.done);
+    const prevCreated = prevLast.cumCreated - (prevFirst.cumCreated - prevFirst.created);
+    const prevDone = prevLast.cumDone - (prevFirst.cumDone - prevFirst.done);
+    const pctDelta = (cur: number, prev: number) =>
+      prev === 0 ? (cur > 0 ? 100 : 0) : Math.round(((cur - prev) / prev) * 100);
+    return {
+      curCreated, prevCreated, deltaCreated: curCreated - prevCreated, pctCreated: pctDelta(curCreated, prevCreated),
+      curDone, prevDone, deltaDone: curDone - prevDone, pctDone: pctDelta(curDone, prevDone),
+    };
+  }, [previousEvolution, evolution]);
+
+  // Données avec moyenne mobile + alignement période précédente
   const chartData = useMemo(() => {
     const window = evoDays <= 7 ? 3 : evoDays <= 30 ? 7 : 14;
     return filteredEvolution.map((d, i, arr) => {
@@ -313,11 +389,23 @@ function StatsPage() {
         sumPct += arr[j].pct;
         count++;
       }
+      const prev = previousEvolution ? previousEvolution[i] : null;
+      const prevVisibleCreated = prev && (evoStatus === "all" || evoStatus === "created") ? prev.cumCreated : undefined;
+      const prevVisibleDone = prev && (evoStatus === "all" || evoStatus === "done") ? prev.cumDone : undefined;
       return {
         ...d,
         maCreated: Math.round(sumCreated / count),
         maDone: Math.round(sumDone / count),
         maPct: Math.round(sumPct / count),
+        prevLabel: prev?.label,
+        prevCumCreated: prevVisibleCreated,
+        prevCumDone: prevVisibleDone,
+        prevPct: prev && evoStatus === "all" ? prev.pct : undefined,
+      };
+    });
+  }, [filteredEvolution, evoDays, previousEvolution, evoStatus]);
+
+
       };
     });
   }, [filteredEvolution, evoDays]);
