@@ -19,7 +19,24 @@ export const Route = createFileRoute("/app/stats")({
 
 type View = "overview" | "distribution" | "ranking" | "activity" | "evolution";
 
-function StatsPage() {
+type View = "overview" | "distribution" | "ranking" | "activity" | "evolution";
+
+function getStorageNum(key: string, fallback: number) {
+  try {
+    const v = localStorage.getItem(key);
+    return v ? Number(v) : fallback;
+  } catch {
+    return fallback;
+  }
+}
+function getStorageJSON<T>(key: string, fallback: T): T {
+  try {
+    const v = localStorage.getItem(key);
+    return v ? JSON.parse(v) : fallback;
+  } catch {
+    return fallback;
+  }
+}
   const { t } = useTranslation();
   const nameFor = useCategoryName();
   const allCategories = useStore((s) => s.categories);
