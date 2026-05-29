@@ -941,8 +941,6 @@ function StatsPage() {
               )}
 
               {/* Tableau récapitulatif */}
-
-              {/* Tableau récapitulatif */}
               <div className="glass rounded-2xl shadow-glass overflow-hidden">
                 <div className="px-4 py-3 border-b border-border/60 flex items-center gap-2">
                   <h3 className="text-sm font-semibold">
@@ -956,16 +954,26 @@ function StatsPage() {
                         <th className="px-3 py-2 text-left font-medium sticky left-0 bg-card/50 backdrop-blur-sm z-10">
                           {t("stats.date", "Date")}
                         </th>
-                        <th className="px-3 py-2 text-right font-medium">{t("stats.created", "Créées")}</th>
-                        <th className="px-3 py-2 text-right font-medium">{t("stats.done", "Terminées")}</th>
-                        <th className="px-3 py-2 text-right font-medium">{t("stats.cumCreated", "Total créées")}</th>
-                        <th className="px-3 py-2 text-right font-medium">{t("stats.cumDone", "Total terminées")}</th>
-                        <th className="px-3 py-2 text-right font-medium">{t("stats.evolutionPctShort", "Taux %")}</th>
+                        {(evoStatus === "all" || evoStatus === "created") && (
+                          <th className="px-3 py-2 text-right font-medium">{t("stats.created", "Créées")}</th>
+                        )}
+                        {(evoStatus === "all" || evoStatus === "done") && (
+                          <th className="px-3 py-2 text-right font-medium">{t("stats.done", "Terminées")}</th>
+                        )}
+                        {(evoStatus === "all" || evoStatus === "created") && (
+                          <th className="px-3 py-2 text-right font-medium">{t("stats.cumCreated", "Total créées")}</th>
+                        )}
+                        {(evoStatus === "all" || evoStatus === "done") && (
+                          <th className="px-3 py-2 text-right font-medium">{t("stats.cumDone", "Total terminées")}</th>
+                        )}
+                        {evoStatus === "all" && (
+                          <th className="px-3 py-2 text-right font-medium">{t("stats.evolutionPctShort", "Taux %")}</th>
+                        )}
                       </tr>
                     </thead>
                     <tbody>
-                      {evolution.map((d, i) => {
-                        const isLast = i === evolution.length - 1;
+                      {filteredEvolution.map((d, i) => {
+                        const isLast = i === filteredEvolution.length - 1;
                         return (
                           <tr
                             key={d.date}
@@ -976,41 +984,51 @@ function StatsPage() {
                             <td className="px-3 py-2 font-medium sticky left-0 bg-background/80 backdrop-blur-sm z-10">
                               {d.label}
                             </td>
-                            <td className="px-3 py-2 text-right tabular-nums">
-                              {d.created > 0 ? (
-                                <span className="text-[#56CCF2] font-medium">+{d.created}</span>
-                              ) : (
-                                <span className="text-muted-foreground">—</span>
-                              )}
-                            </td>
-                            <td className="px-3 py-2 text-right tabular-nums">
-                              {d.done > 0 ? (
-                                <span className="text-[#9B51E0] font-medium">+{d.done}</span>
-                              ) : (
-                                <span className="text-muted-foreground">—</span>
-                              )}
-                            </td>
-                            <td className="px-3 py-2 text-right tabular-nums text-muted-foreground">
-                              {d.cumCreated}
-                            </td>
-                            <td className="px-3 py-2 text-right tabular-nums text-muted-foreground">
-                              {d.cumDone}
-                            </td>
-                            <td className="px-3 py-2 text-right tabular-nums">
-                              <span
-                                className={`inline-flex items-center justify-end font-medium ${
-                                  d.pct >= 80
-                                    ? "text-green-500"
-                                    : d.pct >= 50
-                                      ? "text-yellow-500"
-                                      : d.pct > 0
-                                        ? "text-orange-400"
-                                        : "text-muted-foreground"
-                                }`}
-                              >
-                                {d.pct}%
-                              </span>
-                            </td>
+                            {(evoStatus === "all" || evoStatus === "created") && (
+                              <td className="px-3 py-2 text-right tabular-nums">
+                                {d.created > 0 ? (
+                                  <span className="text-[#56CCF2] font-medium">+{d.created}</span>
+                                ) : (
+                                  <span className="text-muted-foreground">—</span>
+                                )}
+                              </td>
+                            )}
+                            {(evoStatus === "all" || evoStatus === "done") && (
+                              <td className="px-3 py-2 text-right tabular-nums">
+                                {d.done > 0 ? (
+                                  <span className="text-[#9B51E0] font-medium">+{d.done}</span>
+                                ) : (
+                                  <span className="text-muted-foreground">—</span>
+                                )}
+                              </td>
+                            )}
+                            {(evoStatus === "all" || evoStatus === "created") && (
+                              <td className="px-3 py-2 text-right tabular-nums text-muted-foreground">
+                                {d.cumCreated}
+                              </td>
+                            )}
+                            {(evoStatus === "all" || evoStatus === "done") && (
+                              <td className="px-3 py-2 text-right tabular-nums text-muted-foreground">
+                                {d.cumDone}
+                              </td>
+                            )}
+                            {evoStatus === "all" && (
+                              <td className="px-3 py-2 text-right tabular-nums">
+                                <span
+                                  className={`inline-flex items-center justify-end font-medium ${
+                                    d.pct >= 80
+                                      ? "text-green-500"
+                                      : d.pct >= 50
+                                        ? "text-yellow-500"
+                                        : d.pct > 0
+                                          ? "text-orange-400"
+                                          : "text-muted-foreground"
+                                  }`}
+                                >
+                                  {d.pct}%
+                                </span>
+                              </td>
+                            )}
                           </tr>
                         );
                       })}
