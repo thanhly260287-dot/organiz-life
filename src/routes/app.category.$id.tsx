@@ -19,6 +19,7 @@ function CategoryPage() {
   const category = useStore((s) => s.categories.find((c) => c.id === id));
   const removeCategory = useStore((s) => s.removeCategory);
   const updateCategory = useStore((s) => s.updateCategory);
+  const clearCategoryTasks = useStore((s) => s.clearCategoryTasks);
 
   if (!category) {
     return (
