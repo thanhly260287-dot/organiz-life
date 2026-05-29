@@ -116,6 +116,33 @@ function StatsPage() {
     w.document.write(html);
     w.document.close();
   };
+  const exportEvolutionTableCSV = () => {
+    const headers: string[] = [t("stats.date", "Date")];
+    if (evoStatus === "all" || evoStatus === "created") headers.push(t("stats.created", "Créées"), t("stats.cumCreated", "Total créées"));
+    if (evoCompare && (evoStatus === "all" || evoStatus === "created")) headers.push(t("stats.prevCreatedShort", "Créées (préc.)"));
+    if (evoStatus === "all" || evoStatus === "done") headers.push(t("stats.done", "Terminées"), t("stats.cumDone", "Total terminées"));
+    if (evoCompare && (evoStatus === "all" || evoStatus === "done")) headers.push(t("stats.prevDoneShort", "Terminées (préc.)"));
+    if (evoStatus === "all") headers.push(t("stats.evolutionPctShort", "Taux %"));
+    const rows = filteredEvolution.map((d, i) => {
+      const r: (string | number)[] = [d.label];
+      if (evoStatus === "all" || evoStatus === "created") { r.push(d.created, d.cumCreated); }
+      if (evoCompare && (evoStatus === "all" || evoStatus === "created")) { r.push(previousEvolution?.[i]?.cumCreated ?? ""); }
+      if (evoStatus === "all" || evoStatus === "done") { r.push(d.done, d.cumDone); }
+      if (evoCompare && (evoStatus === "all" || evoStatus === "done")) { r.push(previousEvolution?.[i]?.cumDone ?? ""); }
+      if (evoStatus === "all") { r.push(`${d.pct}%`); }
+      return r;
+    });
+    const csv = [headers, ...rows]
+      .map((row) => row.map((v) => `"${String(v).replace(/"/g, '""')}"`).join(","))
+      .join("\n");
+    const blob = new Blob(["\uFEFF" + csv], { type: "text/csv;charset=utf-8;" });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = `evolution-tableau-${evoDays}j-${evoStatus}.csv`;
+    a.click();
+    URL.revokeObjectURL(url);
+  };
   const [evoCats, setEvoCats] = useState<string[]>(getStorageJSON("stats:evoCats", ["all"]));
   const evoAll = evoCats.includes("all");
   const [evoDays, setEvoDays] = useState<number>(getStorageNum("stats:evoDays", 30));
