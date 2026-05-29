@@ -279,6 +279,21 @@ export const useStore = create<AppState>()(
             return { ...c, vision: c.vision.filter((v) => v.id !== itemId) };
           }),
         })),
+      clearVisionItems: (categoryId, subId) =>
+        set((s) => ({
+          categories: s.categories.map((c) => {
+            if (c.id !== categoryId) return c;
+            if (subId) {
+              return {
+                ...c,
+                subcategories: c.subcategories.map((sc) =>
+                  sc.id === subId ? { ...sc, vision: [] } : sc
+                ),
+              };
+            }
+            return { ...c, vision: [] };
+          }),
+        })),
     }),
     {
       name: "organiz-life-v1",
