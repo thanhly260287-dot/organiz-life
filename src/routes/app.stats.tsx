@@ -11,7 +11,7 @@ const fmtEUR = (n: number) =>
   n.toLocaleString("fr-FR", { style: "currency", currency: "EUR" });
 import { IconRender } from "@/components/IconRender";
 import { useCategoryName } from "@/lib/useCategoryName";
-import { PieChart, Pie, Cell, ResponsiveContainer, Tooltip, BarChart, Bar, XAxis, YAxis, CartesianGrid, AreaChart, Area, Legend, LabelList } from "recharts";
+import { PieChart, Pie, Cell, ResponsiveContainer, Tooltip, BarChart, Bar, XAxis, YAxis, CartesianGrid, AreaChart, Area, Legend, LabelList, Line } from "recharts";
 
 export const Route = createFileRoute("/app/stats")({
   component: StatsPage,
@@ -103,6 +103,7 @@ function StatsPage() {
   const [evoDays, setEvoDays] = useState<number>(30);
   const [evoStatus, setEvoStatus] = useState<"all" | "created" | "done">("all");
   const [evoShowValues, setEvoShowValues] = useState(false);
+  const [evoShowTrend, setEvoShowTrend] = useState(false);
   // Per-row selection in the Bilan financier: undefined = included with natural sign,
   // +1 = forced added, -1 = forced subtracted, 0 = excluded. Click cycles through.
   const [financeSel, setFinanceSel] = useState<Record<string, 1 | -1 | 0>>({});
@@ -273,6 +274,26 @@ function StatsPage() {
     }));
   }, [evolution, evoStatus]);
 
+  // Données avec moyenne mobile
+  const chartData = useMemo(() => {
+    const window = evoDays <= 7 ? 3 : evoDays <= 30 ? 7 : 14;
+    return filteredEvolution.map((d, i, arr) => {
+      let sumCreated = 0, sumDone = 0, sumPct = 0, count = 0;
+      const start = Math.max(0, i - window + 1);
+      for (let j = start; j <= i; j++) {
+        sumCreated += arr[j].cumCreated;
+        sumDone += arr[j].cumDone;
+        sumPct += arr[j].pct;
+        count++;
+      }
+      return {
+        ...d,
+        maCreated: Math.round(sumCreated / count),
+        maDone: Math.round(sumDone / count),
+        maPct: Math.round(sumPct / count),
+      };
+    });
+  }, [filteredEvolution, evoDays]);
 
 
   const finance = useMemo(() => {
@@ -872,6 +893,19 @@ function StatsPage() {
                       {evoShowValues ? <Eye className="h-3.5 w-3.5" /> : <EyeOff className="h-3.5 w-3.5" />}
                       {evoShowValues ? t("stats.valuesOn", "Valeurs") : t("stats.valuesOff", "Valeurs")}
                     </button>
+                    <button
+                      type="button"
+                      onClick={() => setEvoShowTrend((v) => !v)}
+                      className={`inline-flex items-center gap-1.5 px-2.5 py-1 text-xs font-medium rounded-lg border transition-all ${
+                        evoShowTrend
+                          ? "bg-gradient-brand text-white border-transparent shadow-sm"
+                          : "bg-card/60 border-border hover:bg-card text-foreground"
+                      }`}
+                      title={evoShowTrend ? "Masquer la ligne de tendance" : "Afficher la ligne de tendance"}
+                    >
+                      <TrendingUp className="h-3.5 w-3.5" />
+                      {evoShowTrend ? t("stats.trendOn", "Tendance") : t("stats.trendOff", "Tendance")}
+                    </button>
                   </div>
                   {/* Sélecteur de période */}
                   <div className="flex gap-1">
@@ -960,7 +994,7 @@ function StatsPage() {
 
               <div className="h-72">
                 <ResponsiveContainer width="100%" height="100%">
-                  <AreaChart data={filteredEvolution} margin={{ left: 0, right: 8, top: evoShowValues ? 24 : 8, bottom: 8 }}>
+                  <AreaChart data={chartData} margin={{ left: 0, right: 8, top: evoShowValues ? 24 : 8, bottom: 8 }}>
                     <defs>
                       <linearGradient id="evoCreated" x1="0" y1="0" x2="0" y2="1">
                         <stop offset="0%" stopColor="#56CCF2" stopOpacity={0.5} />
@@ -1020,6 +1054,12 @@ function StatsPage() {
                         )}
                       </Area>
                     )}
+                    {evoShowTrend && (evoStatus === "all" || evoStatus === "created") && (
+                      <Line type="monotone" dataKey="maCreated" name={t("stats.maCreated", "Tendance créées")} stroke="#56CCF2" strokeWidth={2} strokeDasharray="6 4" dot={false} />
+                    )}
+                    {evoShowTrend && (evoStatus === "all" || evoStatus === "done") && (
+                      <Line type="monotone" dataKey="maDone" name={t("stats.maDone", "Tendance terminées")} stroke="#9B51E0" strokeWidth={2} strokeDasharray="6 4" dot={false} />
+                    )}
                   </AreaChart>
                 </ResponsiveContainer>
               </div>
@@ -1031,7 +1071,7 @@ function StatsPage() {
                   </h3>
                   <div className="h-56">
                     <ResponsiveContainer width="100%" height="100%">
-                      <AreaChart data={filteredEvolution} margin={{ left: 0, right: 8, top: evoShowValues ? 24 : 8, bottom: 8 }}>
+                      <AreaChart data={chartData} margin={{ left: 0, right: 8, top: evoShowValues ? 24 : 8, bottom: 8 }}>
                         <defs>
                           <linearGradient id="evoPct" x1="0" y1="0" x2="0" y2="1">
                             <stop offset="0%" stopColor="hsl(var(--primary))" stopOpacity={0.6} />
@@ -1070,6 +1110,9 @@ function StatsPage() {
                             />
                           )}
                         </Area>
+                        {evoShowTrend && (
+                          <Line type="monotone" dataKey="maPct" name={t("stats.maPct", "Tendance %")} stroke="hsl(var(--primary))" strokeWidth={2} strokeDasharray="6 4" dot={false} />
+                        )}
                       </AreaChart>
                     </ResponsiveContainer>
                   </div>
