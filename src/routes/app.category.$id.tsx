@@ -67,19 +67,44 @@ function CategoryPage() {
                 style={{ background: `linear-gradient(90deg, ${category.color}, var(--brand-violet))` }}
               />
             </div>
+          <div className="flex items-center gap-1 shrink-0">
+            <button
+              onClick={() => {
+                const count =
+                  category.tasks.length +
+                  category.subcategories.reduce((acc, sc) => acc + sc.tasks.length, 0);
+                if (count === 0) return;
+                if (
+                  confirm(
+                    t("category.confirmClearTasks", {
+                      name: displayName,
+                      count,
+                      defaultValue: `Supprimer les ${count} tâche(s) de « ${displayName} » ? Cette action est irréversible.`,
+                    })
+                  )
+                ) {
+                  clearCategoryTasks(category.id);
+                }
+              }}
+              className="p-2 rounded-lg hover:bg-amber-500/20 text-amber-500 transition-colors"
+              aria-label={t("category.clearTasks", { defaultValue: "Effacer toutes les tâches" })}
+              title={t("category.clearTasks", { defaultValue: "Effacer toutes les tâches" })}
+            >
+              <Eraser className="h-5 w-5" />
+            </button>
+            <button
+              onClick={() => {
+                if (confirm(t("category.confirmDelete", { name: displayName }))) {
+                  removeCategory(category.id);
+                  window.history.back();
+                }
+              }}
+              className="p-2 rounded-lg hover:bg-destructive/20 text-destructive transition-colors"
+              aria-label={t("category.delete")}
+            >
+              <Trash2 className="h-5 w-5" />
+            </button>
           </div>
-          <button
-            onClick={() => {
-              if (confirm(t("category.confirmDelete", { name: displayName }))) {
-                removeCategory(category.id);
-                window.history.back();
-              }
-            }}
-            className="p-2 rounded-lg hover:bg-destructive/20 text-destructive transition-colors"
-            aria-label={t("category.delete")}
-          >
-            <Trash2 className="h-5 w-5" />
-          </button>
         </div>
       </motion.section>
 
