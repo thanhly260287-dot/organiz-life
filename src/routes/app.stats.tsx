@@ -150,6 +150,7 @@ function StatsPage() {
   const [evoShowValues, setEvoShowValues] = useState(getStorageJSON("stats:evoShowValues", false));
   const [evoShowTrend, setEvoShowTrend] = useState(getStorageJSON("stats:evoShowTrend", false));
   const [evoCompare, setEvoCompare] = useState<boolean>(getStorageJSON("stats:evoCompare", false));
+  const [evoNegBad, setEvoNegBad] = useState<boolean>(getStorageJSON("stats:evoNegBad", true));
   // Per-row selection in the Bilan financier: undefined = included with natural sign,
   // +1 = forced added, -1 = forced subtracted, 0 = excluded. Click cycles through.
   const [financeSel, setFinanceSel] = useState<Record<string, 1 | -1 | 0>>({});
@@ -160,6 +161,8 @@ function StatsPage() {
   useEffect(() => { localStorage.setItem("stats:evoShowValues", JSON.stringify(evoShowValues)); }, [evoShowValues]);
   useEffect(() => { localStorage.setItem("stats:evoShowTrend", JSON.stringify(evoShowTrend)); }, [evoShowTrend]);
   useEffect(() => { localStorage.setItem("stats:evoCompare", JSON.stringify(evoCompare)); }, [evoCompare]);
+  useEffect(() => { localStorage.setItem("stats:evoNegBad", JSON.stringify(evoNegBad)); }, [evoNegBad]);
+
 
 
 
