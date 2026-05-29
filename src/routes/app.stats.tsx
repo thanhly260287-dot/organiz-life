@@ -804,8 +804,6 @@ function StatsPage() {
                   </div>
                   {/* Filtre catégories */}
                   <div className="flex flex-wrap gap-2">
-                  {/* Filtre catégories */}
-                  <div className="flex flex-wrap gap-2">
                     <button
                       type="button"
                       onClick={() => setEvoCats(["all"])}
