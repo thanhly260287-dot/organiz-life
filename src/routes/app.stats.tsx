@@ -906,6 +906,7 @@ function StatsPage() {
                       <TrendingUp className="h-3.5 w-3.5" />
                       {evoShowTrend ? t("stats.trendOn", "Tendance") : t("stats.trendOff", "Tendance")}
                     </button>
+                  </div>
                   {/* Sélecteur de période */}
                   <div className="flex gap-1">
                     {[7, 30, 90].map((n) => (
