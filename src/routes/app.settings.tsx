@@ -238,6 +238,3 @@ function Settings() {
     </main>
   );
 }
-    </main>
-  );
-}
