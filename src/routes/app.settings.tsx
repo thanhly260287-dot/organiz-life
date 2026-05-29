@@ -6,6 +6,16 @@ import { Moon, Sun, Hash, Globe, Search, Check, ArrowLeft, Wallet, AlertTriangle
 import { useTranslation } from "react-i18next";
 import { useMemo, useState } from "react";
 import { SUPPORTED_LANGUAGES } from "@/lib/i18n";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from "@/components/ui/alert-dialog";
 
 export const Route = createFileRoute("/app/settings")({
   component: Settings,
