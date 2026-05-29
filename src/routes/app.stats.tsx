@@ -1,7 +1,7 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useMemo, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { ArrowLeft, TrendingUp, CheckCircle2, Layers, PieChart as PieIcon, BarChart3, CalendarDays, LayoutGrid, LineChart as LineIcon, Download, FileText } from "lucide-react";
+import { ArrowLeft, TrendingUp, CheckCircle2, Layers, PieChart as PieIcon, BarChart3, CalendarDays, LayoutGrid, LineChart as LineIcon, Download, FileText, Eye, EyeOff } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import { useStore, getCategoryProgress, MAIN_VISION_ID } from "@/lib/store";
 import { NEGATIVE_FINANCE_IDS } from "@/lib/categories";
