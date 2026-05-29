@@ -141,13 +141,19 @@ function CategoryPage() {
           <AlertDialogHeader>
             <AlertDialogTitle>{t("category.clearTasksTitle", { defaultValue: "Effacer toutes les tâches" })}</AlertDialogTitle>
             <AlertDialogDescription>
-              {t("category.confirmClearTasks", {
-                name: displayName,
-                count:
-                  category.tasks.length +
-                  category.subcategories.reduce((acc, sc) => acc + sc.tasks.length, 0),
-                defaultValue: `Supprimer les ${category.tasks.length + category.subcategories.reduce((acc, sc) => acc + sc.tasks.length, 0)} tâche(s) de « ${displayName} » ? Cette action est irréversible.`,
-              })}
+              {(() => {
+                const taskCount = category.tasks.length;
+                const subCount = category.subcategories.reduce((acc, sc) => acc + sc.tasks.length, 0);
+                const total = taskCount + subCount;
+                return t("category.confirmClearTasks", {
+                  name: displayName,
+                  count: total,
+                  defaultValue:
+                    total === 1
+                      ? `1 tâche va être supprimée de la catégorie « ${displayName} ». Cette action est irréversible et la tâche ne pourra pas être récupérée.`
+                      : `${total} tâches vont être supprimées de la catégorie « ${displayName} » (y compris les tâches des sous-catégories). Cette action est irréversible et aucune tâche ne pourra être récupérée.`,
+                });
+              })()}
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
