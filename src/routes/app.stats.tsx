@@ -1031,7 +1031,7 @@ function StatsPage() {
                   </h3>
                   <div className="h-56">
                     <ResponsiveContainer width="100%" height="100%">
-                      <AreaChart data={filteredEvolution} margin={{ left: 0, right: 8, top: 8, bottom: 8 }}>
+                      <AreaChart data={filteredEvolution} margin={{ left: 0, right: 8, top: evoShowValues ? 24 : 8, bottom: 8 }}>
                         <defs>
                           <linearGradient id="evoPct" x1="0" y1="0" x2="0" y2="1">
                             <stop offset="0%" stopColor="hsl(var(--primary))" stopOpacity={0.6} />
@@ -1060,7 +1060,16 @@ function StatsPage() {
                           stroke="hsl(var(--primary))"
                           strokeWidth={2}
                           fill="url(#evoPct)"
-                        />
+                        >
+                          {evoShowValues && (
+                            <LabelList
+                              dataKey="pct"
+                              position="top"
+                              formatter={(v: number) => `${v}%`}
+                              style={{ fill: "hsl(var(--primary))", fontSize: 10, fontWeight: 600 }}
+                            />
+                          )}
+                        </Area>
                       </AreaChart>
                     </ResponsiveContainer>
                   </div>
