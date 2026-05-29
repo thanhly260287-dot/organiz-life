@@ -242,6 +242,14 @@ export function VisionBoard({
           >
             <Download className="h-3.5 w-3.5" /> Exporter
           </button>
+          {items.length > 0 && (
+            <button
+              onClick={() => setResetOpen(true)}
+              className="inline-flex items-center gap-1.5 text-xs px-3 py-2 rounded-lg glass shadow-glass hover:bg-amber-500/20 text-amber-500 transition-colors"
+            >
+              <Eraser className="h-3.5 w-3.5" /> Réinitialiser
+            </button>
+          )}
         </div>
       </div>
 
