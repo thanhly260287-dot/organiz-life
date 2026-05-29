@@ -115,12 +115,12 @@ function StatsPage() {
     w.document.write(html);
     w.document.close();
   };
-  const [evoCats, setEvoCats] = useState<string[]>(["all"]);
+  const [evoCats, setEvoCats] = useState<string[]>(getStorageJSON("stats:evoCats", ["all"]));
   const evoAll = evoCats.includes("all");
-  const [evoDays, setEvoDays] = useState<number>(30);
-  const [evoStatus, setEvoStatus] = useState<"all" | "created" | "done">("all");
-  const [evoShowValues, setEvoShowValues] = useState(false);
-  const [evoShowTrend, setEvoShowTrend] = useState(false);
+  const [evoDays, setEvoDays] = useState<number>(getStorageNum("stats:evoDays", 30));
+  const [evoStatus, setEvoStatus] = useState<"all" | "created" | "done">(getStorageJSON("stats:evoStatus", "all"));
+  const [evoShowValues, setEvoShowValues] = useState(getStorageJSON("stats:evoShowValues", false));
+  const [evoShowTrend, setEvoShowTrend] = useState(getStorageJSON("stats:evoShowTrend", false));
   // Per-row selection in the Bilan financier: undefined = included with natural sign,
   // +1 = forced added, -1 = forced subtracted, 0 = excluded. Click cycles through.
   const [financeSel, setFinanceSel] = useState<Record<string, 1 | -1 | 0>>({});
