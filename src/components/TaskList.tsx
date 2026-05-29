@@ -304,8 +304,10 @@ export function TaskList({
       )}
     </div>
   );
+}
 
 function SortableTaskRow({
+
   task: t,
   index,
   categoryId,
